@@ -1,0 +1,141 @@
+21. Choix techniques et architecture de développement
+Le site sera développé en PHP avec base de données MySQL, administrée via phpMyAdmin en environnement local, puis déployée sur l’hébergement InfinityFree.
+La configuration devra être pensée de manière centralisée, claire et facilement adaptable entre l’environnement local et l’environnement de production, afin de simplifier le passage du projet vers l’hébergement final.
+
+Le projet adoptera une structure MVC simple et lisible afin de séparer proprement les responsabilités entre :
+
+le Modèle, pour la gestion des données et des requêtes SQL ;
+
+le Contrôleur, pour le traitement de la logique applicative ;
+
+la Vue, pour l’affichage côté utilisateur.
+
+Cette organisation vise à améliorer la maintenance, la compréhension du code et l’évolutivité du site.
+
+21.1 Structure du projet
+L’architecture du projet devra être organisée de façon claire, logique et facile à maintenir, par exemple avec des dossiers distincts pour :
+
+les contrôleurs ;
+
+les modèles ;
+
+les vues ;
+
+les configurations ;
+
+les assets ;
+
+les fichiers de sécurité ;
+
+les bibliothèques utilitaires.
+
+Cette structure devra permettre une évolution future du site sans casser l’existant.
+
+21.2 Gestion de la base de données
+La base de données sera conçue en SQL avec une organisation normalisée et cohérente.
+Les tables devront être prévues pour gérer notamment :
+
+les utilisateurs administrateurs ;
+
+les rôles et permissions ;
+
+les services ;
+
+les réalisations ;
+
+les articles ;
+
+les témoignages ;
+
+les demandes de devis ;
+
+les messages de contact ;
+
+les partenaires ;
+
+les paramètres généraux du site.
+
+Les requêtes SQL devront être propres, sécurisées et préparées afin de limiter les risques de vulnérabilité.
+
+21.3 Configuration locale et hébergement
+Le développement commencera en local, puis le site sera importé sur phpMyAdmin et configuré pour InfinityFree.
+Le projet devra donc prévoir :
+
+une séparation nette entre la configuration locale et la configuration de production ;
+
+un fichier de configuration unique ou centralisé pour les accès à la base de données ;
+
+une adaptation facile des paramètres de connexion lors du déploiement ;
+
+une structure compatible avec l’hébergement gratuit ou mutualisé.
+
+Cette approche facilitera le transfert du projet et évitera les erreurs lors du passage en ligne.
+
+22. Technologies frontend et animation
+Afin d’obtenir un rendu moderne, fluide et attractif, le site intégrera des bibliothèques frontend adaptées au type de projet.
+L’objectif est de renforcer la visibilité des contenus, d’améliorer l’expérience utilisateur et de rendre les statistiques, galeries et blocs de présentation plus vivants.
+
+22.1 Bibliothèques à intégrer
+Le projet pourra intégrer :
+
+WOW.js, pour déclencher des animations à l’apparition des éléments dans la page ;
+
+Counter.js ou une bibliothèque équivalente pour animer les chiffres clés et statistiques ;
+
+Carousel.js, pour les sliders, galeries et blocs de réalisations ;
+
+Vanilla JS, pour les interactions légères et les fonctionnalités sans dépendance lourde ;
+
+un framework frontend adapté au site, choisi pour assurer une bonne compatibilité, un design propre et une excellente visibilité mobile.
+
+L’utilisation de compteurs animés et d’animations contrôlées permet de dynamiser la présentation sans nuire à la lisibilité.
+
+22.2 Objectif visuel
+Ces outils frontend devront servir à :
+
+rendre l’accueil plus impactant ;
+
+mettre en valeur les statistiques de l’entreprise ;
+
+fluidifier l’affichage des projets ;
+
+améliorer la perception de professionnalisme ;
+
+donner un rendu moderne, sobre et convaincant.
+
+L’animation devra rester élégante, utile et légère, sans surcharger le site.
+
+23. Qualité du code et organisation
+Le code source devra être :
+
+bien commenté de façon claire et utile ;
+
+bien indenté ;
+
+structuré selon des conventions lisibles ;
+
+facile à relire et à maintenir ;
+
+rédigé de manière cohérente dans tout le projet.
+
+Les commentaires devront expliquer les parties importantes du code sans alourdir inutilement les fichiers.
+La lisibilité sera une exigence forte, autant pour le développement initial que pour les futures mises à jour.
+
+24. Exigences de développement
+Le développement devra respecter les principes suivants :
+
+séparation claire des responsabilités avec MVC ;
+
+SQL propre et organisé ;
+
+configuration centralisée et adaptable ;
+
+interface frontend moderne et dynamique ;
+
+code maintenable, commenté et bien présenté ;
+
+compatibilité avec l’hébergement InfinityFree ;
+
+préparation à une évolution future du site.
+
+Le projet doit être pensé comme une base solide, propre et professionnelle, capable de supporter un site vitrine enrichi, performant et évolutif.

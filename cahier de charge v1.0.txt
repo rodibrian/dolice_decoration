@@ -1,0 +1,690 @@
+Cahier des charges
+Mini plateforme vitrine / portfolio professionnel
+1. Présentation du projet
+Nom du projet : Mini plateforme vitrine / portfolio professionnel.
+Client : Staff Technique Madagascar.
+Activité : Entreprise spécialisée dans la finition et la décoration de bâtiment.
+Finalité du projet : Concevoir un site web professionnel, moderne et administrable, capable de présenter l’entreprise, valoriser ses services, exposer ses réalisations et générer des demandes de devis qualifiées.
+
+Le site devra aussi servir d’outil de crédibilité, de visibilité et de conversion commerciale, avec une interface d’administration permettant une gestion autonome des contenus sans intervention d’un développeur.
+
+2. Contexte et enjeux
+L’entreprise souhaite disposer d’une présence digitale claire, professionnelle et rassurante afin d’attirer de nouveaux clients particuliers, entreprises et promoteurs immobiliers.
+Le site devra mettre en avant le savoir-faire, la qualité des finitions, la diversité des prestations et la capacité de réalisation sur différents types de chantiers.
+Il devra également soutenir la stratégie commerciale en transformant les visiteurs en prospects grâce à des appels à l’action visibles et des formulaires simples.
+Le projet doit être pensé comme une base solide et évolutive, capable d’accueillir plus tard de nouvelles fonctionnalités comme le chat en ligne, le multi-langue ou l’espace client.
+
+3. Objectifs du projet
+Objectifs business
+Améliorer la visibilité en ligne de l’entreprise.
+
+Générer des demandes de devis et des opportunités commerciales.
+
+Renforcer la confiance et la crédibilité auprès des prospects.
+
+Centraliser la communication digitale dans un seul outil.
+
+Présenter une image moderne, sérieuse et qualitative de la marque.
+
+Objectifs techniques
+Développer un site rapide, responsive et facile à utiliser.
+
+Mettre en place une interface d’administration sécurisée et intuitive.
+
+Permettre la gestion dynamique de tous les contenus.
+
+Assurer un niveau de sécurité adapté aux données et aux accès.
+
+Prévoir une architecture évolutive pour les besoins futurs.
+
+4. Public cible
+Le site doit s’adresser à trois grandes catégories de visiteurs :
+
+Les particuliers, pour des travaux de maison, rénovation ou décoration intérieure.
+
+Les entreprises, pour des bureaux, commerces, hôtels ou locaux professionnels.
+
+Les promoteurs immobiliers et partenaires techniques, pour des projets de plus grande envergure.
+
+Le discours, les visuels et les contenus devront être suffisamment clairs pour rassurer un public non technique tout en restant crédibles pour des décideurs professionnels.
+
+5. Positionnement éditorial
+Le site devra transmettre une image de marque fondée sur :
+
+la qualité d’exécution ;
+
+la précision des finitions ;
+
+la fiabilité dans le délai et le suivi ;
+
+la maîtrise technique des travaux ;
+
+l’écoute du client et l’accompagnement personnalisé.
+
+Le ton rédactionnel devra être professionnel, simple, direct et valorisant, sans jargon excessif.
+Les textes devront être rédigés pour inspirer confiance, expliquer les prestations et faciliter la prise de contact.
+
+6. Arborescence du site public
+Le site public devra être organisé de façon claire et intuitive.
+
+6.1 Accueil
+La page d’accueil devra contenir :
+
+une présentation synthétique de l’entreprise ;
+
+un slogan ou message d’accroche ;
+
+un ou plusieurs boutons d’appel à l’action ;
+
+un aperçu des principaux services ;
+
+une sélection de réalisations récentes ;
+
+des indicateurs de crédibilité : années d’expérience, nombre de projets, satisfaction client, zones couvertes ;
+
+un bloc de témoignages ou de preuve sociale ;
+
+un accès rapide au formulaire de devis.
+
+6.2 Notre histoire
+Cette page devra présenter :
+
+l’origine et l’évolution de l’entreprise ;
+
+les grandes étapes de développement ;
+
+les valeurs fondatrices ;
+
+la vision à moyen et long terme ;
+
+l’engagement qualité et la relation client.
+
+6.3 Services
+Chaque service devra disposer d’une présentation claire et distincte.
+Les services prévus sont :
+
+plafond ;
+
+murs et cloisons ;
+
+peinture ;
+
+sol ;
+
+électricité ;
+
+mobilier.
+
+Chaque fiche service devra inclure :
+
+un titre clair ;
+
+une description détaillée ;
+
+les avantages pour le client ;
+
+les types de projets concernés ;
+
+des images illustratives ;
+
+un bouton de demande de devis.
+
+6.4 Réalisations
+Cette section devra valoriser les projets accomplis par l’entreprise.
+Elle devra intégrer :
+
+une galerie d’images ;
+
+des projets avant / après ;
+
+un filtrage par catégorie ;
+
+des fiches projet détaillées ;
+
+la localisation du chantier ;
+
+le type de travaux réalisés ;
+
+une courte description du contexte et du résultat.
+
+La galerie devra être pensée pour inspirer confiance et démontrer la qualité réelle du travail effectué.
+
+6.5 FAQ
+La FAQ devra répondre aux questions fréquentes des visiteurs, par exemple :
+
+quels types de travaux sont pris en charge ;
+
+comment demander un devis ;
+
+quels sont les délais moyens ;
+
+quelles zones sont couvertes ;
+
+comment se déroule un projet ;
+
+quels éléments doivent être fournis avant démarrage.
+
+La FAQ a aussi un intérêt SEO et doit être rédigée de manière naturelle, utile et précise.
+
+6.6 Contact
+La page contact devra contenir :
+
+le téléphone ;
+
+WhatsApp ;
+
+l’adresse email ;
+
+un formulaire de contact ;
+
+les horaires de disponibilité ;
+
+la zone d’intervention ;
+
+éventuellement une carte de localisation.
+
+Le formulaire devra être court, clair et sécurisé pour faciliter la conversion.
+
+7. Espace administration
+L’espace d’administration est un élément central du projet.
+Il devra permettre au propriétaire ou à l’équipe autorisée de gérer totalement le site sans dépendre d’un développeur.
+L’interface devra être simple, sécurisée, réactive et organisée par modules.
+
+8. Authentification et rôles
+8.1 Connexion sécurisée
+Le système d’accès admin devra inclure :
+
+une page de connexion dédiée ;
+
+identification par email et mot de passe ;
+
+protection contre les tentatives répétées de connexion ;
+
+session sécurisée ;
+
+déconnexion manuelle ;
+
+déconnexion automatique après inactivité.
+
+8.2 Gestion des rôles
+Le système pourra évoluer vers plusieurs profils :
+
+Admin principal : accès complet à toutes les fonctionnalités ;
+
+Agent : accès limité à certaines données ou contenus ;
+
+Lecture seule : consultation sans modification, si nécessaire.
+
+Les droits devront être configurables pour protéger les fonctions sensibles.
+
+9. Dashboard administrateur
+Le tableau de bord devra offrir une vue synthétique de l’activité du site avec :
+
+nombre de visites ;
+
+nombre de demandes de devis ;
+
+nombre de messages reçus ;
+
+nombre de projets publiés ;
+
+nombre de contenus actifs ;
+
+alertes ou notifications récentes.
+
+Il devra aussi afficher des raccourcis vers les modules les plus utilisés pour gagner du temps dans la gestion quotidienne.
+
+10. Modules de gestion
+10.1 Gestion des services
+Fonctions attendues :
+
+créer un service ;
+
+modifier un service ;
+
+supprimer un service ;
+
+publier ou masquer un service.
+
+Champs principaux :
+
+titre ;
+
+description ;
+
+image ;
+
+catégorie ;
+
+ordre d’affichage ;
+
+statut de publication.
+
+10.2 Gestion des réalisations
+Fonctions attendues :
+
+ajout de projet ;
+
+modification ;
+
+suppression ;
+
+classement par catégorie ;
+
+mise en avant d’un projet ;
+
+gestion de plusieurs images par réalisation.
+
+Champs principaux :
+
+titre ;
+
+images ;
+
+description ;
+
+type de travaux ;
+
+localisation ;
+
+date ;
+
+catégorie ;
+
+statut publié / brouillon.
+
+10.3 Gestion des articles / blog
+Fonctions attendues :
+
+créer un article ;
+
+éditer un article ;
+
+supprimer un article ;
+
+programmer ou publier immédiatement.
+
+Champs principaux :
+
+titre ;
+
+contenu ;
+
+image principale ;
+
+date ;
+
+auteur ;
+
+extrait ;
+
+mots-clés ;
+
+statut de publication.
+
+Le blog pourra servir à publier des conseils, actualités, tendances ou explications métier pour soutenir le référencement naturel.
+
+10.4 Gestion des témoignages clients
+Fonctions attendues :
+
+ajouter un avis ;
+
+modifier un avis ;
+
+supprimer un avis ;
+
+valider manuellement un témoignage avant affichage.
+
+Champs principaux :
+
+nom du client ;
+
+entreprise ou statut ;
+
+contenu du témoignage ;
+
+note éventuelle ;
+
+image ou logo ;
+
+statut validé / en attente.
+
+10.5 Gestion des demandes de devis
+Fonctions attendues :
+
+liste des demandes reçues ;
+
+consultation détaillée ;
+
+changement de statut ;
+
+réponse ou suivi ;
+
+export des demandes si nécessaire.
+
+Statuts recommandés :
+
+nouveau ;
+
+en cours ;
+
+répondu ;
+
+terminé ;
+
+archivé.
+
+Champs principaux :
+
+nom ;
+
+téléphone ;
+
+email ;
+
+type de projet ;
+
+message ;
+
+date de réception ;
+
+statut ;
+
+notes internes.
+
+10.6 Gestion des pages statiques
+Le système devra permettre de modifier facilement les pages :
+
+à propos ;
+
+FAQ ;
+
+contact ;
+
+zones d’intervention ;
+
+mentions utiles ;
+
+contenu institutionnel.
+
+L’objectif est de donner une autonomie complète sur les textes essentiels du site.
+
+10.7 Gestion des partenaires
+Fonctions attendues :
+
+ajouter un logo ;
+
+modifier un partenaire ;
+
+supprimer un partenaire ;
+
+ordonner l’affichage.
+
+Champs principaux :
+
+nom du partenaire ;
+
+logo ;
+
+lien éventuel ;
+
+catégorie ;
+
+statut.
+
+11. Fonctionnalités avancées
+11.1 Gestion des médias
+Le site devra prendre en charge :
+
+images ;
+
+vidéos ;
+
+compression automatique ;
+
+redimensionnement adapté ;
+
+optimisation des fichiers lourds.
+
+11.2 Éditeur de contenu
+Un éditeur visuel de type WYSIWYG devra permettre de rédiger et mettre en forme le contenu facilement.
+Il devra prendre en charge les listes, titres, liens, images et blocs de texte structurés.
+
+11.3 Notifications
+Le système devra envoyer des notifications pour :
+
+nouvelles demandes de devis ;
+
+nouveaux messages ;
+
+contenus à valider ;
+
+actions importantes de l’administration.
+
+11.4 Journal d’activité
+Un historique des actions importantes devra être conservé, par exemple :
+
+connexion ;
+
+modification de contenu ;
+
+suppression ;
+
+validation ;
+
+changement de statut.
+
+Cela améliore le suivi, la sécurité et la traçabilité.
+
+12. Fonctionnalités côté public
+Le site devra intégrer :
+
+une navigation claire ;
+
+une conception responsive mobile-first ;
+
+des boutons CTA visibles sur toutes les pages importantes ;
+
+un formulaire de contact simple ;
+
+un accès rapide à WhatsApp et aux appels ;
+
+un affichage rapide des contenus essentiels ;
+
+des éléments de réassurance visibles.
+
+Les CTA prioritaires devront être :
+
+Demander un devis ;
+
+Appeler maintenant ;
+
+WhatsApp direct ;
+
+Voir nos réalisations ;
+
+Prendre rendez-vous.
+
+Ces éléments doivent aider à transformer la visite en contact concret.
+
+13. Design et identité visuelle
+Direction artistique
+Le design devra être :
+
+moderne ;
+
+professionnel ;
+
+sobre ;
+
+inspiré du secteur chantier / architecture / décoration.
+
+Palette de couleurs
+bleu pour la confiance et la structure ;
+
+blanc pour la clarté ;
+
+orange comme couleur d’accent et d’action.
+
+Style graphique
+L’interface devra mettre en avant :
+
+des visuels de qualité ;
+
+des espaces bien équilibrés ;
+
+une typographie lisible ;
+
+une hiérarchie claire des informations ;
+
+des composants modernes et cohérents.
+
+14. SEO et visibilité
+Le site devra être conçu pour le référencement naturel dès sa conception.
+Les optimisations attendues incluent :
+
+structure correcte des titres H1, H2, H3 ;
+
+balises meta personnalisables ;
+
+URLs propres et lisibles ;
+
+maillage interne cohérent ;
+
+textes optimisés par service ;
+
+données locales cohérentes ;
+
+pages adaptées à l’intention de recherche.
+
+Les mots-clés prioritaires incluent :
+
+finition bâtiment Madagascar ;
+
+plafond placo Madagascar ;
+
+décoration intérieure ;
+
+entreprise bâtiment Madagascar.
+
+Le site devra aussi pouvoir évoluer avec des contenus SEO complémentaires comme des pages de services détaillées, des pages de zones d’intervention et un blog.
+
+15. Sécurité
+Le projet devra intégrer les mesures suivantes :
+
+authentification sécurisée ;
+
+hashage des mots de passe ;
+
+protection des routes admin ;
+
+validation des formulaires ;
+
+anti-spam sur le contact ;
+
+limitation des accès au back-office ;
+
+protection de l’API ;
+
+gestion propre des sessions ;
+
+sauvegarde et traçabilité si possible.
+
+Les éléments sensibles devront être protégés contre l’accès non autorisé.
+
+16. Performance
+Le site devra être optimisé pour offrir une expérience rapide et fluide.
+Les exigences incluent :
+
+images compressées ;
+
+chargement différé des médias lourds ;
+
+cache ;
+
+limitation des scripts inutiles ;
+
+site léger sur mobile ;
+
+bonne stabilité lors du chargement.
+
+La performance devra être considérée comme un critère fonctionnel, car elle influe directement sur l’expérience utilisateur et le référencement.
+
+17. Contenus à fournir par le client
+Le client devra fournir les éléments suivants :
+
+logo officiel ;
+
+nom final de l’entreprise ;
+
+slogan final ;
+
+histoire réelle de l’entreprise ;
+
+année de création exacte ;
+
+équipe réelle ;
+
+liste officielle des services ;
+
+prix réels si souhaités ;
+
+descriptions validées ;
+
+photos des projets ;
+
+vidéos chantier ;
+
+téléphone officiel ;
+
+WhatsApp ;
+
+email ;
+
+documents juridiques utiles ;
+
+certificats éventuels ;
+
+liens des réseaux sociaux ;
+
+projets réels à afficher.
+
+La qualité du site dépendra directement de la qualité des contenus fournis.
+
+18. Livrables attendus
+Le projet devra inclure :
+
+un site web complet et responsive ;
+
+un back-office administrateur ;
+
+une base de données structurée ;
+
+une documentation technique ;
+
+éventuellement une documentation d’utilisation simple pour le client.
+
+19. Évolutions futures
+Le site devra être conçu de manière évolutive pour accueillir plus tard :
+
+un système de devis automatique ;
+
+un chat en ligne ;
+
+une version multilingue FR / MG ;
+
+un paiement en ligne ;
+
+un espace client ;
+
+un suivi des projets ;
+
+des formulaires plus avancés.
+
+L’architecture technique devra donc rester propre et suffisamment flexible pour accompagner la croissance de l’entreprise.
+
+20. Conclusion
+Ce cahier des charges définit un site vitrine complet, professionnel et administrable, pensé non seulement pour présenter l’entreprise, mais aussi pour générer des prospects, renforcer la crédibilité et préparer des évolutions futures.
+L’objectif est d’obtenir un outil digital durable, riche en contenu, bien structuré et réellement utile à la croissance de Staff Technique Madagascar.
+
+Si vous le souhaitez, je peux maintenant transformer ce texte en version encore plus professionnelle et prête à remettre à un développeur, ou en document de cahier des charges formel avec sections numérotées, style PDF, toujours en français.
