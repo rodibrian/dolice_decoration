@@ -1,0 +1,110 @@
+/* Public site theme (Bootstrap-first).
+   Kept separate from admin `app.css` to avoid breaking back-office UI. */
+
+:root{
+  --brand:#ff7a18;
+  --brand-2:#0d6efd;
+}
+
+html{scroll-behavior:smooth}
+
+.navbar-blur{
+  background:rgba(255,255,255,.86);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+.navbar .nav-link{
+  color:rgba(0,0,0,.68);
+  font-weight:600;
+}
+.navbar .nav-link:hover{color:#000}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  background: radial-gradient(1200px 400px at 20% 10%, rgba(255,122,24,.18), transparent 60%),
+              radial-gradient(900px 360px at 80% 30%, rgba(13,110,253,.12), transparent 55%),
+              linear-gradient(180deg,#0b1220,#0a1020);
+  color:#fff;
+}
+.hero::after{
+  content:"";
+  position:absolute;inset:0;
+  background-image:linear-gradient(120deg,rgba(255,122,24,.10),rgba(13,110,253,.06));
+  pointer-events:none;
+}
+.hero > .container{position:relative;z-index:1}
+
+.btn-brand{
+  --bs-btn-bg:var(--brand);
+  --bs-btn-border-color:var(--brand);
+  --bs-btn-hover-bg:#ff8c3a;
+  --bs-btn-hover-border-color:#ff8c3a;
+  --bs-btn-color:#1b1208;
+  font-weight:700;
+}
+.text-brand{color:var(--brand)!important}
+.bg-soft{
+  background: linear-gradient(180deg, rgba(13,110,253,.06), rgba(255,122,24,.05));
+}
+
+.card-hover{
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.card-hover:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,.12);
+}
+
+.section-title{
+  letter-spacing:-.02em;
+}
+
+.icon-badge{
+  width:44px;height:44px;
+  display:grid;place-items:center;
+  border-radius:14px;
+  background:rgba(255,122,24,.12);
+  color:var(--brand);
+}
+
+.glide__slide{height:auto}
+.testimonial{
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:18px;
+  background:#fff;
+}
+
+footer{
+  background:#0b1220;
+  color:#c9d4f1;
+}
+footer a{color:#c9d4f1}
+footer a:hover{color:#fff}
+
+.page-header{
+  background: linear-gradient(180deg, rgba(13,110,253,.08), rgba(255,122,24,.06));
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+
+.image-cover{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+  border-radius:16px;
+  border:1px solid rgba(0,0,0,.06);
+}
+
+.skeleton{
+  background: linear-gradient(90deg, rgba(0,0,0,.04), rgba(0,0,0,.08), rgba(0,0,0,.04));
+  background-size: 200% 100%;
+  animation: sk 1.2s infinite;
+  border-radius:16px;
+}
+@keyframes sk{0%{background-position:0 0}100%{background-position:-200% 0}}
+
+/* Small UX polish */
+.breadcrumb a{text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+
+
