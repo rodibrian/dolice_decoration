@@ -7,8 +7,11 @@ declare(strict_types=1);
  */
 function env(string $key, ?string $default = null): ?string
 {
-    $val = $_ENV[$key] ?? $_SERVER[$key] ?? null;
-    return $val !== null ? (string)$val : $default;
+    $val = $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
+    if ($val === false || $val === null || $val === '') {
+        return $default;
+    }
+    return (string)$val;
 }
 
 function loadEnv(string $path): void
@@ -51,61 +54,3 @@ function loadEnv(string $path): void
 }
 
 loadEnv(BASE_PATH . '/.env');
-<?php
-declare(strict_types=1);
-
-/**
- * Minimal .env loader (no dependencies).
- * - Supports KEY=VALUE and quoted values KEY="VALUE"
- * - Ignores blank lines and comments starting with #
- */
-function env_load(string $path): void
-{
-    if (!is_file($path)) {
-        return;
-    }
-
-    $lines = file($path, FILE_IGNORE_NEW_LINES);
-    if ($lines === false) {
-        return;
-    }
-
-    foreach ($lines as $line) {
-        $line = trim($line);
-        if ($line === '' || str_starts_with($line, '#')) {
-            continue;
-        }
-
-        $pos = strpos($line, '=');
-        if ($pos === false) {
-            continue;
-        }
-
-        $key = trim(substr($line, 0, $pos));
-        $value = trim(substr($line, $pos + 1));
-
-        if ($key === '') {
-            continue;
-        }
-
-        if ((str_starts_with($value, '"') && str_ends_with($value, '"')) ||
-            (str_starts_with($value, "'") && str_ends_with($value, "'"))
-        ) {
-            $value = substr($value, 1, -1);
-        }
-
-        $_ENV[$key] = $value;
-        $_SERVER[$key] = $value;
-        putenv($key . '=' . $value);
-    }
-}
-
-function env(string $key, ?string $default = null): ?string
-{
-    $v = $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
-    if ($v === false || $v === null || $v === '') {
-        return $default;
-    }
-    return (string)$v;
-}
-

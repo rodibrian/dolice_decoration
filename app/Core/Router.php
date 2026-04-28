@@ -11,14 +11,22 @@ final class Router
         'POST' => [],
     ];
 
+    /**
+     * @var array<string, list<array{regex:string, handler:array{0:class-string,1:string}, params:list<string>}>>
+     */
+    private array $dynamicRoutes = [
+        'GET' => [],
+        'POST' => [],
+    ];
+
     public function get(string $path, array $handler): void
     {
-        $this->routes['GET'][$this->normalize($path)] = $handler;
+        $this->register('GET', $path, $handler);
     }
 
     public function post(string $path, array $handler): void
     {
-        $this->routes['POST'][$this->normalize($path)] = $handler;
+        $this->register('POST', $path, $handler);
     }
 
     public function dispatch(): void
@@ -36,9 +44,12 @@ final class Router
 
         $handler = $this->routes[$method][$path] ?? null;
         if ($handler === null) {
-            http_response_code(404);
-            echo "404";
-            return;
+            $handler = $this->matchDynamic($method, $path);
+            if ($handler === null) {
+                http_response_code(404);
+                echo "404";
+                return;
+            }
         }
 
         [$class, $action] = $handler;
@@ -51,6 +62,59 @@ final class Router
         }
 
         $controller->{$action}();
+    }
+
+    /**
+     * @param array{0: class-string, 1: string} $handler
+     */
+    private function register(string $method, string $path, array $handler): void
+    {
+        $path = $this->normalize($path);
+
+        if (str_contains($path, '{') && str_contains($path, '}')) {
+            [$regex, $params] = $this->compileDynamic($path);
+            $this->dynamicRoutes[$method][] = [
+                'regex' => $regex,
+                'handler' => $handler,
+                'params' => $params,
+            ];
+            return;
+        }
+
+        $this->routes[$method][$path] = $handler;
+    }
+
+    /**
+     * @return array{0:string,1:list<string>}
+     */
+    private function compileDynamic(string $path): array
+    {
+        $params = [];
+        $regex = preg_replace_callback('/\{([a-zA-Z_][a-zA-Z0-9_]*)\}/', static function (array $m) use (&$params): string {
+            $params[] = $m[1];
+            return '(?P<' . $m[1] . '>[^/]+)';
+        }, preg_quote($path, '#'));
+
+        return ['#^' . $regex . '$#', $params];
+    }
+
+    /**
+     * @return array{0: class-string, 1: string}|null
+     */
+    private function matchDynamic(string $method, string $path): ?array
+    {
+        foreach ($this->dynamicRoutes[$method] as $route) {
+            if (!preg_match($route['regex'], $path, $m)) {
+                continue;
+            }
+            foreach ($route['params'] as $p) {
+                if (isset($m[$p])) {
+                    $_GET[$p] = $m[$p];
+                }
+            }
+            return $route['handler'];
+        }
+        return null;
     }
 
     private function normalize(string $path): string
