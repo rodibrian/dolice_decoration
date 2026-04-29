@@ -158,5 +158,43 @@ final class Project
         $stmt = $pdo->prepare('DELETE FROM project_images WHERE id = :id');
         $stmt->execute(['id' => $imageId]);
     }
+
+    /**
+     * @param list<int> $projectIds
+     * @return array<int, string>
+     */
+    public static function firstImagesByProjectIds(array $projectIds): array
+    {
+        if ($projectIds === []) {
+            return [];
+        }
+
+        $ids = array_values(array_unique(array_map(static fn ($id): int => (int)$id, $projectIds)));
+        if ($ids === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $pdo = DB::pdo();
+        $stmt = $pdo->prepare(
+            "SELECT pi.project_id, pi.image_path
+             FROM project_images pi
+             INNER JOIN (
+                 SELECT project_id, MIN(id) AS min_id
+                 FROM project_images
+                 WHERE project_id IN ($placeholders)
+                 GROUP BY project_id
+             ) first_img ON first_img.min_id = pi.id"
+        );
+        $stmt->execute($ids);
+        /** @var list<array{project_id:mixed,image_path:mixed}> $rows */
+        $rows = $stmt->fetchAll();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(int)$row['project_id']] = (string)$row['image_path'];
+        }
+        return $map;
+    }
 }
 

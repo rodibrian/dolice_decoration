@@ -38,7 +38,7 @@
     <div class="row g-4">
       <?php foreach ($projects as $p): ?>
         <div class="col-md-6 col-lg-4" data-aos="fade-up">
-          <a class="text-decoration-none" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations/' . (string)$p['slug'], ENT_QUOTES, 'UTF-8') ?>">
+          <a class="text-decoration-none" data-project-modal="1" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations/' . (string)$p['slug'], ENT_QUOTES, 'UTF-8') ?>">
             <div class="card card-hover h-100">
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start gap-2">
@@ -51,7 +51,16 @@
                     <span class="badge text-bg-warning"><i class="bi bi-star-fill me-1"></i>Vedette</span>
                   <?php endif; ?>
                 </div>
-                <div class="mt-3 skeleton" style="height:160px"></div>
+                <?php if (!empty($p['cover_image'])): ?>
+                  <img
+                    class="image-cover mt-3"
+                    style="height:160px"
+                    src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . (string)$p['cover_image'], ENT_QUOTES, 'UTF-8') ?>"
+                    alt="<?= htmlspecialchars((string)$p['title'], ENT_QUOTES, 'UTF-8') ?>"
+                  >
+                <?php else: ?>
+                  <div class="image-cover mt-3 skeleton" style="height:160px"></div>
+                <?php endif; ?>
               </div>
             </div>
           </a>

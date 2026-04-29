@@ -84,6 +84,46 @@
     <?= $content ?>
   </main>
 
+  <!-- Project details modal -->
+  <div class="modal fade" id="projectDetailsModal" tabindex="-1" aria-labelledby="projectDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+      <div class="modal-content rounded-4 overflow-hidden">
+        <div class="modal-header">
+          <h5 class="modal-title" id="projectDetailsModalLabel">Réalisation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-4">
+            <div class="col-lg-7">
+              <div class="ratio ratio-16x9 bg-light rounded-4 overflow-hidden border">
+                <div class="d-flex align-items-center justify-content-center w-100 h-100 skeleton" data-project-modal-skeleton></div>
+                <div id="projectModalCarouselWrap" class="w-100 h-100 d-none" data-project-modal-carousel-wrap></div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="d-flex align-items-start justify-content-between gap-3">
+                <div>
+                  <div class="text-secondary small mb-1" data-project-modal-meta></div>
+                  <h3 class="h4 mb-2" data-project-modal-title></h3>
+                </div>
+              </div>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge text-bg-light border" data-project-modal-badge-category></span>
+                <span class="badge text-bg-light border" data-project-modal-badge-type></span>
+                <span class="badge text-bg-light border" data-project-modal-badge-date></span>
+              </div>
+              <div class="text-secondary" style="white-space:pre-wrap" data-project-modal-description></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-2"></i>Voir tout</a>
+          <button type="button" class="btn btn-brand" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <footer class="pt-5 pb-4 mt-5">
     <div class="container">
       <div class="row g-4">

@@ -16,6 +16,18 @@ final class HomeController extends BaseController
     {
         $services = Service::published(6);
         $projects = Project::published(6);
+        $projectImageMap = Project::firstImagesByProjectIds(array_map(
+            static fn (array $p): int => (int)($p['id'] ?? 0),
+            $projects
+        ));
+        $projects = array_map(
+            static function (array $project) use ($projectImageMap): array {
+                $id = (int)($project['id'] ?? 0);
+                $project['cover_image'] = $projectImageMap[$id] ?? null;
+                return $project;
+            },
+            $projects
+        );
         $posts = Post::published(3);
 
         // Testimonials approved (lightweight query here for v1)
