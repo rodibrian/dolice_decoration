@@ -50,6 +50,11 @@ $get = static function (string $k) use ($settings): string {
         Instagram (url)
         <input type="text" name="instagram" value="<?= htmlspecialchars($get('instagram'), ENT_QUOTES, 'UTF-8') ?>">
       </label>
+      <label>
+        Image de cover accueil (hero)
+        <input type="text" name="hero_cover_image" placeholder="/uploads/2151892472.jpg" value="<?= htmlspecialchars($get('hero_cover_image'), ENT_QUOTES, 'UTF-8') ?>">
+        <small class="muted">Chemin public ou URL. Exemple: <code>/uploads/2151892472.jpg</code></small>
+      </label>
     </div>
     <button class="btn primary" type="submit">Enregistrer</button>
   </form>

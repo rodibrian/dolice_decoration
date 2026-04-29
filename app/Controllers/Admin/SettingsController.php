@@ -39,6 +39,7 @@ final class SettingsController extends BaseController
             'service_area',
             'facebook',
             'instagram',
+            'hero_cover_image',
         ];
 
         foreach ($keys as $k) {

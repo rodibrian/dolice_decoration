@@ -4,8 +4,18 @@
 /** @var list<array<string, mixed>> $projects */
 /** @var list<array<string, mixed>> $posts */
 /** @var list<array<string, mixed>> $testimonials */
+/** @var array<string, string|null> $settings */
+
+$heroCoverRaw = trim((string)($settings['hero_cover_image'] ?? ''));
+if ($heroCoverRaw === '') {
+    $heroCoverRaw = '/uploads/2151892472.jpg';
+}
+$isAbsoluteCover = preg_match('#^https?://#i', $heroCoverRaw) === 1;
+$heroCoverUrl = $isAbsoluteCover
+    ? $heroCoverRaw
+    : (rtrim((string)(env('APP_URL', '') ?: ''), '/') . '/' . ltrim($heroCoverRaw, '/'));
 ?>
-<header class="hero py-5">
+<header class="hero hero-fullscreen py-5" style="--hero-cover:url('<?= htmlspecialchars($heroCoverUrl, ENT_QUOTES, 'UTF-8') ?>')">
   <div class="container py-3">
     <div class="row align-items-center g-4">
       <div class="col-lg-7" data-aos="fade-up">
