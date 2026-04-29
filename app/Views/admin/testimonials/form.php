@@ -9,7 +9,7 @@ $status = (string)($testimonial['status'] ?? 'pending');
 
 <section class="card">
   <div class="row between">
-    <h1><?= $isEdit ? 'Modifier' : 'Nouveau' ?> témoignage</h1>
+    <h1 class="page-title"><span class="page-icon">💬</span><?= $isEdit ? 'Modifier' : 'Nouveau' ?> témoignage</h1>
     <a class="btn" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/testimonials', ENT_QUOTES, 'UTF-8') ?>">Retour</a>
   </div>
 

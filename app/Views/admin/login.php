@@ -6,7 +6,7 @@ $demoEmail = $isLocal ? 'admin@dolice.local' : '';
 $demoPassword = $isLocal ? 'Admin@1234' : '';
 ?>
 <section class="card">
-  <h1>Connexion</h1>
+  <h1 class="page-title"><span class="page-icon">🔐</span>Connexion</h1>
 
   <?php if (!empty($error)): ?>
     <div class="alert"><?= htmlspecialchars((string)$error, ENT_QUOTES, 'UTF-8') ?></div>

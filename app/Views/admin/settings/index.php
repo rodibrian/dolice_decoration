@@ -9,7 +9,7 @@ $get = static function (string $k) use ($settings): string {
 ?>
 <section class="card">
   <div class="row between">
-    <h1>Paramètres</h1>
+    <h1 class="page-title"><span class="page-icon">⚙️</span>Paramètres</h1>
   </div>
 
   <?php if (!empty($flash)): ?>

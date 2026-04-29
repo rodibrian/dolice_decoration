@@ -7,7 +7,7 @@ $status = (string)($message['status'] ?? 'new');
 ?>
 <section class="card">
   <div class="row between">
-    <h1>Message #<?= (int)$message['id'] ?></h1>
+    <h1 class="page-title"><span class="page-icon">✉️</span>Message #<?= (int)$message['id'] ?></h1>
     <a class="btn" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/messages', ENT_QUOTES, 'UTF-8') ?>">Retour</a>
   </div>
 

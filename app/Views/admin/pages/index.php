@@ -4,7 +4,7 @@
 ?>
 <section class="card">
   <div class="row between">
-    <h1>Pages</h1>
+    <h1 class="page-title"><span class="page-icon">🧾</span>Pages</h1>
   </div>
 
   <?php if (!empty($flash)): ?>
@@ -13,8 +13,12 @@
 
   <p class="muted">Clés recommandées: <code>about</code>, <code>faq</code>, <code>contact</code>, <code>zones</code>, <code>legal</code></p>
 
+  <div data-table-filter>
+    <div class="crud-toolbar">
+      <input class="form-control" type="search" placeholder="Rechercher une page..." data-filter-text>
+    </div>
   <div class="table-wrap">
-    <table class="table">
+    <table class="table table-hover align-middle">
       <thead>
       <tr>
         <th>Clé</th>
@@ -27,7 +31,7 @@
         <tr><td colspan="3" class="muted">Aucune page. Tu peux en créer via l’URL d’édition (ex: about).</td></tr>
       <?php else: ?>
         <?php foreach ($pages as $p): ?>
-          <tr>
+          <tr data-row data-search="<?= htmlspecialchars(strtolower((string)$p['page_key'] . ' ' . (string)$p['title']), ENT_QUOTES, 'UTF-8') ?>">
             <td class="muted"><?= htmlspecialchars((string)$p['page_key'], ENT_QUOTES, 'UTF-8') ?></td>
             <td><?= htmlspecialchars((string)$p['title'], ENT_QUOTES, 'UTF-8') ?></td>
             <td class="actions">
@@ -38,6 +42,7 @@
       <?php endif; ?>
       </tbody>
     </table>
+  </div>
   </div>
 
   <div class="row gap" style="margin-top:12px">

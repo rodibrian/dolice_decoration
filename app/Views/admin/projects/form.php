@@ -9,7 +9,7 @@ $action = $isEdit ? '/admin/projects/update' : '/admin/projects/store';
 
 <section class="card">
   <div class="row between">
-    <h1><?= $isEdit ? 'Modifier' : 'Nouvelle' ?> réalisation</h1>
+    <h1 class="page-title"><span class="page-icon">🏗</span><?= $isEdit ? 'Modifier' : 'Nouvelle' ?> réalisation</h1>
     <a class="btn" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/projects', ENT_QUOTES, 'UTF-8') ?>">Retour</a>
   </div>
 
@@ -85,7 +85,7 @@ $action = $isEdit ? '/admin/projects/update' : '/admin/projects/store';
 
   <?php if ($isEdit): ?>
     <hr class="sep">
-    <h2>Images</h2>
+    <h2 class="page-title"><span class="page-icon">🖼</span>Images</h2>
     <?php if (empty($images)): ?>
       <p class="muted">Aucune image.</p>
     <?php else: ?>

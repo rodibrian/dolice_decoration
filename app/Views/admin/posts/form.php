@@ -9,7 +9,7 @@ $status = (string)($post['status'] ?? 'draft');
 
 <section class="card">
   <div class="row between">
-    <h1><?= $isEdit ? 'Modifier' : 'Nouvel' ?> article</h1>
+    <h1 class="page-title"><span class="page-icon">📰</span><?= $isEdit ? 'Modifier' : 'Nouvel' ?> article</h1>
     <a class="btn" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/posts', ENT_QUOTES, 'UTF-8') ?>">Retour</a>
   </div>
 

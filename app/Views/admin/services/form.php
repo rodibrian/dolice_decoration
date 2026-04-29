@@ -8,7 +8,7 @@ $action = $isEdit ? '/admin/services/update' : '/admin/services/store';
 
 <section class="card">
   <div class="row between">
-    <h1><?= $isEdit ? 'Modifier' : 'Nouveau' ?> service</h1>
+    <h1 class="page-title"><span class="page-icon">🛠</span><?= $isEdit ? 'Modifier' : 'Nouveau' ?> service</h1>
     <a class="btn" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/services', ENT_QUOTES, 'UTF-8') ?>">Retour</a>
   </div>
 

@@ -7,7 +7,7 @@ $status = (string)($quote['status'] ?? 'new');
 ?>
 <section class="card">
   <div class="row between">
-    <h1>Devis #<?= (int)$quote['id'] ?></h1>
+    <h1 class="page-title"><span class="page-icon">📄</span>Devis #<?= (int)$quote['id'] ?></h1>
     <a class="btn" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/quotes', ENT_QUOTES, 'UTF-8') ?>">Retour</a>
   </div>
 

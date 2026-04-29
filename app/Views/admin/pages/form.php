@@ -4,7 +4,7 @@
 ?>
 <section class="card">
   <div class="row between">
-    <h1>Éditer page: <?= htmlspecialchars((string)$page['page_key'], ENT_QUOTES, 'UTF-8') ?></h1>
+    <h1 class="page-title"><span class="page-icon">🧾</span>Éditer page: <?= htmlspecialchars((string)$page['page_key'], ENT_QUOTES, 'UTF-8') ?></h1>
     <a class="btn" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/pages', ENT_QUOTES, 'UTF-8') ?>">Retour</a>
   </div>
 
