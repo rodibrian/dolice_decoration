@@ -34,9 +34,30 @@ final class PagesPublicController extends BaseController
 
         $page = Page::findByKey($key);
         if ($page === null) {
-            http_response_code(404);
-            echo '404';
-            return;
+            // Public fallback pages for first run when DB content is not seeded yet.
+            $fallbackTitles = [
+                'about' => 'Notre histoire',
+                'faq' => 'FAQ',
+                'contact' => 'Contact',
+            ];
+
+            if (!isset($fallbackTitles[$key])) {
+                http_response_code(404);
+                echo '404';
+                return;
+            }
+
+            $fallbackContents = [
+                'about' => "Nous construisons des espaces durables, soignés et fonctionnels. Notre équipe accompagne chaque client avec sérieux, du besoin initial à la livraison.",
+                'faq' => "Questions fréquentes:\n\n- Quels travaux réalisez-vous ?\n- Quels sont vos délais moyens ?\n- Comment demander un devis ?\n- Quelles zones couvrez-vous ?\n\nPour une réponse personnalisée, utilisez le formulaire de contact.",
+                'contact' => "Vous pouvez nous contacter via le formulaire ci-dessous pour toute demande d'information ou de devis.",
+            ];
+
+            $page = [
+                'page_key' => $key,
+                'title' => $fallbackTitles[$key],
+                'content' => $fallbackContents[$key],
+            ];
         }
 
         $this->view('pages.show', [
