@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/assets/site.css', ENT_QUOTES, 'UTF-8') ?>">
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-blur sticky-top">
+  <nav class="navbar navbar-expand-lg navbar-blur">
     <div class="container py-2">
       <a class="navbar-brand fw-bold" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">
         <i class="bi bi-buildings text-brand me-2"></i>Dolice Decoration

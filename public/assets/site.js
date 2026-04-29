@@ -40,10 +40,36 @@
     });
   }
 
+  function initNavbarScroll() {
+    var nav = document.querySelector('.navbar-blur');
+    if (!nav) return;
+
+    var maxScroll = 180;
+    var ticking = false;
+
+    function applyNavState() {
+      var y = window.scrollY || window.pageYOffset || 0;
+      var progress = Math.min(Math.max(y / maxScroll, 0), 1);
+      nav.style.setProperty('--nav-progress', String(progress));
+      nav.classList.toggle('is-scrolled', y > 8);
+      ticking = false;
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(applyNavState);
+    }
+
+    applyNavState();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
   window.addEventListener('DOMContentLoaded', function () {
     initAOS();
     initCounters();
     initBootstrapUX();
+    initNavbarScroll();
 
     initGlide('#glideTestimonials', {
       type: 'carousel',

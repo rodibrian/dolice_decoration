@@ -47,7 +47,7 @@ $isActive = static function (string $prefix) use ($uri): string {
     </nav>
   </header>
 
-  <main class="container py-4">
+  <main class="container-fluid py-4 px-3 px-lg-4">
     <div class="row">
       <div class="col-12">
         <?= $content ?>

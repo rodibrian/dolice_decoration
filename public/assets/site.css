@@ -11,6 +11,25 @@
 html{scroll-behavior:smooth}
 body{font-family:var(--font-base)}
 
+/* Navbar overlays hero cover (shared background feeling) */
+.navbar.navbar-blur{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  width:100%;
+  z-index:1030; /* Bootstrap navbar default */
+}
+.site-main{
+  /* Reserve space for fixed navbar on all pages */
+  padding-top:76px;
+}
+/* On pages where hero is first, pull it under the navbar */
+.site-main > .hero:first-child{
+  margin-top:-76px;
+  padding-top:76px;
+}
+
 /* Full-width responsive layout with adaptive gutters */
 .container,
 .container-sm,
@@ -25,9 +44,31 @@ body{font-family:var(--font-base)}
 }
 
 .navbar-blur{
-  background:rgba(255,255,255,.86);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid rgba(0,0,0,.06);
+  --nav-progress:0;
+  --nav-y:calc(12px * (1 - var(--nav-progress)));
+  --nav-py:calc(.85rem - (.28rem * var(--nav-progress)));
+  --nav-bg-alpha:calc(.04 + (.88 * var(--nav-progress)));
+  --nav-blur:calc(4px + (12px * var(--nav-progress)));
+  background:rgba(255,255,255,var(--nav-bg-alpha));
+  backdrop-filter:blur(var(--nav-blur));
+  border-bottom:1px solid rgba(0,0,0,calc(.02 + (.08 * var(--nav-progress))));
+  transform:translateY(var(--nav-y));
+  transition:background-color .22s ease,border-color .22s ease,backdrop-filter .22s ease,transform .22s ease;
+}
+.navbar-blur .container{
+  padding-top:var(--nav-py) !important;
+  padding-bottom:var(--nav-py) !important;
+  transition:padding .22s ease;
+}
+.navbar-blur .navbar-brand{
+  font-size:calc(1.1rem - (.09rem * var(--nav-progress)));
+  transition:font-size .22s ease;
+}
+.navbar-blur .btn{
+  transition:transform .22s ease;
+}
+.navbar-blur.is-scrolled .btn{
+  transform:scale(.97);
 }
 .navbar .nav-link{
   color:rgba(0,0,0,.68);

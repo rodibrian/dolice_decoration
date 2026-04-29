@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Core\Auth;
+use App\Core\Upload;
 use App\Models\Setting;
 
 final class SettingsController extends BaseController
@@ -39,13 +40,21 @@ final class SettingsController extends BaseController
             'service_area',
             'facebook',
             'instagram',
-            'hero_cover_image',
         ];
 
         foreach ($keys as $k) {
             $v = trim((string)($_POST[$k] ?? ''));
             Setting::set($k, $v === '' ? null : $v);
         }
+
+        $heroCoverImage = trim((string)($_POST['hero_cover_image'] ?? ''));
+        if (isset($_FILES['hero_cover_file']) && is_array($_FILES['hero_cover_file'])) {
+            $uploadedPath = Upload::storeImage($_FILES['hero_cover_file']);
+            if ($uploadedPath !== null) {
+                $heroCoverImage = $uploadedPath;
+            }
+        }
+        Setting::set('hero_cover_image', $heroCoverImage === '' ? null : $heroCoverImage);
 
         $_SESSION['flash_success'] = "Paramètres enregistrés.";
         $this->redirect('/admin/settings');
