@@ -27,6 +27,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide@3.6.0/dist/css/glide.theme.min.css">
   <!-- Site theme -->
   <link rel="stylesheet" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/assets/site.css', ENT_QUOTES, 'UTF-8') ?>">
+  <meta name="app-base" content="<?= htmlspecialchars((string)(env('APP_URL', '') ?: ''), ENT_QUOTES, 'UTF-8') ?>">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-blur">
@@ -119,6 +120,78 @@
         <div class="modal-footer">
           <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-2"></i>Voir tout</a>
           <button type="button" class="btn btn-brand" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Service details modal -->
+  <div class="modal fade" id="serviceDetailsModal" tabindex="-1" aria-labelledby="serviceDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+      <div class="modal-content rounded-4 overflow-hidden">
+        <div class="modal-header">
+          <h5 class="modal-title" id="serviceDetailsModalLabel">Service</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-4">
+            <div class="col-lg-7">
+              <div class="ratio ratio-16x9 bg-light rounded-4 overflow-hidden border">
+                <div class="d-flex align-items-center justify-content-center w-100 h-100 skeleton" data-service-modal-skeleton></div>
+                <img class="w-100 h-100 d-none" style="object-fit:cover" alt="" data-service-modal-image>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="d-flex align-items-start justify-content-between gap-3">
+                <div>
+                  <div class="text-secondary small mb-1" data-service-modal-meta></div>
+                  <h3 class="h4 mb-2" data-service-modal-title></h3>
+                </div>
+              </div>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge text-bg-light border d-none" data-service-modal-badge-category></span>
+              </div>
+              <div class="text-secondary" style="white-space:pre-wrap" data-service-modal-description></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-tools me-2"></i>Voir tout</a>
+          <a class="btn btn-brand d-none" data-service-modal-open-page href="#"><i class="bi bi-box-arrow-up-right me-2"></i>Ouvrir la page</a>
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blog post details modal -->
+  <div class="modal fade" id="postDetailsModal" tabindex="-1" aria-labelledby="postDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+      <div class="modal-content rounded-4 overflow-hidden">
+        <div class="modal-header">
+          <h5 class="modal-title" id="postDetailsModalLabel">Article</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-4">
+            <div class="col-lg-7">
+              <div class="ratio ratio-16x9 bg-light rounded-4 overflow-hidden border">
+                <div class="d-flex align-items-center justify-content-center w-100 h-100 skeleton" data-post-modal-skeleton></div>
+                <img class="w-100 h-100 d-none" style="object-fit:cover" alt="" data-post-modal-image>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="text-secondary small mb-2" data-post-modal-meta></div>
+              <h3 class="h4 mb-3" data-post-modal-title></h3>
+              <div class="text-secondary mb-3" data-post-modal-excerpt></div>
+              <div class="text-secondary" style="white-space:pre-wrap" data-post-modal-content></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-newspaper me-2"></i>Voir tout</a>
+          <a class="btn btn-brand d-none" data-post-modal-open-page href="#"><i class="bi bi-box-arrow-up-right me-2"></i>Ouvrir la page</a>
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fermer</button>
         </div>
       </div>
     </div>

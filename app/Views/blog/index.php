@@ -24,7 +24,7 @@
     <div class="row g-4">
       <?php foreach ($posts as $p): ?>
         <div class="col-md-6 col-lg-4" data-aos="fade-up">
-          <a class="text-decoration-none" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog/' . (string)$p['slug'], ENT_QUOTES, 'UTF-8') ?>">
+          <a class="text-decoration-none" data-post-modal="1" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog/' . (string)$p['slug'], ENT_QUOTES, 'UTF-8') ?>">
             <div class="card card-hover h-100">
               <?php if (!empty($p['featured_image'])): ?>
                 <img class="card-img-top" style="height:190px;object-fit:cover" src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . (string)$p['featured_image'], ENT_QUOTES, 'UTF-8') ?>" alt="">

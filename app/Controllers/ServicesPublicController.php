@@ -7,6 +7,15 @@ use App\Models\Service;
 
 final class ServicesPublicController extends BaseController
 {
+    /**
+     * @return string
+     */
+    private function appUrlBase(): string
+    {
+        $base = (string)(env('APP_URL', '') ?: '');
+        return rtrim($base, '/');
+    }
+
     public function index(): void
     {
         $this->view('services.index', [
@@ -22,6 +31,28 @@ final class ServicesPublicController extends BaseController
         if ($service === null || (int)($service['is_published'] ?? 0) !== 1) {
             http_response_code(404);
             echo '404';
+            return;
+        }
+
+        $isModal = isset($_GET['modal']) && (string)$_GET['modal'] === '1';
+        if ($isModal) {
+            $base = $this->appUrlBase();
+            $img = trim((string)($service['image_path'] ?? ''));
+            $imgUrl = '';
+            if ($img !== '') {
+                $imgUrl = (preg_match('#^https?://#i', $img) === 1) ? $img : ($base . '/' . ltrim($img, '/'));
+            }
+
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'service' => [
+                    'title' => (string)($service['title'] ?? ''),
+                    'slug' => (string)($service['slug'] ?? ''),
+                    'category' => (string)($service['category'] ?? ''),
+                    'description' => (string)($service['description'] ?? ''),
+                    'image' => $imgUrl,
+                ],
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             return;
         }
 

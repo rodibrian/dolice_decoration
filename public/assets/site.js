@@ -4,6 +4,102 @@
    - Glide: sliders for testimonials/portfolio when present */
 
 (function () {
+  function getAppBase() {
+    var meta = document.querySelector('meta[name="app-base"]');
+    var base = (meta && meta.getAttribute('content')) || '';
+    base = (base || '').trim();
+    if (base !== '' && base.endsWith('/')) base = base.slice(0, -1);
+    return base;
+  }
+
+  function resolveHref(href) {
+    var h = (href || '').trim();
+    if (h === '') return h;
+    // Absolute URL
+    if (/^https?:\/\//i.test(h)) return h;
+
+    var base = getAppBase();
+    if (base === '') return h; // fallback: keep as-is
+
+    // Root-relative path (/services/x)
+    if (h.startsWith('/')) return base + h;
+
+    // Relative path (services/x)
+    return base + '/' + h;
+  }
+
+  function buildFallbackUrl(fullUrl) {
+    // When mod_rewrite is disabled, pretty URLs 404.
+    // Fallback: {APP_BASE}/index.php?path=/route
+    var base = getAppBase();
+    if (base === '') return null;
+
+    var basePath = '';
+    try {
+      basePath = new URL(base).pathname || '';
+    } catch (e) {
+      basePath = '';
+    }
+
+    var routePath = fullUrl.pathname || '/';
+    if (basePath && routePath.toLowerCase().startsWith(basePath.toLowerCase())) {
+      routePath = routePath.slice(basePath.length) || '/';
+    }
+    if (!routePath.startsWith('/')) routePath = '/' + routePath;
+
+    var fb = new URL(base + '/index.php', window.location.href);
+    fb.searchParams.set('path', routePath);
+    // Keep any existing query params except modal (we'll set it later).
+    fullUrl.searchParams.forEach(function (v, k) {
+      if (k === 'modal') return;
+      fb.searchParams.set(k, v);
+    });
+    return fb;
+  }
+
+  async function fetchJsonWithRewriteFallback(fullUrl) {
+    var res = await fetch(fullUrl.toString(), { headers: { Accept: 'application/json' } });
+    if (res.status === 404) {
+      var fb = buildFallbackUrl(fullUrl);
+      if (fb) {
+        res = await fetch(fb.toString(), { headers: { Accept: 'application/json' } });
+      }
+    }
+    return res;
+  }
+
+  function safeText(el, value) {
+    if (!el) return;
+    el.textContent = value || '';
+  }
+
+  function setBadge(el, value) {
+    if (!el) return;
+    var v = (value || '').trim();
+    if (v === '') {
+      el.textContent = '';
+      el.classList.add('d-none');
+    } else {
+      el.textContent = v;
+      el.classList.remove('d-none');
+    }
+  }
+
+  function resetMedia(skeletonEl, imgEl) {
+    if (skeletonEl) skeletonEl.classList.remove('d-none');
+    if (imgEl) {
+      imgEl.classList.add('d-none');
+      imgEl.removeAttribute('src');
+    }
+  }
+
+  function showMedia(skeletonEl, imgEl, src) {
+    if (!imgEl) return;
+    if (skeletonEl) skeletonEl.classList.add('d-none');
+    imgEl.src = src;
+    imgEl.classList.remove('d-none');
+  }
+
   function initAOS() {
     if (!window.AOS) return;
     window.AOS.init({
@@ -166,11 +262,11 @@
       reset();
       modal.show();
 
-      var url = new URL(href, window.location.origin);
+      var url = new URL(resolveHref(href), window.location.href);
       url.searchParams.set('modal', '1');
 
       try {
-        var res = await fetch(url.toString(), { headers: { Accept: 'application/json' } });
+        var res = await fetchJsonWithRewriteFallback(url);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         var data = await res.json();
 
@@ -217,20 +313,169 @@
     });
   }
 
+  function initServiceModal() {
+    var modalEl = document.getElementById('serviceDetailsModal');
+    if (!modalEl || !window.bootstrap) return;
+    var modal = window.bootstrap.Modal.getOrCreateInstance(modalEl);
+
+    var titleEl = modalEl.querySelector('[data-service-modal-title]');
+    var metaEl = modalEl.querySelector('[data-service-modal-meta]');
+    var descEl = modalEl.querySelector('[data-service-modal-description]');
+    var badgeCategoryEl = modalEl.querySelector('[data-service-modal-badge-category]');
+    var skeletonEl = modalEl.querySelector('[data-service-modal-skeleton]');
+    var imgEl = modalEl.querySelector('[data-service-modal-image]');
+    var openPageEl = modalEl.querySelector('[data-service-modal-open-page]');
+
+    function reset() {
+      safeText(titleEl, '');
+      safeText(metaEl, '');
+      safeText(descEl, '');
+      setBadge(badgeCategoryEl, '');
+      resetMedia(skeletonEl, imgEl);
+      if (openPageEl) openPageEl.classList.add('d-none');
+    }
+
+    async function openFromHref(href) {
+      reset();
+      modal.show();
+
+      var url = new URL(resolveHref(href), window.location.href);
+      url.searchParams.set('modal', '1');
+
+      try {
+        var res = await fetchJsonWithRewriteFallback(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var data = await res.json();
+        var service = (data && data.service) || {};
+
+        safeText(titleEl, service.title || 'Service');
+        safeText(metaEl, 'Détails du service');
+        setBadge(badgeCategoryEl, service.category || '');
+        safeText(descEl, service.description || '');
+
+        if (service.image) {
+          showMedia(skeletonEl, imgEl, service.image);
+        } else {
+          resetMedia(skeletonEl, imgEl);
+        }
+
+        if (openPageEl) {
+          openPageEl.href = href;
+          openPageEl.classList.remove('d-none');
+        }
+      } catch (err) {
+        safeText(titleEl, 'Erreur de chargement');
+        safeText(descEl, "Impossible de charger les détails. Vérifie que le service existe.");
+      }
+    }
+
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('a[data-service-modal=\"1\"]');
+      if (!a) return;
+      var href = a.getAttribute('href');
+      if (!href) return;
+
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      openFromHref(href);
+    });
+  }
+
+  function initPostModal() {
+    var modalEl = document.getElementById('postDetailsModal');
+    if (!modalEl || !window.bootstrap) return;
+    var modal = window.bootstrap.Modal.getOrCreateInstance(modalEl);
+
+    var titleEl = modalEl.querySelector('[data-post-modal-title]');
+    var metaEl = modalEl.querySelector('[data-post-modal-meta]');
+    var excerptEl = modalEl.querySelector('[data-post-modal-excerpt]');
+    var contentEl = modalEl.querySelector('[data-post-modal-content]');
+    var skeletonEl = modalEl.querySelector('[data-post-modal-skeleton]');
+    var imgEl = modalEl.querySelector('[data-post-modal-image]');
+    var openPageEl = modalEl.querySelector('[data-post-modal-open-page]');
+
+    function reset() {
+      safeText(titleEl, '');
+      safeText(metaEl, '');
+      safeText(excerptEl, '');
+      safeText(contentEl, '');
+      resetMedia(skeletonEl, imgEl);
+      if (openPageEl) openPageEl.classList.add('d-none');
+    }
+
+    async function openFromHref(href) {
+      reset();
+      modal.show();
+
+      var url = new URL(resolveHref(href), window.location.href);
+      url.searchParams.set('modal', '1');
+
+      try {
+        var res = await fetchJsonWithRewriteFallback(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var data = await res.json();
+        var post = (data && data.post) || {};
+
+        safeText(titleEl, post.title || 'Article');
+        var metaParts = [];
+        if (post.published_at) metaParts.push(post.published_at);
+        if (post.author) metaParts.push(post.author);
+        safeText(metaEl, metaParts.join(' • '));
+        safeText(excerptEl, post.excerpt || '');
+
+        // Keep it readable in a modal: excerpt + a slice of content if very long
+        var content = post.content || '';
+        if (content.length > 900) content = content.slice(0, 900) + '…';
+        safeText(contentEl, content);
+
+        if (post.image) {
+          showMedia(skeletonEl, imgEl, post.image);
+        } else {
+          resetMedia(skeletonEl, imgEl);
+        }
+
+        if (openPageEl) {
+          openPageEl.href = href;
+          openPageEl.classList.remove('d-none');
+        }
+      } catch (err) {
+        safeText(titleEl, 'Erreur de chargement');
+        safeText(contentEl, "Impossible de charger les détails. Vérifie que l'article existe.");
+      }
+    }
+
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('a[data-post-modal=\"1\"]');
+      if (!a) return;
+      var href = a.getAttribute('href');
+      if (!href) return;
+
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      openFromHref(href);
+    });
+  }
+
   window.addEventListener('DOMContentLoaded', function () {
     initAOS();
     initCounters();
     initBootstrapUX();
     initNavbarScroll();
     initProjectModal();
+    initServiceModal();
+    initPostModal();
 
     initGlide('#glideTestimonials', {
       type: 'carousel',
-      perView: 2,
-      gap: 16,
-      autoplay: 3500,
+      perView: 3,
+      focusAt: 'center',
+      gap: 18,
+      autoplay: 3800,
       hoverpause: true,
+      animationDuration: 650,
+      rewind: true,
       breakpoints: {
+        1200: { perView: 2 },
         992: { perView: 1 },
       },
     });

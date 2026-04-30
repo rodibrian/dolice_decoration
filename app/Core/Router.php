@@ -32,7 +32,12 @@ final class Router
     public function dispatch(): void
     {
         $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
-        $path = $this->normalize(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/');
+        $overridePath = trim((string)($_GET['path'] ?? ''));
+        if ($overridePath !== '') {
+            $path = $this->normalize($overridePath);
+        } else {
+            $path = $this->normalize(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/');
+        }
 
         // Strip the front-controller directory (portable across /public, subfolders, vhosts, etc.)
         $scriptName = (string)($_SERVER['SCRIPT_NAME'] ?? '');
@@ -90,10 +95,34 @@ final class Router
     private function compileDynamic(string $path): array
     {
         $params = [];
-        $regex = preg_replace_callback('/\{([a-zA-Z_][a-zA-Z0-9_]*)\}/', static function (array $m) use (&$params): string {
-            $params[] = $m[1];
-            return '(?P<' . $m[1] . '>[^/]+)';
-        }, preg_quote($path, '#'));
+        $regex = '';
+
+        if (preg_match_all('/\{([a-zA-Z_][a-zA-Z0-9_]*)\}/', $path, $matches, PREG_OFFSET_CAPTURE) !== 1) {
+            // No params: treat as static.
+            return ['#^' . preg_quote($path, '#') . '$#', $params];
+        }
+
+        $offset = 0;
+        foreach ($matches[1] as $i => $m) {
+            $name = (string)$m[0];
+            $full = $matches[0][$i][0];
+            $pos = (int)$matches[0][$i][1];
+
+            $literal = substr($path, $offset, $pos - $offset);
+            if ($literal !== '') {
+                $regex .= preg_quote($literal, '#');
+            }
+
+            $params[] = $name;
+            $regex .= '(?P<' . $name . '>[^/]+)';
+
+            $offset = $pos + strlen((string)$full);
+        }
+
+        $tail = substr($path, $offset);
+        if ($tail !== '') {
+            $regex .= preg_quote($tail, '#');
+        }
 
         return ['#^' . $regex . '$#', $params];
     }

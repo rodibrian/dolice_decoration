@@ -9,9 +9,41 @@ function env(string $key, ?string $default = null): ?string
 {
     $val = $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
     if ($val === false || $val === null || $val === '') {
+        if ($key === 'APP_URL') {
+            $derived = deriveAppUrlFromRequest();
+            if ($derived !== null) {
+                return $derived;
+            }
+        }
         return $default;
     }
     return (string)$val;
+}
+
+function deriveAppUrlFromRequest(): ?string
+{
+    if (PHP_SAPI === 'cli') {
+        return null;
+    }
+
+    $host = (string)($_SERVER['HTTP_HOST'] ?? '');
+    if ($host === '') {
+        $host = (string)($_SERVER['SERVER_NAME'] ?? '');
+    }
+    if ($host === '') {
+        return null;
+    }
+
+    $https = (string)($_SERVER['HTTPS'] ?? '');
+    $scheme = (!empty($https) && strtolower($https) !== 'off') ? 'https' : 'http';
+
+    $scriptName = str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? ''));
+    $basePath = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+    if ($basePath === '.') {
+        $basePath = '';
+    }
+
+    return $scheme . '://' . $host . $basePath;
 }
 
 function loadEnv(string $path): void

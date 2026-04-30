@@ -8,7 +8,6 @@ use App\Models\Project;
 use App\Models\Service;
 use App\Models\Setting;
 use App\Models\Testimonial;
-use App\Core\DB;
 
 final class HomeController extends BaseController
 {
@@ -30,10 +29,7 @@ final class HomeController extends BaseController
         );
         $posts = Post::published(3);
 
-        // Testimonials approved (lightweight query here for v1)
-        $pdo = DB::pdo();
-        $stmt = $pdo->query("SELECT * FROM testimonials WHERE status = 'approved' ORDER BY id DESC LIMIT 6");
-        $testimonials = $stmt->fetchAll();
+        $testimonials = Testimonial::approved(12);
 
         $this->view('home.index', [
             'title' => 'Dolice Decoration',

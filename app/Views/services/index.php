@@ -24,7 +24,7 @@
     <div class="row g-4">
       <?php foreach ($services as $s): ?>
         <div class="col-sm-6 col-lg-4" data-aos="fade-up">
-          <a class="text-decoration-none" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services/' . (string)$s['slug'], ENT_QUOTES, 'UTF-8') ?>">
+          <a class="text-decoration-none" data-service-modal="1" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services/' . (string)$s['slug'], ENT_QUOTES, 'UTF-8') ?>">
             <div class="card card-hover h-100">
               <?php if (!empty($s['image_path'])): ?>
                 <img class="card-img-top" style="height:180px;object-fit:cover" src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . (string)$s['image_path'], ENT_QUOTES, 'UTF-8') ?>" alt="">

@@ -114,7 +114,7 @@ $heroCoverUrl = $isAbsoluteCover
     <div class="row g-4">
       <?php foreach (($services ?? []) as $s): ?>
         <div class="col-sm-6 col-lg-4" data-aos="fade-up">
-          <a class="text-decoration-none" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services/' . (string)$s['slug'], ENT_QUOTES, 'UTF-8') ?>">
+          <a class="text-decoration-none" data-service-modal="1" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services/' . (string)$s['slug'], ENT_QUOTES, 'UTF-8') ?>">
             <div class="card card-hover h-100">
               <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between mb-2">
@@ -230,18 +230,47 @@ $heroCoverUrl = $isAbsoluteCover
         <div class="glide__track" data-glide-el="track">
           <ul class="glide__slides">
             <?php foreach ($testimonials as $t): ?>
+              <?php
+                $logoPathRaw = trim((string)($t['logo_path'] ?? ''));
+                $logoFileExists = false;
+                if ($logoPathRaw !== '') {
+                    $logoDiskPath = rtrim((string)PUBLIC_PATH, '/\\') . '/' . ltrim($logoPathRaw, '/\\');
+                    $logoFileExists = is_file($logoDiskPath);
+                }
+                $logoUrl = $logoFileExists ? (env('APP_URL', '') ?: '') . $logoPathRaw : '';
+                $company = trim((string)($t['client_company'] ?? ''));
+                $rating = (int)($t['rating'] ?? 0);
+                if ($rating < 0) $rating = 0;
+                if ($rating > 5) $rating = 5;
+              ?>
               <li class="glide__slide">
-                <div class="testimonial p-4 h-100">
-                  <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="fw-semibold"><?= htmlspecialchars((string)$t['client_name'], ENT_QUOTES, 'UTF-8') ?></div>
-                    <?php if (!empty($t['rating'])): ?>
-                      <div class="text-warning">
-                        <?php for ($i=0; $i < (int)$t['rating']; $i++): ?><i class="bi bi-star-fill"></i><?php endfor; ?>
+                <article class="testimonial-card p-4 h-100">
+                  <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                    <div class="d-flex align-items-center gap-3">
+                      <div class="testimonial-avatar">
+                        <?php if ($logoUrl !== ''): ?>
+                          <img src="<?= htmlspecialchars($logoUrl, ENT_QUOTES, 'UTF-8') ?>" alt="">
+                        <?php else: ?>
+                          <i class="bi bi-person-circle" aria-hidden="true"></i>
+                        <?php endif; ?>
+                      </div>
+                      <div class="min-w-0">
+                        <div class="fw-semibold text-truncate"><?= htmlspecialchars((string)$t['client_name'], ENT_QUOTES, 'UTF-8') ?></div>
+                        <?php if ($company !== ''): ?>
+                          <div class="text-secondary small text-truncate"><?= htmlspecialchars($company, ENT_QUOTES, 'UTF-8') ?></div>
+                        <?php endif; ?>
+                      </div>
+                    </div>
+
+                    <?php if ($rating > 0): ?>
+                      <div class="testimonial-stars text-warning flex-shrink-0" aria-label="<?= htmlspecialchars((string)$rating, ENT_QUOTES, 'UTF-8') ?> sur 5">
+                        <?php for ($i=0; $i < $rating; $i++): ?><i class="bi bi-star-fill"></i><?php endfor; ?>
                       </div>
                     <?php endif; ?>
                   </div>
-                  <div class="text-secondary" style="white-space:pre-wrap"><?= htmlspecialchars((string)$t['content'], ENT_QUOTES, 'UTF-8') ?></div>
-                </div>
+
+                  <div class="testimonial-quote text-secondary" style="white-space:pre-wrap"><?= htmlspecialchars((string)$t['content'], ENT_QUOTES, 'UTF-8') ?></div>
+                </article>
               </li>
             <?php endforeach; ?>
           </ul>
@@ -271,7 +300,7 @@ $heroCoverUrl = $isAbsoluteCover
       <div class="row g-4">
         <?php foreach ($posts as $post): ?>
           <div class="col-md-6 col-lg-4" data-aos="fade-up">
-            <a class="text-decoration-none" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog/' . (string)$post['slug'], ENT_QUOTES, 'UTF-8') ?>">
+            <a class="text-decoration-none" data-post-modal="1" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog/' . (string)$post['slug'], ENT_QUOTES, 'UTF-8') ?>">
               <div class="card card-hover h-100">
                 <div class="card-body">
                   <div class="text-secondary small mb-2"><i class="bi bi-calendar3 me-1"></i><?= htmlspecialchars((string)($post['published_at'] ?? ''), ENT_QUOTES, 'UTF-8') ?></div>

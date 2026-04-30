@@ -10,6 +10,20 @@ final class Testimonial
     /**
      * @return list<array<string, mixed>>
      */
+    public static function approved(int $limit = 12): array
+    {
+        $limit = max(1, min(50, $limit));
+        $pdo = DB::pdo();
+        $stmt = $pdo->prepare("SELECT * FROM testimonials WHERE status = 'approved' ORDER BY id DESC LIMIT {$limit}");
+        $stmt->execute();
+        /** @var list<array<string, mixed>> $rows */
+        $rows = $stmt->fetchAll();
+        return $rows;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
     public static function all(): array
     {
         $pdo = DB::pdo();
