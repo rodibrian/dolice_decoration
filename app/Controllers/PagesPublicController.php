@@ -6,6 +6,7 @@ namespace App\Controllers;
 use App\Models\Page;
 use App\Models\Setting;
 use App\Models\ContactMessage;
+use App\Services\EmailJs;
 
 final class PagesPublicController extends BaseController
 {
@@ -97,6 +98,32 @@ final class PagesPublicController extends BaseController
             'message' => $message,
             'status' => 'new',
         ]);
+
+        // EmailJS notification (optional)
+        try {
+            $toEmail = trim((string)(Setting::get('emailjs_to_email', '') ?? ''));
+            $toName = trim((string)(Setting::get('emailjs_to_name', '') ?? ''));
+            $createdAt = date('Y-m-d H:i');
+            $subj = ($subject ?? '') !== '' ? (string)$subject : 'Contact';
+            EmailJs::notifyContact([
+                'to_email' => $toEmail,
+                'to_name' => $toName,
+                'subject' => 'Nouveau message — ' . $name,
+                'type' => 'Contact',
+                'created_at' => $createdAt,
+                'quote_id' => '—',
+                'name' => $name,
+                'phone' => ($phone ?? '') !== '' ? (string)$phone : '—',
+                'email' => ($email ?? '') !== '' ? (string)$email : '—',
+                'project_type' => '—',
+                'services' => '—',
+                'contact_subject' => $subj,
+                'message' => $message !== '' ? $message : '—',
+                'source' => 'public_contact',
+            ]);
+        } catch (\Throwable $e) {
+            // ignore
+        }
 
         $_SESSION['flash_public'] = "Message envoyé. Merci !";
         $this->redirect('/contact');

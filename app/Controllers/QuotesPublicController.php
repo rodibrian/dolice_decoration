@@ -5,6 +5,8 @@ namespace App\Controllers;
 
 use App\Models\QuoteRequest;
 use App\Models\Service;
+use App\Models\Setting;
+use App\Services\EmailJs;
 
 final class QuotesPublicController extends BaseController
 {
@@ -79,6 +81,46 @@ final class QuotesPublicController extends BaseController
 
         if (!empty($serviceIds)) {
             QuoteRequest::addServiceItems($quoteId, $serviceIds);
+        }
+
+        // EmailJS notification (optional)
+        try {
+            $toEmail = trim((string)(Setting::get('emailjs_to_email', '') ?? ''));
+            $toName = trim((string)(Setting::get('emailjs_to_name', '') ?? ''));
+            $svcNames = [];
+            if (!empty($serviceIds)) {
+                $all = Service::published();
+                $map = [];
+                foreach ($all as $s) {
+                    $map[(int)($s['id'] ?? 0)] = (string)($s['title'] ?? '');
+                }
+                foreach ($serviceIds as $sid) {
+                    $t = trim((string)($map[(int)$sid] ?? ''));
+                    if ($t !== '') $svcNames[] = $t;
+                }
+            }
+            $servicesText = implode(', ', $svcNames);
+            if ($servicesText === '') $servicesText = '—';
+            $createdAt = date('Y-m-d H:i');
+
+            EmailJs::notifyQuote([
+                'to_email' => $toEmail,
+                'to_name' => $toName,
+                'subject' => 'Nouvelle demande de devis #' . (string)$quoteId . ' — ' . $name,
+                'type' => 'Devis',
+                'created_at' => $createdAt,
+                'quote_id' => (string)$quoteId,
+                'name' => $name,
+                'phone' => ($phone ?? '') !== '' ? (string)$phone : '—',
+                'email' => ($email ?? '') !== '' ? (string)$email : '—',
+                'project_type' => ($projectType ?? '') !== '' ? (string)$projectType : '—',
+                'services' => $servicesText,
+                'contact_subject' => '—',
+                'message' => ($message ?? '') !== '' ? (string)$message : '—',
+                'source' => 'public_quote',
+            ]);
+        } catch (\Throwable $e) {
+            // ignore
         }
 
         $_SESSION['flash_public'] = "Demande envoyée. Nous vous recontactons rapidement.";

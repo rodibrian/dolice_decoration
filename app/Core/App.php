@@ -26,6 +26,7 @@ use App\Controllers\Admin\LogsController;
 use App\Controllers\Admin\RolesController;
 use App\Controllers\Admin\HomeSettingsController;
 use App\Controllers\Admin\CompanySettingsController;
+use App\Controllers\Admin\NotificationsController;
 
 final class App
 {
@@ -134,6 +135,11 @@ final class App
         $router->post('/admin/home/update', [HomeSettingsController::class, 'update']);
         $router->get('/admin/company', [CompanySettingsController::class, 'index']);
         $router->post('/admin/company/update', [CompanySettingsController::class, 'update']);
+
+        // Admin - Notifications (EmailJS)
+        $router->get('/admin/notifications', [NotificationsController::class, 'index']);
+        $router->post('/admin/notifications/update', [NotificationsController::class, 'update']);
+        $router->post('/admin/notifications/test', [NotificationsController::class, 'test']);
 
         // Admin - Super admin
         $router->get('/admin/users', [UsersController::class, 'index']);

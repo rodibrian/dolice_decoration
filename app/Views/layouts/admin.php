@@ -101,6 +101,11 @@ $isActive = static function (string $prefix) use ($uri): string {
                 <i class="bi bi-building-gear"></i><span>Gérer Entreprise</span>
               </a>
             <?php endif; ?>
+            <?php if (\App\Core\Auth::can('notifications.view')): ?>
+              <a class="admin-nav-link <?= $isActive('/admin/notifications') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/notifications', ENT_QUOTES, 'UTF-8') ?>">
+                <i class="bi bi-bell"></i><span>Notifications</span>
+              </a>
+            <?php endif; ?>
             <?php if (\App\Core\Auth::can('pages.view')): ?>
               <a class="admin-nav-link <?= $isActive('/admin/pages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/pages', ENT_QUOTES, 'UTF-8') ?>">
                 <i class="bi bi-file-text"></i><span>Pages</span>
@@ -208,6 +213,9 @@ $isActive = static function (string $prefix) use ($uri): string {
           <?php if (\App\Core\Auth::can('settings.view')): ?>
             <a class="admin-nav-link <?= $isActive('/admin/home') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/home', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-house-gear"></i><span>Gérer Accueil</span></a>
             <a class="admin-nav-link <?= $isActive('/admin/company') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/company', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-building-gear"></i><span>Gérer Entreprise</span></a>
+          <?php endif; ?>
+          <?php if (\App\Core\Auth::can('notifications.view')): ?>
+            <a class="admin-nav-link <?= $isActive('/admin/notifications') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/notifications', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-bell"></i><span>Notifications</span></a>
           <?php endif; ?>
           <?php if (\App\Core\Auth::can('pages.view')): ?>
             <a class="admin-nav-link <?= $isActive('/admin/pages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/pages', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-file-text"></i><span>Pages</span></a>

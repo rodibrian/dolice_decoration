@@ -63,6 +63,10 @@ final class Auth
                 'settings.view' => 'Voir paramètres',
                 'settings.update' => 'Modifier paramètres',
             ],
+            'Notifications' => [
+                'notifications.view' => 'Voir la config notifications (EmailJS)',
+                'notifications.update' => 'Modifier la config notifications (EmailJS)',
+            ],
             'Super admin' => [
                 'admin.super' => 'Accès super admin (utilisateurs, rôles, logs)',
             ],
@@ -89,6 +93,7 @@ final class Auth
                 'hero_slides.view', 'hero_slides.create', 'hero_slides.update', 'hero_slides.delete',
                 'pages.view', 'pages.update',
                 'settings.view', 'settings.update',
+                'notifications.view', 'notifications.update',
             ],
         ];
     }
