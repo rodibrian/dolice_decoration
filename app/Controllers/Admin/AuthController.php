@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Core\Auth;
+use App\Models\Setting;
 
 final class AuthController extends BaseController
 {
@@ -14,10 +15,21 @@ final class AuthController extends BaseController
             $this->redirect('/admin');
         }
 
+        $settings = Setting::allKeyed();
+        $heroCoverRaw = trim((string)($settings['hero_cover_image'] ?? ''));
+        if ($heroCoverRaw === '') {
+            $heroCoverRaw = '/uploads/2151892472.jpg';
+        }
+        $isAbsoluteCover = preg_match('#^https?://#i', $heroCoverRaw) === 1;
+        $heroCoverUrl = $isAbsoluteCover
+            ? $heroCoverRaw
+            : (rtrim((string)(env('APP_URL', '') ?: ''), '/') . '/' . ltrim($heroCoverRaw, '/'));
+
         $this->view('admin.login', [
             'title' => 'Connexion admin',
             'error' => $_SESSION['flash_error'] ?? null,
-        ], 'layouts/admin');
+            'heroCoverUrl' => $heroCoverUrl,
+        ], 'layouts/admin_auth');
 
         unset($_SESSION['flash_error']);
     }
