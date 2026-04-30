@@ -1,4 +1,14 @@
 <?php /** @var array<string, mixed> $service */ ?>
+<?php
+$showPrice = (int)($service['show_price'] ?? 0) === 1;
+$basePrice = $service['base_price'] ?? null;
+$priceUnit = trim((string)($service['price_unit'] ?? ''));
+$priceLabel = trim((string)($service['price_label'] ?? '')) ?: 'À partir de';
+$priceText = '';
+if ($showPrice && $basePrice !== null && $basePrice !== '') {
+    $priceText = $priceLabel . ' ' . number_format((float)$basePrice, 0, ',', ' ') . ' Ar' . ($priceUnit !== '' ? (' ' . $priceUnit) : '');
+}
+?>
 <div class="page-header py-4">
   <div class="container">
     <nav aria-label="breadcrumb">
@@ -13,6 +23,11 @@
       <div>
         <h1 class="display-6 fw-bold mb-1 section-title"><?= htmlspecialchars((string)$service['title'], ENT_QUOTES, 'UTF-8') ?></h1>
         <div class="text-secondary">Une prestation pensée pour votre besoin.</div>
+        <?php if ($priceText !== ''): ?>
+          <div class="mt-2">
+            <span class="badge text-bg-light border"><i class="bi bi-cash-coin me-1"></i><?= htmlspecialchars($priceText, ENT_QUOTES, 'UTF-8') ?></span>
+          </div>
+        <?php endif; ?>
       </div>
       <div class="d-flex gap-2 flex-wrap">
         <a class="btn btn-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">

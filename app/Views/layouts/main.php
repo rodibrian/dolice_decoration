@@ -150,6 +150,7 @@
               </div>
               <div class="d-flex flex-wrap gap-2 mb-3">
                 <span class="badge text-bg-light border d-none" data-service-modal-badge-category></span>
+                <span class="badge text-bg-light border d-none" data-service-modal-badge-price></span>
               </div>
               <div class="text-secondary" style="white-space:pre-wrap" data-service-modal-description></div>
             </div>

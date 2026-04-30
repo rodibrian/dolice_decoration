@@ -322,6 +322,7 @@
     var metaEl = modalEl.querySelector('[data-service-modal-meta]');
     var descEl = modalEl.querySelector('[data-service-modal-description]');
     var badgeCategoryEl = modalEl.querySelector('[data-service-modal-badge-category]');
+    var badgePriceEl = modalEl.querySelector('[data-service-modal-badge-price]');
     var skeletonEl = modalEl.querySelector('[data-service-modal-skeleton]');
     var imgEl = modalEl.querySelector('[data-service-modal-image]');
     var openPageEl = modalEl.querySelector('[data-service-modal-open-page]');
@@ -331,6 +332,7 @@
       safeText(metaEl, '');
       safeText(descEl, '');
       setBadge(badgeCategoryEl, '');
+      setBadge(badgePriceEl, '');
       resetMedia(skeletonEl, imgEl);
       if (openPageEl) openPageEl.classList.add('d-none');
     }
@@ -352,6 +354,18 @@
         safeText(metaEl, 'Détails du service');
         setBadge(badgeCategoryEl, service.category || '');
         safeText(descEl, service.description || '');
+
+        // Price badge (if enabled)
+        var showPrice = Number(service.show_price || 0) === 1;
+        var basePrice = service.base_price;
+        var unit = (service.price_unit || '').trim();
+        var label = (service.price_label || '').trim() || 'À partir de';
+        if (showPrice && basePrice !== null && basePrice !== '' && isFinite(Number(basePrice))) {
+          var formatted = Math.round(Number(basePrice)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+          setBadge(badgePriceEl, label + ' ' + formatted + ' Ar' + (unit ? ' ' + unit : ''));
+        } else {
+          setBadge(badgePriceEl, '');
+        }
 
         if (service.image) {
           showMedia(skeletonEl, imgEl, service.image);

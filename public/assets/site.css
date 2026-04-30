@@ -120,6 +120,44 @@ body{font-family:var(--font-base)}
 .hero .carousel-item .skeleton{
   height:clamp(200px, 26vw, 300px) !important;
 }
+.hero-media-carousel .carousel-inner{
+  border-radius:18px;
+}
+.hero-slide-frame{
+  position:relative;
+  width:100%;
+  height:clamp(220px, 28vw, 340px);
+  background:rgba(0,0,0,.18);
+}
+.hero-slide-media{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.hero-slide-caption{
+  position:absolute;
+  left:14px;
+  right:14px;
+  bottom:14px;
+  padding:12px 12px;
+  border-radius:16px;
+  background:rgba(8,12,22,.55);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.14);
+}
+.hero-slide-badge{
+  position:absolute;
+  top:12px;
+  left:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.18);
+  color:#fff;
+  font-size:.85rem;
+  font-weight:700;
+}
 .hero::after{
   content:"";
   position:absolute;inset:0;

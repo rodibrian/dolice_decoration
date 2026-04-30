@@ -35,6 +35,15 @@
                   <i class="bi bi-arrow-right text-secondary"></i>
                 </div>
                 <h2 class="h5 mb-0"><?= htmlspecialchars((string)$s['title'], ENT_QUOTES, 'UTF-8') ?></h2>
+                <?php $bp = $s['base_price'] ?? null; ?>
+                <?php if ((int)($s['show_price'] ?? 0) === 1 && $bp !== null && $bp !== ''): ?>
+                  <?php
+                    $label = trim((string)($s['price_label'] ?? '')) ?: 'À partir de';
+                    $unit = trim((string)($s['price_unit'] ?? ''));
+                    $txt = $label . ' ' . number_format((float)$bp, 0, ',', ' ') . ' Ar' . ($unit !== '' ? (' ' . $unit) : '');
+                  ?>
+                  <div class="text-secondary small mt-2"><i class="bi bi-cash-coin me-1"></i><?= htmlspecialchars($txt, ENT_QUOTES, 'UTF-8') ?></div>
+                <?php endif; ?>
               </div>
             </div>
           </a>

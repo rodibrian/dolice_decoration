@@ -1,5 +1,6 @@
 <?php
 /** @var array<string, mixed> $quote */
+/** @var list<array<string, mixed>> $items */
 /** @var string|null $flash */
 /** @var string|null $error */
 
@@ -31,6 +32,40 @@ $status = (string)($quote['status'] ?? 'new');
       <div class="muted" style="white-space:pre-wrap;margin-top:8px"><?= htmlspecialchars((string)($quote['message'] ?? ''), ENT_QUOTES, 'UTF-8') ?></div>
     </div>
   </div>
+
+  <?php if (!empty($items)): ?>
+    <hr class="sep">
+    <div class="card sub">
+      <strong>Services demandés</strong>
+      <div class="table-wrap" style="margin-top:10px">
+        <table class="table table-hover align-middle" style="min-width:520px">
+          <thead>
+          <tr>
+            <th>Service</th>
+            <th>Prix</th>
+            <th>Unité</th>
+            <th>Qté</th>
+          </tr>
+          </thead>
+          <tbody>
+          <?php foreach ($items as $it): ?>
+            <?php
+              $p = $it['unit_price'];
+              $priceText = ($p === null || $p === '') ? '—' : number_format((float)$p, 0, ',', ' ') . ' Ar';
+            ?>
+            <tr>
+              <td><?= htmlspecialchars((string)$it['service_title'], ENT_QUOTES, 'UTF-8') ?></td>
+              <td class="muted"><?= htmlspecialchars($priceText, ENT_QUOTES, 'UTF-8') ?></td>
+              <td class="muted"><?= htmlspecialchars((string)($it['price_unit'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td>
+              <td class="muted"><?= (int)($it['qty'] ?? 1) ?></td>
+            </tr>
+          <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+      <div class="muted" style="margin-top:8px">Les prix sont enregistrés comme “snapshot” au moment de la demande.</div>
+    </div>
+  <?php endif; ?>
 
   <hr class="sep">
 

@@ -41,6 +41,7 @@ final class QuotesController extends BaseController
         $this->view('admin.quotes.show', [
             'title' => 'Devis #' . $id,
             'quote' => $quote,
+            'items' => QuoteRequest::items($id),
             'flash' => $_SESSION['flash_success'] ?? null,
             'error' => $_SESSION['flash_error'] ?? null,
         ], 'layouts/admin');

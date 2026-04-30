@@ -30,6 +30,10 @@ CREATE TABLE IF NOT EXISTS services (
   category VARCHAR(120) NULL,
   description MEDIUMTEXT NULL,
   image_path VARCHAR(255) NULL,
+  base_price DECIMAL(12,2) NULL,
+  price_unit VARCHAR(60) NULL,
+  price_label VARCHAR(120) NULL,
+  show_price TINYINT(1) NOT NULL DEFAULT 0,
   display_order INT NOT NULL DEFAULT 0,
   is_published TINYINT(1) NOT NULL DEFAULT 1,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -100,6 +104,22 @@ CREATE TABLE IF NOT EXISTS testimonials (
   KEY idx_testimonials_status (status, id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Slides (hero carousel accueil) : images + vidéos muettes
+CREATE TABLE IF NOT EXISTS hero_slides (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(190) NULL,
+  subtitle VARCHAR(255) NULL,
+  media_type ENUM('image','video') NOT NULL DEFAULT 'image',
+  media_path VARCHAR(255) NOT NULL,
+  cta_label VARCHAR(120) NULL,
+  cta_url VARCHAR(255) NULL,
+  display_order INT NOT NULL DEFAULT 0,
+  is_published TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  KEY idx_hero_slides_pub_order (is_published, display_order, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Demandes de devis
 CREATE TABLE IF NOT EXISTS quote_requests (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -113,6 +133,21 @@ CREATE TABLE IF NOT EXISTS quote_requests (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   KEY idx_quote_requests_status (status, created_at, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Services sélectionnés dans une demande de devis (snapshot des prix)
+CREATE TABLE IF NOT EXISTS quote_request_items (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  quote_request_id INT UNSIGNED NOT NULL,
+  service_id INT UNSIGNED NULL,
+  service_title VARCHAR(190) NOT NULL,
+  unit_price DECIMAL(12,2) NULL,
+  price_unit VARCHAR(60) NULL,
+  qty INT UNSIGNED NOT NULL DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_qri_quote (quote_request_id, id),
+  KEY idx_qri_service (service_id),
+  CONSTRAINT fk_qri_quote FOREIGN KEY (quote_request_id) REFERENCES quote_requests(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Messages de contact

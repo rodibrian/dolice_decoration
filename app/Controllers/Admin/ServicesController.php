@@ -50,6 +50,14 @@ final class ServicesController extends BaseController
         $slug = trim((string)($_POST['slug'] ?? ''));
         $category = trim((string)($_POST['category'] ?? '')) ?: null;
         $description = trim((string)($_POST['description'] ?? '')) ?: null;
+        $basePriceRaw = trim((string)($_POST['base_price'] ?? ''));
+        $basePrice = $basePriceRaw === '' ? null : (float)$basePriceRaw;
+        if ($basePrice !== null && $basePrice < 0) {
+            $basePrice = null;
+        }
+        $priceUnit = trim((string)($_POST['price_unit'] ?? '')) ?: null;
+        $priceLabel = trim((string)($_POST['price_label'] ?? '')) ?: null;
+        $showPrice = isset($_POST['show_price']) ? 1 : 0;
         $displayOrder = (int)($_POST['display_order'] ?? 0);
         $isPublished = isset($_POST['is_published']) ? 1 : 0;
 
@@ -69,9 +77,17 @@ final class ServicesController extends BaseController
             'category' => $category,
             'description' => $description,
             'image_path' => $imagePath,
+            'base_price' => $basePrice,
+            'price_unit' => $priceUnit,
+            'price_label' => $priceLabel,
+            'show_price' => $showPrice,
             'display_order' => $displayOrder,
             'is_published' => $isPublished,
         ]);
+
+        if (($basePrice !== null || $showPrice === 1 || $priceUnit !== null || $priceLabel !== null) && !Service::supportsPricing()) {
+            $_SESSION['flash_error'] = "Les champs prix ne peuvent pas être enregistrés tant que la base n'est pas migrée (colonnes services: base_price, show_price...). Applique l'ALTER TABLE indiqué dans `database/schema.sql`.";
+        }
 
         $_SESSION['flash_success'] = "Service créé.";
         $this->redirect('/admin/services');
@@ -116,6 +132,14 @@ final class ServicesController extends BaseController
         $slug = trim((string)($_POST['slug'] ?? ''));
         $category = trim((string)($_POST['category'] ?? '')) ?: null;
         $description = trim((string)($_POST['description'] ?? '')) ?: null;
+        $basePriceRaw = trim((string)($_POST['base_price'] ?? ''));
+        $basePrice = $basePriceRaw === '' ? null : (float)$basePriceRaw;
+        if ($basePrice !== null && $basePrice < 0) {
+            $basePrice = null;
+        }
+        $priceUnit = trim((string)($_POST['price_unit'] ?? '')) ?: null;
+        $priceLabel = trim((string)($_POST['price_label'] ?? '')) ?: null;
+        $showPrice = isset($_POST['show_price']) ? 1 : 0;
         $displayOrder = (int)($_POST['display_order'] ?? 0);
         $isPublished = isset($_POST['is_published']) ? 1 : 0;
 
@@ -138,9 +162,17 @@ final class ServicesController extends BaseController
             'category' => $category,
             'description' => $description,
             'image_path' => $imagePath !== '' ? $imagePath : null,
+            'base_price' => $basePrice,
+            'price_unit' => $priceUnit,
+            'price_label' => $priceLabel,
+            'show_price' => $showPrice,
             'display_order' => $displayOrder,
             'is_published' => $isPublished,
         ]);
+
+        if (($basePrice !== null || $showPrice === 1 || $priceUnit !== null || $priceLabel !== null) && !Service::supportsPricing()) {
+            $_SESSION['flash_error'] = "Les champs prix ne peuvent pas être enregistrés tant que la base n'est pas migrée (colonnes services: base_price, show_price...). Applique l'ALTER TABLE indiqué dans `database/schema.sql`.";
+        }
 
         $_SESSION['flash_success'] = "Service mis à jour.";
         $this->redirect('/admin/services');

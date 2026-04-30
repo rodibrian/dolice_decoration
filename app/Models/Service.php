@@ -4,9 +4,29 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Core\DB;
+use PDOException;
 
 final class Service
 {
+    private static ?bool $supportsPricing = null;
+
+    public static function supportsPricing(): bool
+    {
+        if (self::$supportsPricing !== null) {
+            return self::$supportsPricing;
+        }
+
+        try {
+            // Fast existence check (will throw if column missing)
+            DB::pdo()->query('SELECT base_price, show_price FROM services LIMIT 0');
+            self::$supportsPricing = true;
+        } catch (PDOException $e) {
+            self::$supportsPricing = false;
+        }
+
+        return self::$supportsPricing;
+    }
+
     /**
      * @return list<array<string, mixed>>
      */
@@ -62,46 +82,98 @@ final class Service
     public static function create(array $data): int
     {
         $pdo = DB::pdo();
-        $stmt = $pdo->prepare(
-            'INSERT INTO services (title, slug, category, description, image_path, display_order, is_published)
-             VALUES (:title, :slug, :category, :description, :image_path, :display_order, :is_published)'
-        );
-        $stmt->execute([
-            'title' => $data['title'],
-            'slug' => $data['slug'],
-            'category' => $data['category'],
-            'description' => $data['description'],
-            'image_path' => $data['image_path'],
-            'display_order' => $data['display_order'],
-            'is_published' => $data['is_published'],
-        ]);
+        if (self::supportsPricing()) {
+            $stmt = $pdo->prepare(
+                'INSERT INTO services (title, slug, category, description, image_path, base_price, price_unit, price_label, show_price, display_order, is_published)
+                 VALUES (:title, :slug, :category, :description, :image_path, :base_price, :price_unit, :price_label, :show_price, :display_order, :is_published)'
+            );
+            $stmt->execute([
+                'title' => $data['title'],
+                'slug' => $data['slug'],
+                'category' => $data['category'],
+                'description' => $data['description'],
+                'image_path' => $data['image_path'],
+                'base_price' => $data['base_price'],
+                'price_unit' => $data['price_unit'],
+                'price_label' => $data['price_label'],
+                'show_price' => $data['show_price'],
+                'display_order' => $data['display_order'],
+                'is_published' => $data['is_published'],
+            ]);
+        } else {
+            $stmt = $pdo->prepare(
+                'INSERT INTO services (title, slug, category, description, image_path, display_order, is_published)
+                 VALUES (:title, :slug, :category, :description, :image_path, :display_order, :is_published)'
+            );
+            $stmt->execute([
+                'title' => $data['title'],
+                'slug' => $data['slug'],
+                'category' => $data['category'],
+                'description' => $data['description'],
+                'image_path' => $data['image_path'],
+                'display_order' => $data['display_order'],
+                'is_published' => $data['is_published'],
+            ]);
+        }
         return (int)$pdo->lastInsertId();
     }
 
     public static function update(int $id, array $data): void
     {
         $pdo = DB::pdo();
-        $stmt = $pdo->prepare(
-            'UPDATE services
-             SET title = :title,
-                 slug = :slug,
-                 category = :category,
-                 description = :description,
-                 image_path = :image_path,
-                 display_order = :display_order,
-                 is_published = :is_published
-             WHERE id = :id'
-        );
-        $stmt->execute([
-            'id' => $id,
-            'title' => $data['title'],
-            'slug' => $data['slug'],
-            'category' => $data['category'],
-            'description' => $data['description'],
-            'image_path' => $data['image_path'],
-            'display_order' => $data['display_order'],
-            'is_published' => $data['is_published'],
-        ]);
+        if (self::supportsPricing()) {
+            $stmt = $pdo->prepare(
+                'UPDATE services
+                 SET title = :title,
+                     slug = :slug,
+                     category = :category,
+                     description = :description,
+                     image_path = :image_path,
+                     base_price = :base_price,
+                     price_unit = :price_unit,
+                     price_label = :price_label,
+                     show_price = :show_price,
+                     display_order = :display_order,
+                     is_published = :is_published
+                 WHERE id = :id'
+            );
+            $stmt->execute([
+                'id' => $id,
+                'title' => $data['title'],
+                'slug' => $data['slug'],
+                'category' => $data['category'],
+                'description' => $data['description'],
+                'image_path' => $data['image_path'],
+                'base_price' => $data['base_price'],
+                'price_unit' => $data['price_unit'],
+                'price_label' => $data['price_label'],
+                'show_price' => $data['show_price'],
+                'display_order' => $data['display_order'],
+                'is_published' => $data['is_published'],
+            ]);
+        } else {
+            $stmt = $pdo->prepare(
+                'UPDATE services
+                 SET title = :title,
+                     slug = :slug,
+                     category = :category,
+                     description = :description,
+                     image_path = :image_path,
+                     display_order = :display_order,
+                     is_published = :is_published
+                 WHERE id = :id'
+            );
+            $stmt->execute([
+                'id' => $id,
+                'title' => $data['title'],
+                'slug' => $data['slug'],
+                'category' => $data['category'],
+                'description' => $data['description'],
+                'image_path' => $data['image_path'],
+                'display_order' => $data['display_order'],
+                'is_published' => $data['is_published'],
+            ]);
+        }
     }
 
     public static function delete(int $id): void

@@ -4,6 +4,7 @@
 /** @var list<array<string, mixed>> $projects */
 /** @var list<array<string, mixed>> $posts */
 /** @var list<array<string, mixed>> $testimonials */
+/** @var list<array<string, mixed>> $heroSlides */
 /** @var array<string, string|null> $settings */
 
 $heroCoverRaw = trim((string)($settings['hero_cover_image'] ?? ''));
@@ -31,9 +32,9 @@ $heroCoverUrl = $isAbsoluteCover
           <a class="btn btn-outline-light btn-lg" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">
             <i class="bi bi-images me-2"></i>Voir nos réalisations
           </a>
-          <button class="btn btn-light btn-lg" data-bs-toggle="modal" data-bs-target="#quickQuoteModal">
+          <!--button class="btn btn-light btn-lg" data-bs-toggle="modal" data-bs-target="#quickQuoteModal">
             <i class="bi bi-lightning-charge me-2 text-brand"></i>Devis express
-          </button>
+          </button-->
         </div>
         <div class="row g-3 mt-4">
           <div class="col-6 col-md-4">
@@ -66,34 +67,80 @@ $heroCoverUrl = $isAbsoluteCover
         </div>
       </div>
       <div class="col-lg-5" data-aos="zoom-in">
-        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-inner rounded-4 border border-light border-opacity-10 overflow-hidden">
-            <div class="carousel-item active">
-              <div class="p-4 bg-dark bg-opacity-25">
-                <div class="skeleton" style="height:280px"></div>
+        <div id="heroCarousel" class="carousel slide hero-media-carousel" data-bs-ride="carousel" data-bs-interval="5200">
+          <?php if (!empty($heroSlides)): ?>
+            <?php if (count($heroSlides) > 1): ?>
+              <div class="carousel-indicators">
+                <?php foreach ($heroSlides as $i => $_s): ?>
+                  <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="<?= (int)$i ?>" class="<?= $i === 0 ? 'active' : '' ?>" <?= $i === 0 ? 'aria-current="true"' : '' ?> aria-label="Slide <?= (int)($i + 1) ?>"></button>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
+
+            <div class="carousel-inner rounded-4 border border-light border-opacity-10 overflow-hidden">
+              <?php foreach ($heroSlides as $i => $s): ?>
+                <?php
+                  $type = (string)($s['media_type'] ?? 'image');
+                  if (!in_array($type, ['image', 'video'], true)) $type = 'image';
+                  $path = trim((string)($s['media_path'] ?? ''));
+                  $mediaUrl = (env('APP_URL', '') ?: '') . $path;
+                  $captionTitle = trim((string)($s['title'] ?? ''));
+                  $captionSub = trim((string)($s['subtitle'] ?? ''));
+                  $ctaLabel = trim((string)($s['cta_label'] ?? ''));
+                  $ctaUrl = trim((string)($s['cta_url'] ?? ''));
+                  $ctaHref = $ctaUrl !== '' ? ((preg_match('#^https?://#i', $ctaUrl) === 1) ? $ctaUrl : ((env('APP_URL', '') ?: '') . '/' . ltrim($ctaUrl, '/'))) : '';
+                ?>
+                <div class="carousel-item <?= $i === 0 ? 'active' : '' ?>">
+                  <div class="hero-slide-frame">
+                    <?php if ($type === 'video'): ?>
+                      <video class="hero-slide-media" src="<?= htmlspecialchars($mediaUrl, ENT_QUOTES, 'UTF-8') ?>" muted playsinline autoplay loop preload="metadata"></video>
+                      <div class="hero-slide-badge"><i class="bi bi-play-circle-fill me-1"></i>Vidéo</div>
+                    <?php else: ?>
+                      <img class="hero-slide-media" src="<?= htmlspecialchars($mediaUrl, ENT_QUOTES, 'UTF-8') ?>" alt="">
+                    <?php endif; ?>
+
+                    <?php if ($captionTitle !== '' || $captionSub !== '' || ($ctaLabel !== '' && $ctaHref !== '')): ?>
+                      <div class="hero-slide-caption">
+                        <?php if ($captionTitle !== ''): ?>
+                          <div class="fw-bold"><?= htmlspecialchars($captionTitle, ENT_QUOTES, 'UTF-8') ?></div>
+                        <?php endif; ?>
+                        <?php if ($captionSub !== ''): ?>
+                          <div class="small text-white-50"><?= htmlspecialchars($captionSub, ENT_QUOTES, 'UTF-8') ?></div>
+                        <?php endif; ?>
+                        <?php if ($ctaLabel !== '' && $ctaHref !== ''): ?>
+                          <div class="mt-2">
+                            <a class="btn btn-sm btn-light" href="<?= htmlspecialchars($ctaHref, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($ctaLabel, ENT_QUOTES, 'UTF-8') ?> <i class="bi bi-arrow-right ms-1"></i></a>
+                          </div>
+                        <?php endif; ?>
+                      </div>
+                    <?php endif; ?>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+            </div>
+
+            <?php if (count($heroSlides) > 1): ?>
+              <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Précédent</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Suivant</span>
+              </button>
+            <?php endif; ?>
+          <?php else: ?>
+            <div class="carousel-inner rounded-4 border border-light border-opacity-10 overflow-hidden">
+              <div class="carousel-item active">
+                <div class="p-4 bg-dark bg-opacity-25">
+                  <div class="skeleton" style="height:280px"></div>
+                </div>
               </div>
             </div>
-            <div class="carousel-item">
-              <div class="p-4 bg-dark bg-opacity-25">
-                <div class="skeleton" style="height:280px"></div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div class="p-4 bg-dark bg-opacity-25">
-                <div class="skeleton" style="height:280px"></div>
-              </div>
-            </div>
-          </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Précédent</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Suivant</span>
-          </button>
+          <?php endif; ?>
         </div>
-        <p class="text-white-50 small mt-3 mb-0">Astuce: ajoute des images réelles dans les réalisations pour remplacer ces blocs.</p>
+        <!--p class="text-white-50 small mt-3 mb-0">Astuce: ajoute des images/vidéos dans Admin → Slides accueil.</p>
+        -->
       </div>
     </div>
   </div>
@@ -122,6 +169,20 @@ $heroCoverUrl = $isAbsoluteCover
                   <span class="badge text-bg-light"><?= htmlspecialchars((string)($s['category'] ?? 'Service'), ENT_QUOTES, 'UTF-8') ?></span>
                 </div>
                 <h3 class="h5 mb-2"><?= htmlspecialchars((string)$s['title'], ENT_QUOTES, 'UTF-8') ?></h3>
+                <?php
+                  $bp = $s['base_price'] ?? null;
+                  $show = (int)($s['show_price'] ?? 0) === 1;
+                ?>
+                <?php if ($show && $bp !== null && $bp !== ''): ?>
+                  <?php
+                    $label = trim((string)($s['price_label'] ?? '')) ?: 'À partir de';
+                    $unit = trim((string)($s['price_unit'] ?? ''));
+                    $txt = $label . ' ' . number_format((float)$bp, 0, ',', ' ') . ' Ar' . ($unit !== '' ? (' ' . $unit) : '');
+                  ?>
+                  <div class="mt-2">
+                    <span class="badge text-bg-light border"><i class="bi bi-cash-coin me-1"></i><?= htmlspecialchars($txt, ENT_QUOTES, 'UTF-8') ?></span>
+                  </div>
+                <?php endif; ?>
                 <div class="text-secondary small">Clique pour voir le détail + demander un devis.</div>
               </div>
             </div>

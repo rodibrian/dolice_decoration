@@ -51,6 +51,10 @@ final class ServicesPublicController extends BaseController
                     'category' => (string)($service['category'] ?? ''),
                     'description' => (string)($service['description'] ?? ''),
                     'image' => $imgUrl,
+                    'base_price' => $service['base_price'] ?? null,
+                    'price_unit' => (string)($service['price_unit'] ?? ''),
+                    'price_label' => (string)($service['price_label'] ?? ''),
+                    'show_price' => (int)($service['show_price'] ?? 0),
                 ],
             ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             return;

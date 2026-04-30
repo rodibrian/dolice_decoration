@@ -41,6 +41,31 @@ $action = $isEdit ? '/admin/services/update' : '/admin/services/store';
       <textarea name="description" rows="8"><?= htmlspecialchars((string)($service['description'] ?? ''), ENT_QUOTES, 'UTF-8') ?></textarea>
     </label>
 
+    <hr class="sep">
+    <h3 style="margin:0 0 8px">Prix (optionnel)</h3>
+    <div class="muted" style="margin-bottom:10px">Ex: “À partir de 120000 Ar / m²”. Coche “Afficher le prix” pour le montrer sur le site et dans le devis.</div>
+
+    <div class="row gap">
+      <label style="min-width:220px">
+        Prix de base
+        <input type="number" step="0.01" min="0" name="base_price" value="<?= htmlspecialchars((string)($service['base_price'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" placeholder="ex: 120000">
+      </label>
+      <label style="min-width:220px">
+        Unité (optionnel)
+        <input type="text" name="price_unit" value="<?= htmlspecialchars((string)($service['price_unit'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" placeholder="ex: Ar / m²">
+      </label>
+    </div>
+    <div class="row gap">
+      <label style="min-width:220px">
+        Libellé (optionnel)
+        <input type="text" name="price_label" value="<?= htmlspecialchars((string)($service['price_label'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" placeholder="ex: À partir de">
+      </label>
+      <label class="check">
+        <input type="checkbox" name="show_price" value="1" <?= ((int)($service['show_price'] ?? 0) === 1) ? 'checked' : '' ?>>
+        Afficher le prix
+      </label>
+    </div>
+
     <label>
       Image (jpg/png/webp)
       <input type="file" name="image" accept="image/*">

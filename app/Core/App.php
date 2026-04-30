@@ -20,6 +20,7 @@ use App\Controllers\Admin\MessagesController;
 use App\Controllers\Admin\PartnersController;
 use App\Controllers\Admin\PagesController;
 use App\Controllers\Admin\SettingsController;
+use App\Controllers\Admin\HeroSlidesController;
 
 final class App
 {
@@ -105,6 +106,14 @@ final class App
         $router->get('/admin/partners/edit', [PartnersController::class, 'edit']);
         $router->post('/admin/partners/update', [PartnersController::class, 'update']);
         $router->post('/admin/partners/delete', [PartnersController::class, 'delete']);
+
+        // Admin - Slides accueil
+        $router->get('/admin/hero-slides', [HeroSlidesController::class, 'index']);
+        $router->get('/admin/hero-slides/create', [HeroSlidesController::class, 'create']);
+        $router->post('/admin/hero-slides/store', [HeroSlidesController::class, 'store']);
+        $router->get('/admin/hero-slides/edit', [HeroSlidesController::class, 'edit']);
+        $router->post('/admin/hero-slides/update', [HeroSlidesController::class, 'update']);
+        $router->post('/admin/hero-slides/delete', [HeroSlidesController::class, 'delete']);
 
         // Admin - Pages
         $router->get('/admin/pages', [PagesController::class, 'index']);

@@ -1,4 +1,11 @@
-<?php /** @var string|null $flash */ ?>
+<?php
+/** @var string|null $flash */
+/** @var list<array<string, mixed>> $services */
+
+$servicesWithPricing = array_values(array_filter($services ?? [], static function (array $s): bool {
+    return (int)($s['is_published'] ?? 0) === 1;
+}));
+?>
 <div class="page-header py-4">
   <div class="container">
     <nav aria-label="breadcrumb">
@@ -46,6 +53,53 @@
                 <label class="form-label">Type de projet</label>
                 <input class="form-control" type="text" name="project_type" placeholder="ex: plafond, peinture, sol...">
               </div>
+
+              <?php if (!empty($servicesWithPricing)): ?>
+                <div class="mt-4">
+                  <label class="form-label">Services souhaités (optionnel)</label>
+                  <div class="border rounded-4 p-3" style="background:rgba(13,110,253,.03)">
+                    <div class="row g-2">
+                      <?php foreach ($servicesWithPricing as $s): ?>
+                        <?php
+                          $id = (int)($s['id'] ?? 0);
+                          $title = (string)($s['title'] ?? '');
+                          $showPrice = (int)($s['show_price'] ?? 0) === 1;
+                          $basePrice = $s['base_price'] ?? null;
+                          $unit = trim((string)($s['price_unit'] ?? ''));
+                          $label = trim((string)($s['price_label'] ?? '')) ?: 'À partir de';
+                          $priceText = 'Prix sur demande';
+                          $priceValue = '';
+                          if ($showPrice && $basePrice !== null && $basePrice !== '') {
+                              $priceValue = (string)(float)$basePrice;
+                              $priceText = $label . ' ' . number_format((float)$basePrice, 0, ',', ' ') . ' Ar' . ($unit !== '' ? (' ' . $unit) : '');
+                          }
+                        ?>
+                        <div class="col-12">
+                          <label class="d-flex align-items-start gap-3 p-2 rounded-3" style="cursor:pointer">
+                            <input
+                              class="form-check-input mt-1"
+                              type="checkbox"
+                              name="services[]"
+                              value="<?= $id ?>"
+                              data-price="<?= htmlspecialchars($priceValue, ENT_QUOTES, 'UTF-8') ?>"
+                            >
+                            <span class="flex-grow-1">
+                              <span class="fw-semibold d-block"><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></span>
+                              <span class="text-secondary small"><?= htmlspecialchars($priceText, ENT_QUOTES, 'UTF-8') ?></span>
+                            </span>
+                          </label>
+                        </div>
+                      <?php endforeach; ?>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                      <div class="text-secondary small">Total estimatif (si prix disponibles)</div>
+                      <div class="fw-bold" data-quote-estimate>Total: —</div>
+                    </div>
+                  </div>
+                </div>
+              <?php endif; ?>
+
               <div class="mt-3">
                 <label class="form-label">Message</label>
                 <textarea class="form-control" name="message" rows="7" placeholder="Surface, localisation, délai, photos (si dispo)"></textarea>
@@ -75,4 +129,38 @@
     </div>
   </div>
 </section>
+
+<script>
+  (function () {
+    var estimateEl = document.querySelector('[data-quote-estimate]');
+    var inputs = Array.from(document.querySelectorAll('input[type="checkbox"][name="services[]"]'));
+    if (!estimateEl || inputs.length === 0) return;
+
+    function formatAr(n) {
+      try {
+        return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' Ar';
+      } catch (e) {
+        return n + ' Ar';
+      }
+    }
+
+    function recompute() {
+      var total = 0;
+      var hasAny = false;
+      inputs.forEach(function (inp) {
+        if (!inp.checked) return;
+        var p = parseFloat(inp.getAttribute('data-price') || '');
+        if (!isFinite(p) || p <= 0) return;
+        total += p;
+        hasAny = true;
+      });
+      estimateEl.textContent = hasAny ? ('Total: ' + formatAr(total)) : 'Total: —';
+    }
+
+    inputs.forEach(function (inp) {
+      inp.addEventListener('change', recompute);
+    });
+    recompute();
+  })();
+</script>
 

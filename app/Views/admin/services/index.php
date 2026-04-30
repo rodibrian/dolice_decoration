@@ -29,6 +29,7 @@
         <th>Titre</th>
         <th>Slug</th>
         <th>Catégorie</th>
+        <th>Prix</th>
         <th>Publié</th>
         <th>Ordre</th>
         <th></th>
@@ -36,7 +37,7 @@
       </thead>
       <tbody>
       <?php if (empty($services)): ?>
-        <tr><td colspan="7" class="muted">Aucun service.</td></tr>
+        <tr><td colspan="8" class="muted">Aucun service.</td></tr>
       <?php else: ?>
         <?php foreach ($services as $s): ?>
           <tr data-row data-search="<?= htmlspecialchars(strtolower((string)$s['title'] . ' ' . (string)$s['slug'] . ' ' . (string)($s['category'] ?? '')), ENT_QUOTES, 'UTF-8') ?>" data-status="<?= ((int)$s['is_published'] === 1) ? 'oui' : 'non' ?>">
@@ -44,6 +45,19 @@
             <td><?= htmlspecialchars((string)$s['title'], ENT_QUOTES, 'UTF-8') ?></td>
             <td class="muted"><?= htmlspecialchars((string)$s['slug'], ENT_QUOTES, 'UTF-8') ?></td>
             <td class="muted"><?= htmlspecialchars((string)($s['category'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td>
+            <td class="muted">
+              <?php $bp = $s['base_price'] ?? null; ?>
+              <?php if ((int)($s['show_price'] ?? 0) === 1 && $bp !== null && $bp !== ''): ?>
+                <?php
+                  $label = trim((string)($s['price_label'] ?? '')) ?: 'À partir de';
+                  $unit = trim((string)($s['price_unit'] ?? ''));
+                  $txt = $label . ' ' . number_format((float)$bp, 0, ',', ' ') . ' Ar' . ($unit !== '' ? (' ' . $unit) : '');
+                ?>
+                <?= htmlspecialchars($txt, ENT_QUOTES, 'UTF-8') ?>
+              <?php else: ?>
+                —
+              <?php endif; ?>
+            </td>
             <td><span class="badge text-bg-<?= ((int)$s['is_published'] === 1) ? 'success' : 'secondary' ?>"><?= ((int)$s['is_published'] === 1) ? 'Oui' : 'Non' ?></span></td>
             <td class="muted"><?= (int)$s['display_order'] ?></td>
             <td class="actions">

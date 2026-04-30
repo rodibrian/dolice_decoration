@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\Service;
 use App\Models\Setting;
 use App\Models\Testimonial;
+use App\Models\HeroSlide;
 
 final class HomeController extends BaseController
 {
@@ -30,6 +31,7 @@ final class HomeController extends BaseController
         $posts = Post::published(3);
 
         $testimonials = Testimonial::approved(12);
+        $heroSlides = HeroSlide::published(8);
 
         $this->view('home.index', [
             'title' => 'Dolice Decoration',
@@ -37,6 +39,7 @@ final class HomeController extends BaseController
             'projects' => $projects,
             'posts' => $posts,
             'testimonials' => $testimonials,
+            'heroSlides' => $heroSlides,
             'settings' => Setting::allKeyed(),
         ]);
     }

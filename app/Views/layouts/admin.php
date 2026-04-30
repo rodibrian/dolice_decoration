@@ -38,6 +38,7 @@ $isActive = static function (string $prefix) use ($uri): string {
             <a class="<?= $isActive('/admin/quotes') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/quotes', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-file-earmark-text me-1"></i>Devis</a>
             <a class="<?= $isActive('/admin/messages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/messages', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope me-1"></i>Messages</a>
             <a class="<?= $isActive('/admin/partners') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/partners', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-people me-1"></i>Partenaires</a>
+            <a class="<?= $isActive('/admin/hero-slides') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/hero-slides', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-1"></i>Slides accueil</a>
             <a class="<?= $isActive('/admin/pages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/pages', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-file-text me-1"></i>Pages</a>
             <a class="<?= $isActive('/admin/settings') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/settings', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-gear me-1"></i>Paramètres</a>
             <a class="menu-external" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-globe2 me-1"></i>Site</a>
