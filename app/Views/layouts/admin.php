@@ -20,41 +20,130 @@ $isActive = static function (string $prefix) use ($uri): string {
   <link rel="stylesheet" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/assets/app.css', ENT_QUOTES, 'UTF-8') ?>">
 </head>
 <body class="admin-shell admin-light">
-  <header class="site-header shadow-sm">
-    <nav class="navbar navbar-expand-xl navbar-dark">
-      <div class="container">
-        <a class="brand navbar-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin', ENT_QUOTES, 'UTF-8') ?>">
-          <i class="bi bi-shield-lock me-2"></i>Admin
+  <div class="admin-layout">
+    <!-- Sidebar (desktop) -->
+    <aside class="admin-sidebar d-none d-lg-flex">
+      <div class="admin-sidebar-inner">
+        <a class="admin-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin', ENT_QUOTES, 'UTF-8') ?>">
+          <span class="admin-brand-icon"><i class="bi bi-shield-lock"></i></span>
+          <span class="admin-brand-text">Dolice Admin</span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav" aria-controls="adminNav" aria-expanded="false" aria-label="Menu admin">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="adminNav">
-          <nav class="admin-menu nav ms-xl-3">
-            <a class="<?= $isActive('/admin/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/services', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-tools me-1"></i>Services</a>
-            <a class="<?= $isActive('/admin/projects') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/projects', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-building-gear me-1"></i>Réalisations</a>
-            <a class="<?= $isActive('/admin/posts') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/posts', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-newspaper me-1"></i>Blog</a>
-            <a class="<?= $isActive('/admin/testimonials') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/testimonials', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-chat-quote me-1"></i>Témoignages</a>
-            <a class="<?= $isActive('/admin/quotes') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/quotes', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-file-earmark-text me-1"></i>Devis</a>
-            <a class="<?= $isActive('/admin/messages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/messages', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope me-1"></i>Messages</a>
-            <a class="<?= $isActive('/admin/partners') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/partners', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-people me-1"></i>Partenaires</a>
-            <a class="<?= $isActive('/admin/hero-slides') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/hero-slides', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-1"></i>Slides accueil</a>
-            <a class="<?= $isActive('/admin/pages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/pages', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-file-text me-1"></i>Pages</a>
-            <a class="<?= $isActive('/admin/settings') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/settings', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-gear me-1"></i>Paramètres</a>
-            <a class="menu-external" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-globe2 me-1"></i>Site</a>
-          </nav>
+
+        <nav class="admin-nav">
+          <div class="admin-nav-title">Gestion</div>
+          <a class="admin-nav-link <?= $isActive('/admin/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/services', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-tools"></i><span>Services</span>
+          </a>
+          <a class="admin-nav-link <?= $isActive('/admin/projects') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/projects', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-building-gear"></i><span>Réalisations</span>
+          </a>
+          <a class="admin-nav-link <?= $isActive('/admin/posts') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/posts', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-newspaper"></i><span>Blog</span>
+          </a>
+          <a class="admin-nav-link <?= $isActive('/admin/testimonials') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/testimonials', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-chat-quote"></i><span>Témoignages</span>
+          </a>
+          <a class="admin-nav-link <?= $isActive('/admin/quotes') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/quotes', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-file-earmark-text"></i><span>Devis</span>
+          </a>
+          <a class="admin-nav-link <?= $isActive('/admin/messages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/messages', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-envelope"></i><span>Messages</span>
+          </a>
+          <a class="admin-nav-link <?= $isActive('/admin/partners') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/partners', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-people"></i><span>Partenaires</span>
+          </a>
+          <a class="admin-nav-link <?= $isActive('/admin/hero-slides') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/hero-slides', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-images"></i><span>Slides accueil</span>
+          </a>
+
+          <div class="admin-nav-title mt-3">Configuration</div>
+          <a class="admin-nav-link <?= $isActive('/admin/pages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/pages', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-file-text"></i><span>Pages</span>
+          </a>
+          <a class="admin-nav-link <?= $isActive('/admin/settings') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/settings', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-gear"></i><span>Paramètres</span>
+          </a>
+
+          <div class="admin-nav-title mt-3">Raccourcis</div>
+          <a class="admin-nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-globe2"></i><span>Voir le site</span>
+          </a>
+        </nav>
+
+        <div class="admin-sidebar-footer">
+          <form method="post" action="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/logout', ENT_QUOTES, 'UTF-8') ?>">
+            <button class="btn btn-outline-secondary w-100" type="submit"><i class="bi bi-box-arrow-right me-2"></i>Déconnexion</button>
+          </form>
         </div>
       </div>
-    </nav>
-  </header>
+    </aside>
 
-  <main class="container-fluid py-4 px-3 px-lg-4">
-    <div class="row">
-      <div class="col-12">
+    <!-- Main area -->
+    <div class="admin-main">
+      <!-- Topbar -->
+      <header class="admin-topbar">
+        <div class="container-fluid px-3 px-lg-4">
+          <div class="d-flex align-items-center justify-content-between gap-2 py-2">
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn btn-outline-secondary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#adminSidebarMobile" aria-controls="adminSidebarMobile">
+                <i class="bi bi-list"></i>
+              </button>
+              <div class="admin-topbar-title">
+                <div class="admin-topbar-kicker">Administration</div>
+                <div class="admin-topbar-page"><?= htmlspecialchars($title ?? 'Admin', ENT_QUOTES, 'UTF-8') ?></div>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <a class="btn btn-sm btn-light border" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">
+                <i class="bi bi-globe2 me-1"></i>Site
+              </a>
+              <form class="d-none d-md-block" method="post" action="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/logout', ENT_QUOTES, 'UTF-8') ?>">
+                <button class="btn btn-sm btn-outline-secondary" type="submit"><i class="bi bi-box-arrow-right me-1"></i>Déconnexion</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="admin-content container-fluid px-3 px-lg-4 py-4">
         <?= $content ?>
-      </div>
+      </main>
     </div>
-  </main>
+  </div>
+
+  <!-- Sidebar (mobile) -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="adminSidebarMobile" aria-labelledby="adminSidebarMobileLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="adminSidebarMobileLabel"><i class="bi bi-shield-lock me-2"></i>Dolice Admin</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fermer"></button>
+    </div>
+    <div class="offcanvas-body">
+      <nav class="admin-nav">
+        <div class="admin-nav-title">Gestion</div>
+        <a class="admin-nav-link <?= $isActive('/admin/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/services', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-tools"></i><span>Services</span></a>
+        <a class="admin-nav-link <?= $isActive('/admin/projects') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/projects', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-building-gear"></i><span>Réalisations</span></a>
+        <a class="admin-nav-link <?= $isActive('/admin/posts') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/posts', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-newspaper"></i><span>Blog</span></a>
+        <a class="admin-nav-link <?= $isActive('/admin/testimonials') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/testimonials', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-chat-quote"></i><span>Témoignages</span></a>
+        <a class="admin-nav-link <?= $isActive('/admin/quotes') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/quotes', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-file-earmark-text"></i><span>Devis</span></a>
+        <a class="admin-nav-link <?= $isActive('/admin/messages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/messages', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope"></i><span>Messages</span></a>
+        <a class="admin-nav-link <?= $isActive('/admin/partners') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/partners', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-people"></i><span>Partenaires</span></a>
+        <a class="admin-nav-link <?= $isActive('/admin/hero-slides') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/hero-slides', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images"></i><span>Slides accueil</span></a>
+
+        <div class="admin-nav-title mt-3">Configuration</div>
+        <a class="admin-nav-link <?= $isActive('/admin/pages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/pages', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-file-text"></i><span>Pages</span></a>
+        <a class="admin-nav-link <?= $isActive('/admin/settings') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/settings', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-gear"></i><span>Paramètres</span></a>
+
+        <div class="admin-nav-title mt-3">Raccourcis</div>
+        <a class="admin-nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-globe2"></i><span>Voir le site</span></a>
+      </nav>
+
+      <hr>
+      <form method="post" action="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/logout', ENT_QUOTES, 'UTF-8') ?>">
+        <button class="btn btn-outline-secondary w-100" type="submit"><i class="bi bi-box-arrow-right me-2"></i>Déconnexion</button>
+      </form>
+    </div>
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script>
     document.querySelectorAll('[data-table-filter]').forEach(function (block) {
