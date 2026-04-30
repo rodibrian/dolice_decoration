@@ -9,6 +9,28 @@ use App\Models\Setting;
 
 final class CompanySettingsController extends BaseController
 {
+    /**
+     * @return list<string>
+     */
+    private function linesToList(string $raw): array
+    {
+        $raw = trim($raw);
+        if ($raw === '') {
+            return [];
+        }
+        $lines = preg_split('/\r\n|\r|\n/u', $raw) ?: [];
+        $out = [];
+        foreach ($lines as $line) {
+            $line = trim((string)$line);
+            if ($line === '') {
+                continue;
+            }
+            $out[] = $line;
+        }
+        $out = array_values(array_unique($out));
+        return $out;
+    }
+
     public function index(): void
     {
         $this->requireAdmin(['settings.view']);
@@ -45,19 +67,46 @@ final class CompanySettingsController extends BaseController
         }
         Setting::set('company_logo', $logoPath === '' ? null : $logoPath);
 
-        // Contacts & socials
+        // Multiple phones/emails (stored as JSON lists)
+        $phones = $this->linesToList((string)($_POST['phones'] ?? ''));
+        $emails = $this->linesToList((string)($_POST['emails'] ?? ''));
+        Setting::set('company_phones_json', !empty($phones) ? json_encode($phones, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null);
+        Setting::set('company_emails_json', !empty($emails) ? json_encode($emails, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : null);
+
+        // Keep backward-compatible primary values
+        $primaryPhone = !empty($phones) ? (string)$phones[0] : trim((string)($_POST['phone'] ?? ''));
+        $primaryEmail = !empty($emails) ? (string)$emails[0] : trim((string)($_POST['email'] ?? ''));
+        Setting::set('phone', $primaryPhone !== '' ? $primaryPhone : null);
+        Setting::set('email', $primaryEmail !== '' ? $primaryEmail : null);
+
+        // Other contacts
         foreach ([
-            'phone',
             'whatsapp',
-            'email',
             'address',
             'hours',
             'service_area',
+        ] as $k) {
+            $setText($k);
+        }
+
+        // Map location
+        foreach ([
+            'company_map_address',
+            'company_map_embed_url',
+            'company_map_lat',
+            'company_map_lng',
+        ] as $k) {
+            $setText($k);
+        }
+
+        // Social links
+        foreach ([
             'facebook',
             'instagram',
             'tiktok',
             'youtube',
             'linkedin',
+            'twitter',
         ] as $k) {
             $setText($k);
         }

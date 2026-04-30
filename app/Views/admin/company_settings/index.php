@@ -17,6 +17,33 @@ if ($logo !== '') {
   $isAbs = preg_match('#^https?://#i', $logo) === 1;
   $logoUrl = $isAbs ? $logo : ((env('APP_URL', '') ?: '') . $logo);
 }
+
+$phonesJson = (string)($settings['company_phones_json'] ?? '');
+$emailsJson = (string)($settings['company_emails_json'] ?? '');
+$phones = [];
+$emails = [];
+if ($phonesJson !== '') {
+  $decoded = json_decode($phonesJson, true);
+  if (is_array($decoded)) {
+    foreach ($decoded as $v) {
+      $v = trim((string)$v);
+      if ($v !== '') $phones[] = $v;
+    }
+  }
+}
+if ($emailsJson !== '') {
+  $decoded = json_decode($emailsJson, true);
+  if (is_array($decoded)) {
+    foreach ($decoded as $v) {
+      $v = trim((string)$v);
+      if ($v !== '') $emails[] = $v;
+    }
+  }
+}
+if (empty($phones) && $get('phone', '') !== '') $phones = [$get('phone', '')];
+if (empty($emails) && $get('email', '') !== '') $emails = [$get('email', '')];
+$phonesText = implode("\n", $phones);
+$emailsText = implode("\n", $emails);
 ?>
 
 <section class="card">
@@ -59,12 +86,43 @@ if ($logo !== '') {
 
     <div class="grid2">
       <div style="grid-column:1/-1" class="fw-semibold">Contacts</div>
-      <label>Téléphone <input type="text" name="phone" value="<?= htmlspecialchars($get('phone', ''), ENT_QUOTES, 'UTF-8') ?>"></label>
-      <label>WhatsApp <input type="text" name="whatsapp" value="<?= htmlspecialchars($get('whatsapp', ''), ENT_QUOTES, 'UTF-8') ?>"></label>
-      <label>Email <input type="text" name="email" value="<?= htmlspecialchars($get('email', ''), ENT_QUOTES, 'UTF-8') ?>"></label>
+      <label style="grid-column:1/-1">
+        Téléphones (1 par ligne)
+        <textarea name="phones" rows="3" placeholder="Ex:\n034 00 000 00\n032 00 000 00"><?= htmlspecialchars($phonesText, ENT_QUOTES, 'UTF-8') ?></textarea>
+        <small class="muted">Le 1er numéro sera utilisé comme “principal” sur le site.</small>
+      </label>
+      <label style="grid-column:1/-1">
+        Emails (1 par ligne)
+        <textarea name="emails" rows="3" placeholder="Ex:\ncontact@domaine.com\ndevis@domaine.com"><?= htmlspecialchars($emailsText, ENT_QUOTES, 'UTF-8') ?></textarea>
+        <small class="muted">Le 1er email sera utilisé comme “principal” sur le site.</small>
+      </label>
+      <label>WhatsApp (numéro) <input type="text" name="whatsapp" value="<?= htmlspecialchars($get('whatsapp', ''), ENT_QUOTES, 'UTF-8') ?>"></label>
       <label>Adresse <input type="text" name="address" value="<?= htmlspecialchars($get('address', ''), ENT_QUOTES, 'UTF-8') ?>"></label>
       <label>Horaires <input type="text" name="hours" value="<?= htmlspecialchars($get('hours', ''), ENT_QUOTES, 'UTF-8') ?>"></label>
       <label>Zone d’intervention <input type="text" name="service_area" value="<?= htmlspecialchars($get('service_area', ''), ENT_QUOTES, 'UTF-8') ?>"></label>
+    </div>
+
+    <hr class="sep">
+
+    <div class="grid2">
+      <div style="grid-column:1/-1" class="fw-semibold">Localisation (carte)</div>
+      <label style="grid-column:1/-1">
+        Adresse (pour affichage)
+        <input type="text" name="company_map_address" placeholder="Ex: Antananarivo, Anosivavaka..." value="<?= htmlspecialchars($get('company_map_address', $get('address', '')), ENT_QUOTES, 'UTF-8') ?>">
+      </label>
+      <label style="grid-column:1/-1">
+        Google Maps Embed URL (optionnel)
+        <input type="text" name="company_map_embed_url" placeholder="https://www.google.com/maps/embed?pb=..." value="<?= htmlspecialchars($get('company_map_embed_url', ''), ENT_QUOTES, 'UTF-8') ?>">
+        <small class="muted">Colle le lien “Embed a map” de Google Maps. Sinon on affichera une carte basée sur l’adresse.</small>
+      </label>
+      <label>
+        Latitude (optionnel)
+        <input type="text" name="company_map_lat" placeholder="Ex: -18.8792" value="<?= htmlspecialchars($get('company_map_lat', ''), ENT_QUOTES, 'UTF-8') ?>">
+      </label>
+      <label>
+        Longitude (optionnel)
+        <input type="text" name="company_map_lng" placeholder="Ex: 47.5079" value="<?= htmlspecialchars($get('company_map_lng', ''), ENT_QUOTES, 'UTF-8') ?>">
+      </label>
     </div>
 
     <hr class="sep">
@@ -76,6 +134,7 @@ if ($logo !== '') {
       <label>TikTok <input type="text" name="tiktok" placeholder="https://tiktok.com/@..." value="<?= htmlspecialchars($get('tiktok', ''), ENT_QUOTES, 'UTF-8') ?>"></label>
       <label>YouTube <input type="text" name="youtube" placeholder="https://youtube.com/..." value="<?= htmlspecialchars($get('youtube', ''), ENT_QUOTES, 'UTF-8') ?>"></label>
       <label>LinkedIn <input type="text" name="linkedin" placeholder="https://linkedin.com/..." value="<?= htmlspecialchars($get('linkedin', ''), ENT_QUOTES, 'UTF-8') ?>"></label>
+      <label>Twitter/X <input type="text" name="twitter" placeholder="https://x.com/..." value="<?= htmlspecialchars($get('twitter', ''), ENT_QUOTES, 'UTF-8') ?>"></label>
     </div>
 
     <button class="btn primary" type="submit"><i class="bi bi-check2"></i>Enregistrer</button>

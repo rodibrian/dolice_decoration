@@ -30,7 +30,31 @@ final class QuotesPublicController extends BaseController
         $phone = trim((string)($_POST['phone'] ?? '')) ?: null;
         $email = trim((string)($_POST['email'] ?? '')) ?: null;
         $projectType = trim((string)($_POST['project_type'] ?? '')) ?: null;
-        $message = trim((string)($_POST['message'] ?? '')) ?: null;
+        $messageRaw = trim((string)($_POST['message'] ?? ''));
+
+        $city = trim((string)($_POST['city'] ?? '')) ?: null;
+        $address = trim((string)($_POST['address'] ?? '')) ?: null;
+        $surface = trim((string)($_POST['surface'] ?? '')) ?: null;
+        $timeline = trim((string)($_POST['timeline'] ?? '')) ?: null;
+        $budget = trim((string)($_POST['budget'] ?? '')) ?: null;
+        $contactPref = trim((string)($_POST['contact_preference'] ?? '')) ?: null;
+
+        $extra = [];
+        if ($city !== null) $extra[] = "Ville: " . $city;
+        if ($address !== null) $extra[] = "Adresse: " . $address;
+        if ($surface !== null) $extra[] = "Surface / dimensions: " . $surface;
+        if ($timeline !== null) $extra[] = "Délai souhaité: " . $timeline;
+        if ($budget !== null) $extra[] = "Budget indicatif: " . $budget;
+        if ($contactPref !== null) $extra[] = "Contact préféré: " . $contactPref;
+
+        $messageParts = [];
+        if (!empty($extra)) {
+            $messageParts[] = implode("\n", $extra);
+        }
+        if ($messageRaw !== '') {
+            $messageParts[] = $messageRaw;
+        }
+        $message = !empty($messageParts) ? implode("\n\n", $messageParts) : null;
         $serviceIds = $_POST['services'] ?? [];
         if (!is_array($serviceIds)) {
             $serviceIds = [];

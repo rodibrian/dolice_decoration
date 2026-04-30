@@ -20,18 +20,19 @@ final class ProjectsPublicController extends BaseController
     {
         $category = trim((string)($_GET['category'] ?? '')) ?: null;
         $projects = Project::published(0, $category);
-        $projectImageMap = Project::firstImagesByProjectIds(array_map(
+        $projectIds = array_map(
             static fn (array $p): int => (int)($p['id'] ?? 0),
             $projects
-        ));
-        $projects = array_map(
-            static function (array $project) use ($projectImageMap): array {
-                $id = (int)($project['id'] ?? 0);
-                $project['cover_image'] = $projectImageMap[$id] ?? null;
-                return $project;
-            },
-            $projects
         );
+        $imageMap = Project::imagesByProjectIds($projectIds, 5);
+
+        $projects = array_map(static function (array $project) use ($imageMap): array {
+            $id = (int)($project['id'] ?? 0);
+            $imgs = $imageMap[$id] ?? [];
+            $project['images'] = $imgs;
+            $project['cover_image'] = $imgs[0] ?? null;
+            return $project;
+        }, $projects);
 
         $this->view('projects.index', [
             'title' => 'Réalisations',

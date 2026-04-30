@@ -196,5 +196,51 @@ final class Project
         }
         return $map;
     }
+
+    /**
+     * @param list<int> $projectIds
+     * @return array<int, list<string>> project_id => list of image paths (relative or absolute)
+     */
+    public static function imagesByProjectIds(array $projectIds, int $limitPerProject = 5): array
+    {
+        $limitPerProject = max(1, min(12, $limitPerProject));
+        if ($projectIds === []) {
+            return [];
+        }
+
+        $ids = array_values(array_unique(array_map(static fn ($id): int => (int)$id, $projectIds)));
+        if ($ids === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $pdo = DB::pdo();
+        $stmt = $pdo->prepare(
+            "SELECT project_id, image_path
+             FROM project_images
+             WHERE project_id IN ($placeholders)
+             ORDER BY project_id ASC, sort_order ASC, id ASC"
+        );
+        $stmt->execute($ids);
+        /** @var list<array{project_id:mixed,image_path:mixed}> $rows */
+        $rows = $stmt->fetchAll();
+
+        $out = [];
+        foreach ($rows as $row) {
+            $pid = (int)$row['project_id'];
+            $path = trim((string)$row['image_path']);
+            if ($pid <= 0 || $path === '') {
+                continue;
+            }
+            if (!isset($out[$pid])) {
+                $out[$pid] = [];
+            }
+            if (count($out[$pid]) >= $limitPerProject) {
+                continue;
+            }
+            $out[$pid][] = $path;
+        }
+        return $out;
+    }
 }
 
