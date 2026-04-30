@@ -169,15 +169,29 @@ $heroCoverUrl = $isAbsoluteCover
 
     <div class="row g-4">
       <?php foreach (($services ?? []) as $s): ?>
+        <?php
+          $img = trim((string)($s['image_path'] ?? ''));
+          $imgUrl = '';
+          if ($img !== '') {
+            $imgUrl = (preg_match('#^https?://#i', $img) === 1) ? $img : ((env('APP_URL', '') ?: '') . $img);
+          }
+        ?>
         <div class="col-sm-6 col-lg-4" data-aos="fade-up">
           <a class="text-decoration-none" data-service-modal="1" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services/' . (string)$s['slug'], ENT_QUOTES, 'UTF-8') ?>">
             <div class="card card-hover h-100">
+              <div class="ratio ratio-4x3 card-media-4x3">
+                <?php if ($imgUrl !== ''): ?>
+                  <img src="<?= htmlspecialchars($imgUrl, ENT_QUOTES, 'UTF-8') ?>" alt="">
+                <?php else: ?>
+                  <div class="card-media-fallback"><i class="bi bi-image"></i></div>
+                <?php endif; ?>
+              </div>
               <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between mb-2">
                   <div class="icon-badge"><i class="bi bi-tools"></i></div>
-                  <span class="badge text-bg-light"><?= htmlspecialchars((string)($s['category'] ?? 'Service'), ENT_QUOTES, 'UTF-8') ?></span>
+                  <span class="badge text-bg-light border"><?= htmlspecialchars((string)($s['category'] ?? 'Service'), ENT_QUOTES, 'UTF-8') ?></span>
                 </div>
-                <h3 class="h5 mb-2"><?= htmlspecialchars((string)$s['title'], ENT_QUOTES, 'UTF-8') ?></h3>
+                <h3 class="h5 mb-2 line-clamp-2"><?= htmlspecialchars((string)$s['title'], ENT_QUOTES, 'UTF-8') ?></h3>
                 <?php
                   $bp = $s['base_price'] ?? null;
                   $show = (int)($s['show_price'] ?? 0) === 1;
@@ -198,6 +212,45 @@ $heroCoverUrl = $isAbsoluteCover
           </a>
         </div>
       <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-soft">
+  <div class="container">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-5" data-aos="fade-up">
+        <div class="badge text-bg-light border rounded-pill px-3 py-2">
+          <i class="bi bi-check2-circle me-2 text-brand"></i>Méthode simple & efficace
+        </div>
+        <h2 class="h1 section-title mt-3 mb-2">Un process clair, du premier contact à la livraison</h2>
+        <p class="text-secondary mb-0">Nous cadrons le besoin, proposons une solution adaptée, puis exécutons proprement avec un suivi régulier.</p>
+      </div>
+      <div class="col-lg-7" data-aos="fade-up" data-aos-delay="80">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="p-4 bg-white rounded-4 border h-100">
+              <div class="icon-badge mb-3"><i class="bi bi-chat-square-dots"></i></div>
+              <div class="fw-semibold mb-1">1) Brief</div>
+              <div class="text-secondary small">Besoin, contraintes, style, budget indicatif.</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-4 bg-white rounded-4 border h-100">
+              <div class="icon-badge mb-3"><i class="bi bi-clipboard-check"></i></div>
+              <div class="fw-semibold mb-1">2) Devis</div>
+              <div class="text-secondary small">Proposition claire + délais + options.</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-4 bg-white rounded-4 border h-100">
+              <div class="icon-badge mb-3"><i class="bi bi-hammer"></i></div>
+              <div class="fw-semibold mb-1">3) Exécution</div>
+              <div class="text-secondary small">Finitions propres + contrôle qualité.</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -233,16 +286,13 @@ $heroCoverUrl = $isAbsoluteCover
                         <span class="badge text-bg-warning"><i class="bi bi-star-fill me-1"></i>Vedette</span>
                       <?php endif; ?>
                     </div>
-                    <?php if (!empty($p['cover_image'])): ?>
-                      <img
-                        class="image-cover mt-3"
-                        style="height:160px"
-                        src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . (string)$p['cover_image'], ENT_QUOTES, 'UTF-8') ?>"
-                        alt="<?= htmlspecialchars((string)$p['title'], ENT_QUOTES, 'UTF-8') ?>"
-                      >
-                    <?php else: ?>
-                      <div class="image-cover mt-3 skeleton" style="height:160px"></div>
-                    <?php endif; ?>
+                    <div class="ratio ratio-4x3 card-media-4x3 mt-3">
+                      <?php if (!empty($p['cover_image'])): ?>
+                        <img src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . (string)$p['cover_image'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars((string)$p['title'], ENT_QUOTES, 'UTF-8') ?>">
+                      <?php else: ?>
+                        <div class="card-media-fallback"><i class="bi bi-image"></i></div>
+                      <?php endif; ?>
+                    </div>
                   </div>
                 </div>
               </a>
@@ -369,13 +419,27 @@ $heroCoverUrl = $isAbsoluteCover
 
       <div class="row g-4">
         <?php foreach ($posts as $post): ?>
+          <?php
+            $img = trim((string)($post['featured_image'] ?? ''));
+            $imgUrl = '';
+            if ($img !== '') {
+              $imgUrl = (preg_match('#^https?://#i', $img) === 1) ? $img : ((env('APP_URL', '') ?: '') . $img);
+            }
+          ?>
           <div class="col-md-6 col-lg-4" data-aos="fade-up">
             <a class="text-decoration-none" data-post-modal="1" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog/' . (string)$post['slug'], ENT_QUOTES, 'UTF-8') ?>">
               <div class="card card-hover h-100">
+                <div class="ratio ratio-4x3 card-media-4x3">
+                  <?php if ($imgUrl !== ''): ?>
+                    <img src="<?= htmlspecialchars($imgUrl, ENT_QUOTES, 'UTF-8') ?>" alt="">
+                  <?php else: ?>
+                    <div class="card-media-fallback"><i class="bi bi-image"></i></div>
+                  <?php endif; ?>
+                </div>
                 <div class="card-body">
                   <div class="text-secondary small mb-2"><i class="bi bi-calendar3 me-1"></i><?= htmlspecialchars((string)($post['published_at'] ?? ''), ENT_QUOTES, 'UTF-8') ?></div>
-                  <h3 class="h5"><?= htmlspecialchars((string)$post['title'], ENT_QUOTES, 'UTF-8') ?></h3>
-                  <div class="text-secondary"><?= htmlspecialchars((string)($post['excerpt'] ?? ''), ENT_QUOTES, 'UTF-8') ?></div>
+                  <h3 class="h5 line-clamp-2"><?= htmlspecialchars((string)$post['title'], ENT_QUOTES, 'UTF-8') ?></h3>
+                  <div class="text-secondary line-clamp-3"><?= htmlspecialchars((string)($post['excerpt'] ?? ''), ENT_QUOTES, 'UTF-8') ?></div>
                 </div>
               </div>
             </a>

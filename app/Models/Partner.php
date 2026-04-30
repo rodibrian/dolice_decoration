@@ -20,6 +20,22 @@ final class Partner
     }
 
     /**
+     * @return list<array<string, mixed>>
+     */
+    public static function published(int $limit = 0): array
+    {
+        $pdo = DB::pdo();
+        $sql = 'SELECT * FROM partners WHERE is_published = 1 ORDER BY display_order ASC, id DESC';
+        if ($limit > 0) {
+            $sql .= ' LIMIT ' . (int)$limit;
+        }
+        $stmt = $pdo->query($sql);
+        /** @var list<array<string, mixed>> $rows */
+        $rows = $stmt->fetchAll();
+        return $rows;
+    }
+
+    /**
      * @return array<string, mixed>|null
      */
     public static function find(int $id): ?array

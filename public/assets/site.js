@@ -110,6 +110,15 @@
     });
   }
 
+  function refreshAOS() {
+    if (!window.AOS || typeof window.AOS.refreshHard !== 'function') return;
+    try {
+      window.AOS.refreshHard();
+    } catch (e) {
+      // ignore
+    }
+  }
+
   function initCounters() {
     if (!window.PureCounter) return;
     // PureCounter auto-inits by default; this is just a safe hook.
@@ -121,7 +130,12 @@
     var el = document.querySelector(id);
     if (!el) return;
     // eslint-disable-next-line no-new
-    new window.Glide(el, options).mount();
+    var g = new window.Glide(el, options);
+    g.on(['mount.after', 'run.after', 'resize'], function () {
+      // Keep AOS in sync with dynamic heights (helps avoid "only after resize" issues)
+      refreshAOS();
+    });
+    g.mount();
   }
 
   function initBootstrapUX() {
@@ -134,6 +148,17 @@
       e.preventDefault();
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
+
+    // Enable Bootstrap tooltips
+    if (window.bootstrap && typeof window.bootstrap.Tooltip === 'function') {
+      document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+        try {
+          window.bootstrap.Tooltip.getOrCreateInstance(el, { container: 'body' });
+        } catch (e) {
+          // ignore
+        }
+      });
+    }
   }
 
   function initNavbarScroll() {
@@ -505,6 +530,22 @@
         768: { perView: 1 },
       },
     });
+
+    // Images can change layout after DOMContentLoaded; refresh AOS after they load.
+    var imgs = Array.from(document.querySelectorAll('img'));
+    imgs.forEach(function (img) {
+      if (img.complete) return;
+      img.addEventListener('load', function () {
+        refreshAOS();
+      }, { once: true });
+    });
+  });
+
+  // Final safety refresh after full page load (fonts/images)
+  window.addEventListener('load', function () {
+    refreshAOS();
+    // One extra tick after layout settles
+    setTimeout(refreshAOS, 120);
   });
 })();
 

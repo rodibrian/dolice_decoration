@@ -89,14 +89,16 @@ $action = $isEdit ? '/admin/projects/update' : '/admin/projects/store';
     <?php if (empty($images)): ?>
       <p class="muted">Aucune image.</p>
     <?php else: ?>
-      <div class="grid">
+      <div class="media-grid">
         <?php foreach ($images as $img): ?>
-          <div class="grid-item">
-            <img src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . (string)$img['image_path'], ENT_QUOTES, 'UTF-8') ?>" alt="">
+          <div class="media-tile">
+            <div class="media-thumb">
+              <img src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . (string)$img['image_path'], ENT_QUOTES, 'UTF-8') ?>" alt="">
+            </div>
             <form method="post" action="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/projects/images/delete', ENT_QUOTES, 'UTF-8') ?>" onsubmit="return confirm('Supprimer cette image ?');">
               <input type="hidden" name="project_id" value="<?= (int)$project['id'] ?>">
               <input type="hidden" name="image_id" value="<?= (int)$img['id'] ?>">
-              <button class="btn danger" type="submit">Supprimer</button>
+              <button class="btn btn-sm danger w-100" type="submit"><i class="bi bi-trash"></i>Supprimer</button>
             </form>
           </div>
         <?php endforeach; ?>

@@ -32,6 +32,13 @@ $isOn = static function (string $k, bool $defaultOn = true): bool {
   }
   return (string)$v === '1';
 };
+
+$footerPartners = [];
+try {
+  $footerPartners = \App\Models\Partner::published(18);
+} catch (\Throwable $e) {
+  $footerPartners = [];
+}
 ?>
 <!doctype html>
 <html lang="fr">
@@ -241,7 +248,7 @@ $isOn = static function (string $k, bool $defaultOn = true): bool {
   <footer class="pt-5 pb-4 mt-5">
     <div class="container">
       <div class="row g-4">
-        <div class="col-lg-4">
+        <div class="col-lg-3">
           <div class="fw-bold h5 mb-2">
             <?php if ($companyLogoUrl !== ''): ?>
               <img src="<?= htmlspecialchars($companyLogoUrl, ENT_QUOTES, 'UTF-8') ?>" alt="" style="height:26px;width:auto;object-fit:contain" class="me-2 align-text-bottom">
@@ -269,7 +276,7 @@ $isOn = static function (string $k, bool $defaultOn = true): bool {
             <?php if ($isOn('footer_show_quote', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">Demander un devis</a><?php endif; ?>
           </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-2">
           <div class="fw-semibold mb-2">Contact</div>
           <div class="d-flex flex-column gap-2">
             <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope me-2"></i>Écrire un message</a>
@@ -279,12 +286,98 @@ $isOn = static function (string $k, bool $defaultOn = true): bool {
             <?php endif; ?>
           </div>
         </div>
+        <div class="col-lg-2">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+            <div class="fw-semibold">Partenaires</div>
+            <a class="small" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>"></a>
+          </div>
+          <div class="footer-partners">
+            <?php foreach ($footerPartners as $p): ?>
+              <?php
+                $name = trim((string)($p['name'] ?? ''));
+                $logo = trim((string)($p['logo_path'] ?? ''));
+                $url = trim((string)($p['url'] ?? ''));
+                $cat = trim((string)($p['category'] ?? ''));
+                $logoUrl = '';
+                if ($logo !== '') {
+                  $isAbs = preg_match('#^https?://#i', $logo) === 1;
+                  if ($isAbs) {
+                    $logoUrl = $logo;
+                  } else {
+                    $disk = rtrim((string)PUBLIC_PATH, '/\\') . '/' . ltrim($logo, '/\\');
+                    if (is_file($disk)) {
+                      $logoUrl = (env('APP_URL', '') ?: '') . $logo;
+                    }
+                  }
+                }
+                $hintParts = [];
+                if ($name !== '') $hintParts[] = $name;
+                if ($cat !== '') $hintParts[] = $cat;
+                if ($url !== '') $hintParts[] = $url;
+                $hint = implode(' • ', $hintParts);
+              ?>
+              <?php if ($logoUrl !== ''): ?>
+                <a
+                  class="footer-partner"
+                  <?= $url !== '' ? 'target="_blank" rel="noopener"' : '' ?>
+                  href="<?= htmlspecialchars($url !== '' ? $url : '#', ENT_QUOTES, 'UTF-8') ?>"
+                  <?= $url !== '' ? '' : 'role="button"' ?>
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  data-bs-title="<?= htmlspecialchars($hint !== '' ? $hint : 'Partenaire', ENT_QUOTES, 'UTF-8') ?>"
+                  onclick="<?= $url === '' ? 'return false' : '' ?>"
+                >
+                  <img src="<?= htmlspecialchars($logoUrl, ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($name !== '' ? $name : 'Partenaire', ENT_QUOTES, 'UTF-8') ?>">
+                </a>
+              <?php endif; ?>
+            <?php endforeach; ?>
+          </div>
+        </div>
+        
       </div>
 
       <hr class="border-light opacity-10 my-4">
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
         <div class="small">© <?= date('Y') ?> Dolice Decoration. Tous droits réservés.</div>
-        <div class="small opacity-75">Design Bootstrap + AOS + Glide + PureCounter.</div>
+        <div class="d-flex align-items-center gap-3 flex-wrap justify-content-md-end">
+          <?php
+            $socials = [
+              ['k' => 'facebook', 'label' => 'Facebook', 'icon' => 'bi-facebook'],
+              ['k' => 'instagram', 'label' => 'Instagram', 'icon' => 'bi-instagram'],
+              ['k' => 'linkedin', 'label' => 'LinkedIn', 'icon' => 'bi-linkedin'],
+              ['k' => 'twitter', 'label' => 'X', 'icon' => 'bi-twitter-x'],
+              ['k' => 'youtube', 'label' => 'YouTube', 'icon' => 'bi-youtube'],
+              ['k' => 'tiktok', 'label' => 'TikTok', 'icon' => 'bi-tiktok'],
+              ['k' => 'whatsapp', 'label' => 'WhatsApp', 'icon' => 'bi-whatsapp'],
+            ];
+            $hasSocial = false;
+            foreach ($socials as $s) {
+              if (!empty(\App\Models\Setting::get($s['k'], null))) { $hasSocial = true; break; }
+            }
+          ?>
+          <?php if ($hasSocial): ?>
+            <div class="footer-socials">
+              <?php foreach ($socials as $s): ?>
+                <?php $url = trim((string)(\App\Models\Setting::get($s['k'], '') ?? '')); ?>
+                <?php if ($url !== ''): ?>
+                  <?php
+                    $href = $url;
+                    if ($s['k'] === 'whatsapp') {
+                      $href = 'https://wa.me/' . preg_replace('/\D+/', '', $url);
+                    }
+                  ?>
+                  <a class="footer-social" target="_blank" rel="noopener"
+                     href="<?= htmlspecialchars($href, ENT_QUOTES, 'UTF-8') ?>"
+                     data-bs-toggle="tooltip" data-bs-placement="top"
+                     data-bs-title="<?= htmlspecialchars($s['label'], ENT_QUOTES, 'UTF-8') ?>">
+                    <i class="bi <?= htmlspecialchars($s['icon'], ENT_QUOTES, 'UTF-8') ?>"></i>
+                  </a>
+                <?php endif; ?>
+              <?php endforeach; ?>
+            </div>
+          <?php endif; ?>
+          <div class="small opacity-75">Design Bootstrap + AOS + Glide + PureCounter.</div>
+        </div>
       </div>
     </div>
   </footer>
