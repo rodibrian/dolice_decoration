@@ -39,6 +39,18 @@ try {
 } catch (\Throwable $e) {
   $footerPartners = [];
 }
+
+$uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+$scriptName = (string)($_SERVER['SCRIPT_NAME'] ?? '');
+$basePath = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+if ($basePath !== '' && $basePath !== '/' && str_starts_with($uri, $basePath)) {
+  $uri = substr($uri, strlen($basePath)) ?: '/';
+}
+$uri = rtrim($uri, '/') ?: '/';
+$isActive = static function (string $path) use ($uri): string {
+  $path = rtrim($path, '/') ?: '/';
+  return $uri === $path ? 'is-active' : '';
+};
 ?>
 <!doctype html>
 <html lang="fr">
@@ -84,11 +96,11 @@ try {
       </button>
 
       <div class="d-none d-lg-flex align-items-center gap-3 ms-auto">
-        <?php if ($isOn('nav_show_services', true)): ?><a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a><?php endif; ?>
-        <?php if ($isOn('nav_show_projects', true)): ?><a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">Réalisations</a><?php endif; ?>
-        <?php if ($isOn('nav_show_blog', true)): ?><a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">Blog</a><?php endif; ?>
-        <?php if ($isOn('nav_show_faq', true)): ?><a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>">FAQ</a><?php endif; ?>
-        <?php if ($isOn('nav_show_contact', true)): ?><a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">Contact</a><?php endif; ?>
+        <?php if ($isOn('nav_show_services', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a><?php endif; ?>
+        <?php if ($isOn('nav_show_projects', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/realisations') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">Réalisations</a><?php endif; ?>
+        <?php if ($isOn('nav_show_blog', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/blog') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">Blog</a><?php endif; ?>
+        <?php if ($isOn('nav_show_faq', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/faq') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>">FAQ</a><?php endif; ?>
+        <?php if ($isOn('nav_show_contact', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/contact') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">Contact</a><?php endif; ?>
         <?php if ($isOn('nav_show_quote', true)): ?>
           <a class="btn btn-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">
             <i class="bi bi-clipboard-check me-2"></i>Demander un devis
@@ -106,13 +118,13 @@ try {
     </div>
     <div class="offcanvas-body">
       <div class="list-group list-group-flush">
-        <a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">Accueil</a>
-        <?php if ($isOn('nav_show_history', true)): ?><a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/notre-histoire', ENT_QUOTES, 'UTF-8') ?>">Notre histoire</a><?php endif; ?>
-        <?php if ($isOn('nav_show_services', true)): ?><a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a><?php endif; ?>
-        <?php if ($isOn('nav_show_projects', true)): ?><a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">Réalisations</a><?php endif; ?>
-        <?php if ($isOn('nav_show_blog', true)): ?><a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">Blog</a><?php endif; ?>
-        <?php if ($isOn('nav_show_faq', true)): ?><a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>">FAQ</a><?php endif; ?>
-        <?php if ($isOn('nav_show_contact', true)): ?><a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">Contact</a><?php endif; ?>
+        <a class="list-group-item list-group-item-action <?= $isActive('/') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">Accueil</a>
+        <?php if ($isOn('nav_show_history', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/notre-histoire') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/notre-histoire', ENT_QUOTES, 'UTF-8') ?>">Notre histoire</a><?php endif; ?>
+        <?php if ($isOn('nav_show_services', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a><?php endif; ?>
+        <?php if ($isOn('nav_show_projects', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/realisations') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">Réalisations</a><?php endif; ?>
+        <?php if ($isOn('nav_show_blog', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/blog') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">Blog</a><?php endif; ?>
+        <?php if ($isOn('nav_show_faq', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/faq') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>">FAQ</a><?php endif; ?>
+        <?php if ($isOn('nav_show_contact', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/contact') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">Contact</a><?php endif; ?>
       </div>
 
       <div class="d-grid gap-2 mt-4">
