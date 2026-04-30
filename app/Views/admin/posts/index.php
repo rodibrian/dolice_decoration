@@ -6,7 +6,7 @@
 <section class="card">
   <div class="row between">
     <h1 class="page-title"><span class="page-icon">📰</span>Articles</h1>
-    <a class="btn primary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/posts/create', ENT_QUOTES, 'UTF-8') ?>">Nouveau</a>
+    <a class="btn primary btn-sm" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/posts/create', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-plus-lg"></i>Nouveau</a>
   </div>
 
   <?php if (!empty($flash)): ?>

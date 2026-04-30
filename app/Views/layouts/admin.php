@@ -145,6 +145,7 @@ $isActive = static function (string $prefix) use ($uri): string {
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
     document.querySelectorAll('[data-table-filter]').forEach(function (block) {
       const table = block.querySelector('tbody');
@@ -152,6 +153,7 @@ $isActive = static function (string $prefix) use ($uri): string {
       const rows = Array.from(table.querySelectorAll('tr[data-row]'));
       const textInput = block.querySelector('[data-filter-text]');
       const statusInput = block.querySelector('[data-filter-status]');
+      const toolbar = block.querySelector('.crud-toolbar');
 
       const applyFilters = function () {
         const text = (textInput?.value || '').toLowerCase().trim();
@@ -167,7 +169,171 @@ $isActive = static function (string $prefix) use ($uri): string {
 
       textInput?.addEventListener('input', applyFilters);
       statusInput?.addEventListener('change', applyFilters);
+
+      // Smart toolbar actions (reset + export CSV of visible rows)
+      if (toolbar && !toolbar.querySelector('[data-toolbar-actions="1"]')) {
+        const actions = document.createElement('div');
+        actions.setAttribute('data-toolbar-actions', '1');
+        actions.style.display = 'flex';
+        actions.style.gap = '8px';
+        actions.style.alignItems = 'center';
+        actions.style.marginLeft = 'auto';
+
+        const btnReset = document.createElement('button');
+        btnReset.type = 'button';
+        btnReset.className = 'btn btn-sm';
+        btnReset.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i>Réinitialiser';
+        btnReset.addEventListener('click', function () {
+          if (textInput) textInput.value = '';
+          if (statusInput) statusInput.value = '';
+          applyFilters();
+        });
+
+        const btnExport = document.createElement('button');
+        btnExport.type = 'button';
+        btnExport.className = 'btn btn-sm';
+        btnExport.innerHTML = '<i class="bi bi-download"></i>Exporter CSV';
+        btnExport.addEventListener('click', function () {
+          const tableEl = block.querySelector('table');
+          if (!tableEl) return;
+          const headCells = Array.from(tableEl.querySelectorAll('thead th'));
+          const header = headCells.map(th => (th.textContent || '').trim()).filter(Boolean);
+
+          const visibleRows = rows.filter(r => r.style.display !== 'none');
+          const body = visibleRows.map(function (tr) {
+            const cells = Array.from(tr.querySelectorAll('td')).map(td => (td.textContent || '').trim().replace(/\s+/g, ' '));
+            return cells;
+          });
+
+          const escapeCsv = (v) => {
+            const s = String(v ?? '');
+            if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+            return s;
+          };
+
+          const lines = [];
+          if (header.length > 0) lines.push(header.map(escapeCsv).join(','));
+          body.forEach(r => lines.push(r.map(escapeCsv).join(',')));
+          const csv = '\uFEFF' + lines.join('\n');
+
+          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          const title = (document.title || 'export').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+          a.href = url;
+          a.download = (title || 'export') + '.csv';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        });
+
+        actions.appendChild(btnReset);
+        actions.appendChild(btnExport);
+        toolbar.appendChild(actions);
+      }
     });
+  </script>
+  <script>
+    (function () {
+      const dash = document.querySelector('[data-admin-dashboard="1"]');
+      if (!dash) return;
+
+      // Counters (lightweight)
+      const els = Array.from(dash.querySelectorAll('[data-count]'));
+      const animate = (el) => {
+        const target = parseInt(el.getAttribute('data-count') || '0', 10) || 0;
+        const start = 0;
+        const dur = 650;
+        const t0 = performance.now();
+        const step = (t) => {
+          const p = Math.min(1, (t - t0) / dur);
+          const eased = 1 - Math.pow(1 - p, 3);
+          const val = Math.round(start + (target - start) * eased);
+          el.textContent = String(val);
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      };
+      els.forEach(animate);
+
+      // Charts
+      if (!window.Chart) return;
+      Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+      Chart.defaults.color = '#334155';
+
+      const k = {
+        quotes: Number(dash.getAttribute('data-kpi-quotes') || 0),
+        messages: Number(dash.getAttribute('data-kpi-messages') || 0),
+        services: Number(dash.getAttribute('data-kpi-services') || 0),
+        projects: Number(dash.getAttribute('data-kpi-projects') || 0),
+        posts: Number(dash.getAttribute('data-kpi-posts') || 0),
+        testimonials: Number(dash.getAttribute('data-kpi-testimonials') || 0),
+      };
+
+      const inbox = k.quotes + k.messages;
+      const content = k.services + k.projects + k.posts;
+      const feedback = k.testimonials;
+
+      const activityCtx = document.getElementById('activityChart');
+      if (activityCtx) {
+        // eslint-disable-next-line no-new
+        new Chart(activityCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Inbox (devis+messages)', 'Contenu publié', 'Avis en attente'],
+            datasets: [
+              {
+                data: [inbox, content, feedback],
+                backgroundColor: ['rgba(255,122,24,.85)', 'rgba(59,130,246,.85)', 'rgba(16,185,129,.85)'],
+                borderColor: ['rgba(255,122,24,1)', 'rgba(59,130,246,1)', 'rgba(16,185,129,1)'],
+                borderWidth: 1,
+                hoverOffset: 6,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '68%',
+            plugins: {
+              legend: { position: 'bottom' },
+              tooltip: { enabled: true },
+            },
+          },
+        });
+      }
+
+      const contentCtx = document.getElementById('contentChart');
+      if (contentCtx) {
+        // eslint-disable-next-line no-new
+        new Chart(contentCtx, {
+          type: 'bar',
+          data: {
+            labels: ['Services', 'Réalisations', 'Articles'],
+            datasets: [
+              {
+                label: 'Publié',
+                data: [k.services, k.projects, k.posts],
+                backgroundColor: ['rgba(255,122,24,.75)', 'rgba(99,102,241,.75)', 'rgba(59,130,246,.75)'],
+                borderColor: ['rgba(255,122,24,1)', 'rgba(99,102,241,1)', 'rgba(59,130,246,1)'],
+                borderWidth: 1,
+                borderRadius: 10,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: { beginAtZero: true, ticks: { precision: 0 } },
+              x: { grid: { display: false } },
+            },
+            plugins: { legend: { display: false } },
+          },
+        });
+      }
+    })();
   </script>
 </body>
 </html>

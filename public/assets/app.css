@@ -247,6 +247,7 @@ textarea{resize:vertical}
   align-items:center;
   justify-content:center;
   gap:8px;
+  width:auto;
   padding:10px 14px;
   border-radius:12px;
   border:1px solid rgba(15,23,42,.12);
@@ -254,6 +255,11 @@ textarea{resize:vertical}
   color:var(--admin-text);
   cursor:pointer;
   font-weight:700;
+}
+.btn.btn-sm{
+  padding:8px 10px;
+  font-size:.92rem;
+  border-radius:12px;
 }
 .btn:hover{background:#f8fafc}
 .btn.primary{
@@ -269,6 +275,8 @@ textarea{resize:vertical}
 .btn.danger:hover{background:#ffe4e6}
 
 /* Tables */
+.row.between{justify-content:space-between;align-items:center}
+.row.between > .btn{width:auto;margin-left:auto;white-space:nowrap}
 .crud-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
 .crud-toolbar .form-control,.crud-toolbar .form-select{max-width:260px}
 .table-wrap{overflow:auto;border-radius:16px;border:1px solid rgba(15,23,42,.10);background:#fff}
@@ -297,3 +305,45 @@ textarea{resize:vertical}
 .panel-card{border:1px solid rgba(15,23,42,.10);background:#fff;border-radius:16px;padding:14px}
 .panel-card h3{margin:0 0 12px;font-size:1.05rem;font-weight:900}
 @media (max-width:900px){.dashboard-panels{grid-template-columns:1fr}}
+
+/* Dashboard KPI cards */
+.admin-kpi{
+  display:flex;
+  gap:12px;
+  padding:14px 14px;
+  border-radius:18px;
+  border:1px solid rgba(15,23,42,.10);
+  background:linear-gradient(180deg,#fff,#fbfdff);
+  box-shadow:0 10px 22px rgba(15,23,42,.05);
+  text-decoration:none;
+  color:inherit;
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  min-height:104px;
+}
+.admin-kpi:hover{
+  transform:translateY(-2px);
+  box-shadow:0 18px 46px rgba(15,23,42,.10);
+  border-color:rgba(255,122,24,.22);
+}
+.admin-kpi-icon{
+  width:46px;height:46px;
+  border-radius:16px;
+  display:grid;place-items:center;
+  border:1px solid rgba(15,23,42,.08);
+  flex:0 0 auto;
+  font-size:1.2rem;
+}
+.bg-soft-orange{background:rgba(255,122,24,.14);color:#8a3f00}
+.bg-soft-blue{background:rgba(59,130,246,.14);color:#1e40af}
+.bg-soft-indigo{background:rgba(99,102,241,.14);color:#3730a3}
+.bg-soft-green{background:rgba(16,185,129,.14);color:#065f46}
+.admin-kpi-body{min-width:0}
+.admin-kpi-label{font-weight:800;color:var(--admin-muted);font-size:.9rem}
+.admin-kpi-value{font-weight:900;font-size:2rem;line-height:1.05;margin-top:2px}
+.admin-kpi-note{color:var(--admin-muted);font-size:.85rem;margin-top:2px}
+.admin-mini-stat{
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:14px;
+  padding:10px 12px;
+  background:#fff;
+}
