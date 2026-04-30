@@ -12,9 +12,7 @@ final class PartnersController extends BaseController
 {
     public function index(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['partners.view']);
 
         $this->view('admin.partners.index', [
             'title' => 'Partenaires',
@@ -28,9 +26,7 @@ final class PartnersController extends BaseController
 
     public function create(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['partners.create']);
 
         $this->view('admin.partners.form', [
             'title' => 'Nouveau partenaire',
@@ -43,9 +39,7 @@ final class PartnersController extends BaseController
 
     public function store(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['partners.create']);
 
         $name = trim((string)($_POST['name'] ?? ''));
         $url = trim((string)($_POST['url'] ?? '')) ?: null;
@@ -78,9 +72,7 @@ final class PartnersController extends BaseController
 
     public function edit(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['partners.update']);
 
         $id = (int)($_GET['id'] ?? 0);
         $partner = $id > 0 ? Partner::find($id) : null;
@@ -100,9 +92,7 @@ final class PartnersController extends BaseController
 
     public function update(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['partners.update']);
 
         $id = (int)($_POST['id'] ?? 0);
         $partner = $id > 0 ? Partner::find($id) : null;
@@ -145,9 +135,7 @@ final class PartnersController extends BaseController
 
     public function delete(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['partners.delete']);
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {

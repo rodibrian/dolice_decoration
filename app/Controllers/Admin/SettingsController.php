@@ -12,9 +12,7 @@ final class SettingsController extends BaseController
 {
     public function index(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['settings.view']);
 
         $this->view('admin.settings.index', [
             'title' => 'Paramètres',
@@ -27,9 +25,7 @@ final class SettingsController extends BaseController
 
     public function update(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['settings.update']);
 
         $keys = [
             'phone',

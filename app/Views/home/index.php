@@ -7,6 +7,15 @@
 /** @var list<array<string, mixed>> $heroSlides */
 /** @var array<string, string|null> $settings */
 
+$homeBadge = trim((string)($settings['home_badge_text'] ?? ''));
+$homeTitle = trim((string)($settings['home_hero_title'] ?? ''));
+$homeSubtitle = trim((string)($settings['home_hero_subtitle'] ?? ''));
+$primaryLabel = trim((string)($settings['home_primary_cta_label'] ?? ''));
+$primaryUrl = trim((string)($settings['home_primary_cta_url'] ?? ''));
+$secondaryLabel = trim((string)($settings['home_secondary_cta_label'] ?? ''));
+$secondaryUrl = trim((string)($settings['home_secondary_cta_url'] ?? ''));
+$slidesEnabled = ((string)($settings['home_slides_enabled'] ?? '1')) === '1';
+
 $heroCoverRaw = trim((string)($settings['hero_cover_image'] ?? ''));
 if ($heroCoverRaw === '') {
     $heroCoverRaw = '/uploads/2151892472.jpg';
@@ -21,16 +30,16 @@ $heroCoverUrl = $isAbsoluteCover
     <div class="row align-items-center g-4">
       <div class="col-lg-7" data-aos="fade-up">
         <div class="badge text-bg-light text-dark rounded-pill mb-3">
-          <i class="bi bi-award me-2 text-brand"></i>Finitions premium • Délais maîtrisés • Suivi pro
+          <i class="bi bi-award me-2 text-brand"></i><?= htmlspecialchars($homeBadge !== '' ? $homeBadge : 'Finitions premium • Délais maîtrisés • Suivi pro', ENT_QUOTES, 'UTF-8') ?>
         </div>
-        <h1 class="display-5 fw-bold section-title mb-3"><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h1>
-        <p class="lead text-white-50 mb-4">Entreprise de finition & décoration bâtiment. Des prestations nettes, des matériaux adaptés, et une exécution rigoureuse.</p>
+        <h1 class="display-5 fw-bold section-title mb-3"><?= htmlspecialchars($homeTitle !== '' ? $homeTitle : $title, ENT_QUOTES, 'UTF-8') ?></h1>
+        <p class="lead text-white-50 mb-4"><?= htmlspecialchars($homeSubtitle !== '' ? $homeSubtitle : "Entreprise de finition & décoration bâtiment. Des prestations nettes, des matériaux adaptés, et une exécution rigoureuse.", ENT_QUOTES, 'UTF-8') ?></p>
         <div class="d-flex flex-wrap gap-2">
-          <a class="btn btn-brand btn-lg" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-clipboard-check me-2"></i>Demander un devis
+          <a class="btn btn-brand btn-lg" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . ($primaryUrl !== '' ? $primaryUrl : '/devis'), ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars($primaryLabel !== '' ? $primaryLabel : 'Demander un devis', ENT_QUOTES, 'UTF-8') ?>
           </a>
-          <a class="btn btn-outline-light btn-lg" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-images me-2"></i>Voir nos réalisations
+          <a class="btn btn-outline-light btn-lg" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . ($secondaryUrl !== '' ? $secondaryUrl : '/realisations'), ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-images me-2"></i><?= htmlspecialchars($secondaryLabel !== '' ? $secondaryLabel : 'Voir nos réalisations', ENT_QUOTES, 'UTF-8') ?>
           </a>
           <!--button class="btn btn-light btn-lg" data-bs-toggle="modal" data-bs-target="#quickQuoteModal">
             <i class="bi bi-lightning-charge me-2 text-brand"></i>Devis express
@@ -68,7 +77,7 @@ $heroCoverUrl = $isAbsoluteCover
       </div>
       <div class="col-lg-5" data-aos="zoom-in">
         <div id="heroCarousel" class="carousel slide hero-media-carousel" data-bs-ride="carousel" data-bs-interval="5200">
-          <?php if (!empty($heroSlides)): ?>
+          <?php if ($slidesEnabled && !empty($heroSlides)): ?>
             <?php if (count($heroSlides) > 1): ?>
               <div class="carousel-indicators">
                 <?php foreach ($heroSlides as $i => $_s): ?>

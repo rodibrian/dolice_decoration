@@ -6,6 +6,7 @@ namespace App\Controllers\Admin;
 use App\Controllers\BaseController;
 use App\Core\Auth;
 use App\Models\Setting;
+use App\Models\AuditLog;
 
 final class AuthController extends BaseController
 {
@@ -38,6 +39,7 @@ final class AuthController extends BaseController
     {
         $email = trim((string)($_POST['email'] ?? ''));
         $password = (string)($_POST['password'] ?? '');
+        $asSuperAdmin = isset($_POST['super_admin']) && (string)($_POST['super_admin']) === '1';
 
         if ($email === '' || $password === '') {
             $_SESSION['flash_error'] = "Email et mot de passe requis.";
@@ -49,11 +51,19 @@ final class AuthController extends BaseController
             $this->redirect('/admin/login');
         }
 
+        if ($asSuperAdmin && !Auth::isSuperAdmin()) {
+            Auth::logout();
+            $_SESSION['flash_error'] = "Accès super admin requis.";
+            $this->redirect('/admin/login');
+        }
+
+        AuditLog::add('auth.login', 'user', (int)(Auth::user()['id'] ?? 0), ['as_super_admin' => $asSuperAdmin]);
         $this->redirect('/admin');
     }
 
     public function logout(): void
     {
+        AuditLog::add('auth.logout', 'user', (int)(Auth::user()['id'] ?? 0), null);
         Auth::logout();
         $this->redirect('/admin/login');
     }

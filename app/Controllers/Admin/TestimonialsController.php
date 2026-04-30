@@ -12,9 +12,7 @@ final class TestimonialsController extends BaseController
 {
     public function index(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['testimonials.view']);
 
         $this->view('admin.testimonials.index', [
             'title' => 'Témoignages',
@@ -28,9 +26,7 @@ final class TestimonialsController extends BaseController
 
     public function create(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['testimonials.create']);
 
         $this->view('admin.testimonials.form', [
             'title' => 'Nouveau témoignage',
@@ -43,9 +39,7 @@ final class TestimonialsController extends BaseController
 
     public function store(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['testimonials.create']);
 
         $clientName = trim((string)($_POST['client_name'] ?? ''));
         $clientCompany = trim((string)($_POST['client_company'] ?? '')) ?: null;
@@ -86,9 +80,7 @@ final class TestimonialsController extends BaseController
 
     public function edit(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['testimonials.update']);
 
         $id = (int)($_GET['id'] ?? 0);
         $testimonial = $id > 0 ? Testimonial::find($id) : null;
@@ -108,9 +100,7 @@ final class TestimonialsController extends BaseController
 
     public function update(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['testimonials.update']);
 
         $id = (int)($_POST['id'] ?? 0);
         $testimonial = $id > 0 ? Testimonial::find($id) : null;
@@ -161,9 +151,7 @@ final class TestimonialsController extends BaseController
 
     public function approve(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['testimonials.update']);
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
@@ -175,9 +163,7 @@ final class TestimonialsController extends BaseController
 
     public function delete(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['testimonials.delete']);
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {

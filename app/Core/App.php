@@ -21,6 +21,11 @@ use App\Controllers\Admin\PartnersController;
 use App\Controllers\Admin\PagesController;
 use App\Controllers\Admin\SettingsController;
 use App\Controllers\Admin\HeroSlidesController;
+use App\Controllers\Admin\UsersController;
+use App\Controllers\Admin\LogsController;
+use App\Controllers\Admin\RolesController;
+use App\Controllers\Admin\HomeSettingsController;
+use App\Controllers\Admin\CompanySettingsController;
 
 final class App
 {
@@ -123,6 +128,25 @@ final class App
         // Admin - Settings
         $router->get('/admin/settings', [SettingsController::class, 'index']);
         $router->post('/admin/settings/update', [SettingsController::class, 'update']);
+
+        // Admin - Home / Company managers
+        $router->get('/admin/home', [HomeSettingsController::class, 'index']);
+        $router->post('/admin/home/update', [HomeSettingsController::class, 'update']);
+        $router->get('/admin/company', [CompanySettingsController::class, 'index']);
+        $router->post('/admin/company/update', [CompanySettingsController::class, 'update']);
+
+        // Admin - Super admin
+        $router->get('/admin/users', [UsersController::class, 'index']);
+        $router->get('/admin/users/create', [UsersController::class, 'create']);
+        $router->post('/admin/users/store', [UsersController::class, 'store']);
+        $router->get('/admin/users/edit', [UsersController::class, 'edit']);
+        $router->post('/admin/users/update', [UsersController::class, 'update']);
+        $router->post('/admin/users/delete', [UsersController::class, 'delete']);
+
+        $router->get('/admin/logs', [LogsController::class, 'index']);
+
+        $router->get('/admin/roles', [RolesController::class, 'index']);
+        $router->post('/admin/roles/update', [RolesController::class, 'update']);
 
         $router->dispatch();
     }

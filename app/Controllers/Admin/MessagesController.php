@@ -11,9 +11,7 @@ final class MessagesController extends BaseController
 {
     public function index(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['messages.view']);
 
         $this->view('admin.messages.index', [
             'title' => 'Messages',
@@ -27,9 +25,7 @@ final class MessagesController extends BaseController
 
     public function show(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['messages.view']);
 
         $id = (int)($_GET['id'] ?? 0);
         $message = $id > 0 ? ContactMessage::find($id) : null;
@@ -50,9 +46,7 @@ final class MessagesController extends BaseController
 
     public function updateStatus(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['messages.update']);
 
         $id = (int)($_POST['id'] ?? 0);
         $message = $id > 0 ? ContactMessage::find($id) : null;

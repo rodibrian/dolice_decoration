@@ -11,9 +11,7 @@ final class QuotesController extends BaseController
 {
     public function index(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['quotes.view']);
 
         $this->view('admin.quotes.index', [
             'title' => 'Demandes de devis',
@@ -27,9 +25,7 @@ final class QuotesController extends BaseController
 
     public function show(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['quotes.view']);
 
         $id = (int)($_GET['id'] ?? 0);
         $quote = $id > 0 ? QuoteRequest::find($id) : null;
@@ -51,9 +47,7 @@ final class QuotesController extends BaseController
 
     public function update(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['quotes.update']);
 
         $id = (int)($_POST['id'] ?? 0);
         $quote = $id > 0 ? QuoteRequest::find($id) : null;

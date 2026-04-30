@@ -1,6 +1,11 @@
 <?php
 /** @var string $content */
 /** @var string|null $title */
+$user = \App\Core\Auth::user();
+$role = is_array($user) ? (string)($user['role'] ?? '') : '';
+$isSuper = ($role === 'super_admin');
+$canContent = \App\Core\Auth::can('services.view') || \App\Core\Auth::can('projects.view') || \App\Core\Auth::can('posts.view') || \App\Core\Auth::can('testimonials.view') || \App\Core\Auth::can('partners.view') || \App\Core\Auth::can('hero_slides.view') || \App\Core\Auth::can('pages.view') || \App\Core\Auth::can('settings.view');
+$canInbox = \App\Core\Auth::can('quotes.view') || \App\Core\Auth::can('messages.view');
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/admin', PHP_URL_PATH) ?: '/admin';
 $isActive = static function (string $prefix) use ($uri): string {
     return str_starts_with($uri, $prefix) ? 'is-active' : '';
@@ -31,38 +36,82 @@ $isActive = static function (string $prefix) use ($uri): string {
 
         <nav class="admin-nav">
           <div class="admin-nav-title">Gestion</div>
-          <a class="admin-nav-link <?= $isActive('/admin/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/services', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-tools"></i><span>Services</span>
-          </a>
-          <a class="admin-nav-link <?= $isActive('/admin/projects') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/projects', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-building-gear"></i><span>Réalisations</span>
-          </a>
-          <a class="admin-nav-link <?= $isActive('/admin/posts') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/posts', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-newspaper"></i><span>Blog</span>
-          </a>
-          <a class="admin-nav-link <?= $isActive('/admin/testimonials') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/testimonials', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-chat-quote"></i><span>Témoignages</span>
-          </a>
-          <a class="admin-nav-link <?= $isActive('/admin/quotes') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/quotes', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-file-earmark-text"></i><span>Devis</span>
-          </a>
-          <a class="admin-nav-link <?= $isActive('/admin/messages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/messages', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-envelope"></i><span>Messages</span>
-          </a>
-          <a class="admin-nav-link <?= $isActive('/admin/partners') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/partners', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-people"></i><span>Partenaires</span>
-          </a>
-          <a class="admin-nav-link <?= $isActive('/admin/hero-slides') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/hero-slides', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-images"></i><span>Slides accueil</span>
-          </a>
+          <?php if (\App\Core\Auth::can('services.view')): ?>
+            <a class="admin-nav-link <?= $isActive('/admin/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/services', ENT_QUOTES, 'UTF-8') ?>">
+              <i class="bi bi-tools"></i><span>Services</span>
+            </a>
+          <?php endif; ?>
+          <?php if (\App\Core\Auth::can('projects.view')): ?>
+            <a class="admin-nav-link <?= $isActive('/admin/projects') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/projects', ENT_QUOTES, 'UTF-8') ?>">
+              <i class="bi bi-building-gear"></i><span>Réalisations</span>
+            </a>
+          <?php endif; ?>
+          <?php if (\App\Core\Auth::can('posts.view')): ?>
+            <a class="admin-nav-link <?= $isActive('/admin/posts') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/posts', ENT_QUOTES, 'UTF-8') ?>">
+              <i class="bi bi-newspaper"></i><span>Blog</span>
+            </a>
+          <?php endif; ?>
+          <?php if (\App\Core\Auth::can('testimonials.view')): ?>
+            <a class="admin-nav-link <?= $isActive('/admin/testimonials') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/testimonials', ENT_QUOTES, 'UTF-8') ?>">
+              <i class="bi bi-chat-quote"></i><span>Témoignages</span>
+            </a>
+          <?php endif; ?>
+          <?php if (\App\Core\Auth::can('partners.view')): ?>
+            <a class="admin-nav-link <?= $isActive('/admin/partners') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/partners', ENT_QUOTES, 'UTF-8') ?>">
+              <i class="bi bi-people"></i><span>Partenaires</span>
+            </a>
+          <?php endif; ?>
+          <?php if (\App\Core\Auth::can('hero_slides.view')): ?>
+            <a class="admin-nav-link <?= $isActive('/admin/hero-slides') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/hero-slides', ENT_QUOTES, 'UTF-8') ?>">
+              <i class="bi bi-images"></i><span>Slides accueil</span>
+            </a>
+          <?php endif; ?>
 
-          <div class="admin-nav-title mt-3">Configuration</div>
-          <a class="admin-nav-link <?= $isActive('/admin/pages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/pages', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-file-text"></i><span>Pages</span>
-          </a>
-          <a class="admin-nav-link <?= $isActive('/admin/settings') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/settings', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-gear"></i><span>Paramètres</span>
-          </a>
+          <?php if (\App\Core\Auth::can('quotes.view')): ?>
+            <a class="admin-nav-link <?= $isActive('/admin/quotes') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/quotes', ENT_QUOTES, 'UTF-8') ?>">
+              <i class="bi bi-file-earmark-text"></i><span>Devis</span>
+            </a>
+          <?php endif; ?>
+          <?php if (\App\Core\Auth::can('messages.view')): ?>
+            <a class="admin-nav-link <?= $isActive('/admin/messages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/messages', ENT_QUOTES, 'UTF-8') ?>">
+              <i class="bi bi-envelope"></i><span>Messages</span>
+            </a>
+          <?php endif; ?>
+
+          <?php if ($isSuper): ?>
+            <div class="admin-nav-title mt-3">Super admin</div>
+            <a class="admin-nav-link <?= $isActive('/admin/users') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/users', ENT_QUOTES, 'UTF-8') ?>">
+              <i class="bi bi-person-gear"></i><span>Utilisateurs</span>
+            </a>
+            <a class="admin-nav-link <?= $isActive('/admin/roles') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/roles', ENT_QUOTES, 'UTF-8') ?>">
+              <i class="bi bi-sliders"></i><span>Autorisations</span>
+            </a>
+            <a class="admin-nav-link <?= $isActive('/admin/logs') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/logs', ENT_QUOTES, 'UTF-8') ?>">
+              <i class="bi bi-activity"></i><span>Logs</span>
+            </a>
+          <?php endif; ?>
+
+          <?php if (\App\Core\Auth::can('pages.view') || \App\Core\Auth::can('settings.view')): ?>
+            <div class="admin-nav-title mt-3">Configuration</div>
+            <?php if (\App\Core\Auth::can('settings.view')): ?>
+              <a class="admin-nav-link <?= $isActive('/admin/home') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/home', ENT_QUOTES, 'UTF-8') ?>">
+                <i class="bi bi-house-gear"></i><span>Gérer Accueil</span>
+              </a>
+              <a class="admin-nav-link <?= $isActive('/admin/company') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/company', ENT_QUOTES, 'UTF-8') ?>">
+                <i class="bi bi-building-gear"></i><span>Gérer Entreprise</span>
+              </a>
+            <?php endif; ?>
+            <?php if (\App\Core\Auth::can('pages.view')): ?>
+              <a class="admin-nav-link <?= $isActive('/admin/pages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/pages', ENT_QUOTES, 'UTF-8') ?>">
+                <i class="bi bi-file-text"></i><span>Pages</span>
+              </a>
+            <?php endif; ?>
+            <?php if (\App\Core\Auth::can('settings.view')): ?>
+              <a class="admin-nav-link <?= $isActive('/admin/settings') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/settings', ENT_QUOTES, 'UTF-8') ?>">
+                <i class="bi bi-gear"></i><span>Paramètres</span>
+              </a>
+            <?php endif; ?>
+          <?php endif; ?>
 
           <div class="admin-nav-title mt-3">Raccourcis</div>
           <a class="admin-nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">
@@ -121,18 +170,52 @@ $isActive = static function (string $prefix) use ($uri): string {
     <div class="offcanvas-body">
       <nav class="admin-nav">
         <div class="admin-nav-title">Gestion</div>
-        <a class="admin-nav-link <?= $isActive('/admin/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/services', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-tools"></i><span>Services</span></a>
-        <a class="admin-nav-link <?= $isActive('/admin/projects') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/projects', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-building-gear"></i><span>Réalisations</span></a>
-        <a class="admin-nav-link <?= $isActive('/admin/posts') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/posts', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-newspaper"></i><span>Blog</span></a>
-        <a class="admin-nav-link <?= $isActive('/admin/testimonials') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/testimonials', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-chat-quote"></i><span>Témoignages</span></a>
-        <a class="admin-nav-link <?= $isActive('/admin/quotes') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/quotes', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-file-earmark-text"></i><span>Devis</span></a>
-        <a class="admin-nav-link <?= $isActive('/admin/messages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/messages', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope"></i><span>Messages</span></a>
-        <a class="admin-nav-link <?= $isActive('/admin/partners') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/partners', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-people"></i><span>Partenaires</span></a>
-        <a class="admin-nav-link <?= $isActive('/admin/hero-slides') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/hero-slides', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images"></i><span>Slides accueil</span></a>
+        <?php if (\App\Core\Auth::can('services.view')): ?>
+          <a class="admin-nav-link <?= $isActive('/admin/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/services', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-tools"></i><span>Services</span></a>
+        <?php endif; ?>
+        <?php if (\App\Core\Auth::can('projects.view')): ?>
+          <a class="admin-nav-link <?= $isActive('/admin/projects') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/projects', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-building-gear"></i><span>Réalisations</span></a>
+        <?php endif; ?>
+        <?php if (\App\Core\Auth::can('posts.view')): ?>
+          <a class="admin-nav-link <?= $isActive('/admin/posts') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/posts', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-newspaper"></i><span>Blog</span></a>
+        <?php endif; ?>
+        <?php if (\App\Core\Auth::can('testimonials.view')): ?>
+          <a class="admin-nav-link <?= $isActive('/admin/testimonials') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/testimonials', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-chat-quote"></i><span>Témoignages</span></a>
+        <?php endif; ?>
+        <?php if (\App\Core\Auth::can('partners.view')): ?>
+          <a class="admin-nav-link <?= $isActive('/admin/partners') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/partners', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-people"></i><span>Partenaires</span></a>
+        <?php endif; ?>
+        <?php if (\App\Core\Auth::can('hero_slides.view')): ?>
+          <a class="admin-nav-link <?= $isActive('/admin/hero-slides') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/hero-slides', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images"></i><span>Slides accueil</span></a>
+        <?php endif; ?>
 
-        <div class="admin-nav-title mt-3">Configuration</div>
-        <a class="admin-nav-link <?= $isActive('/admin/pages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/pages', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-file-text"></i><span>Pages</span></a>
-        <a class="admin-nav-link <?= $isActive('/admin/settings') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/settings', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-gear"></i><span>Paramètres</span></a>
+        <?php if (\App\Core\Auth::can('quotes.view')): ?>
+          <a class="admin-nav-link <?= $isActive('/admin/quotes') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/quotes', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-file-earmark-text"></i><span>Devis</span></a>
+        <?php endif; ?>
+        <?php if (\App\Core\Auth::can('messages.view')): ?>
+          <a class="admin-nav-link <?= $isActive('/admin/messages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/messages', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope"></i><span>Messages</span></a>
+        <?php endif; ?>
+
+        <?php if ($isSuper): ?>
+          <div class="admin-nav-title mt-3">Super admin</div>
+          <a class="admin-nav-link <?= $isActive('/admin/users') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/users', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-person-gear"></i><span>Utilisateurs</span></a>
+          <a class="admin-nav-link <?= $isActive('/admin/roles') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/roles', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-sliders"></i><span>Autorisations</span></a>
+          <a class="admin-nav-link <?= $isActive('/admin/logs') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/logs', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-activity"></i><span>Logs</span></a>
+        <?php endif; ?>
+
+        <?php if (\App\Core\Auth::can('pages.view') || \App\Core\Auth::can('settings.view')): ?>
+          <div class="admin-nav-title mt-3">Configuration</div>
+          <?php if (\App\Core\Auth::can('settings.view')): ?>
+            <a class="admin-nav-link <?= $isActive('/admin/home') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/home', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-house-gear"></i><span>Gérer Accueil</span></a>
+            <a class="admin-nav-link <?= $isActive('/admin/company') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/company', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-building-gear"></i><span>Gérer Entreprise</span></a>
+          <?php endif; ?>
+          <?php if (\App\Core\Auth::can('pages.view')): ?>
+            <a class="admin-nav-link <?= $isActive('/admin/pages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/pages', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-file-text"></i><span>Pages</span></a>
+          <?php endif; ?>
+          <?php if (\App\Core\Auth::can('settings.view')): ?>
+            <a class="admin-nav-link <?= $isActive('/admin/settings') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/settings', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-gear"></i><span>Paramètres</span></a>
+          <?php endif; ?>
+        <?php endif; ?>
 
         <div class="admin-nav-title mt-3">Raccourcis</div>
         <a class="admin-nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-globe2"></i><span>Voir le site</span></a>

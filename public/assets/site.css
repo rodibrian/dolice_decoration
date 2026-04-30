@@ -8,6 +8,20 @@
   --content-gutter:clamp(18px, 4vw, 64px);
 }
 
+/* 3 built-in themes (set on <body class="theme-...">) */
+body.theme-default{
+  --brand:#ff7a18;
+  --brand-2:#0d6efd;
+}
+body.theme-ocean{
+  --brand:#0ea5e9;   /* sky */
+  --brand-2:#14b8a6; /* teal */
+}
+body.theme-sunset{
+  --brand:#f43f5e;   /* rose */
+  --brand-2:#8b5cf6; /* violet */
+}
+
 html{scroll-behavior:smooth}
 body{font-family:var(--font-base)}
 .min-w-0{min-width:0}
@@ -169,14 +183,17 @@ body{font-family:var(--font-base)}
 .btn-brand{
   --bs-btn-bg:var(--brand);
   --bs-btn-border-color:var(--brand);
-  --bs-btn-hover-bg:#ff8c3a;
-  --bs-btn-hover-border-color:#ff8c3a;
+  --bs-btn-hover-bg:var(--brand-2);
+  --bs-btn-hover-border-color:var(--brand-2);
   --bs-btn-color:#1b1208;
   font-weight:700;
 }
 .text-brand{color:var(--brand)!important}
 .bg-soft{
-  background: linear-gradient(180deg, rgba(13,110,253,.06), rgba(255,122,24,.05));
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--brand-2) 12%, transparent),
+    color-mix(in srgb, var(--brand) 10%, transparent)
+  );
 }
 
 .card-hover{

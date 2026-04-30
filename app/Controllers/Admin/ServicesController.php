@@ -12,9 +12,7 @@ final class ServicesController extends BaseController
 {
     public function index(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['services.view']);
 
         $this->view('admin.services.index', [
             'title' => 'Services',
@@ -27,9 +25,7 @@ final class ServicesController extends BaseController
 
     public function create(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['services.create']);
 
         $this->view('admin.services.form', [
             'title' => 'Nouveau service',
@@ -42,9 +38,7 @@ final class ServicesController extends BaseController
 
     public function store(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['services.create']);
 
         $title = trim((string)($_POST['title'] ?? ''));
         $slug = trim((string)($_POST['slug'] ?? ''));
@@ -95,9 +89,7 @@ final class ServicesController extends BaseController
 
     public function edit(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['services.update']);
 
         $id = (int)($_GET['id'] ?? 0);
         $service = $id > 0 ? Service::find($id) : null;
@@ -117,9 +109,7 @@ final class ServicesController extends BaseController
 
     public function update(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['services.update']);
 
         $id = (int)($_POST['id'] ?? 0);
         $service = $id > 0 ? Service::find($id) : null;
@@ -180,9 +170,7 @@ final class ServicesController extends BaseController
 
     public function delete(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['services.delete']);
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {

@@ -21,6 +21,25 @@ abstract class BaseController
         exit;
     }
 
+    /**
+     * Require authenticated admin session and optionally capabilities.
+     *
+     * @param list<string> $capabilities
+     */
+    protected function requireAdmin(array $capabilities = []): void
+    {
+        if (!\App\Core\Auth::check()) {
+            $this->redirect('/admin/login');
+        }
+        foreach ($capabilities as $cap) {
+            if (!\App\Core\Auth::can($cap)) {
+                http_response_code(403);
+                echo '403';
+                exit;
+            }
+        }
+    }
+
     protected function url(string $path): string
     {
         $base = rtrim(env('APP_URL', ''), '/');

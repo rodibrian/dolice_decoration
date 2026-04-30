@@ -41,11 +41,19 @@ $demoPassword = $isLocal ? 'Admin@1234' : '';
           value="<?= htmlspecialchars($demoPassword, ENT_QUOTES, 'UTF-8') ?>"
         >
       </label>
+
+      <label class="check">
+        <input type="checkbox" name="super_admin" value="1">
+        Se connecter en super admin
+      </label>
       <button class="btn primary w-100" type="submit"><i class="bi bi-box-arrow-in-right"></i>Se connecter</button>
     </form>
 
     <div class="admin-auth-hint">
-      <span class="muted">Après connexion, vous serez redirigé vers le dashboard.</span>
+      <div class="muted">Après connexion, vous serez redirigé vers le dashboard.</div>
+      <div class="mt-3 d-grid gap-2">
+        <a class="btn btn-sm" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-arrow-left"></i>Revenir au site</a>
+      </div>
     </div>
   </div>
 </div>

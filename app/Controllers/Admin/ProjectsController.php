@@ -12,9 +12,7 @@ final class ProjectsController extends BaseController
 {
     public function index(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['projects.view']);
 
         $this->view('admin.projects.index', [
             'title' => 'Réalisations',
@@ -28,9 +26,7 @@ final class ProjectsController extends BaseController
 
     public function create(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['projects.create']);
 
         $this->view('admin.projects.form', [
             'title' => 'Nouvelle réalisation',
@@ -44,9 +40,7 @@ final class ProjectsController extends BaseController
 
     public function store(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['projects.create']);
 
         $title = trim((string)($_POST['title'] ?? ''));
         $slug = trim((string)($_POST['slug'] ?? ''));
@@ -95,9 +89,7 @@ final class ProjectsController extends BaseController
 
     public function edit(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['projects.update']);
 
         $id = (int)($_GET['id'] ?? 0);
         $project = $id > 0 ? Project::find($id) : null;
@@ -118,9 +110,7 @@ final class ProjectsController extends BaseController
 
     public function update(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['projects.update']);
 
         $id = (int)($_POST['id'] ?? 0);
         $project = $id > 0 ? Project::find($id) : null;
@@ -176,9 +166,7 @@ final class ProjectsController extends BaseController
 
     public function delete(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['projects.delete']);
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
@@ -190,9 +178,7 @@ final class ProjectsController extends BaseController
 
     public function deleteImage(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['projects.update']);
 
         $projectId = (int)($_POST['project_id'] ?? 0);
         $imageId = (int)($_POST['image_id'] ?? 0);

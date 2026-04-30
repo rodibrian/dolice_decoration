@@ -11,9 +11,7 @@ final class DashboardController extends BaseController
 {
     public function index(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['dashboard.view']);
 
         $pdo = DB::pdo();
         $kpi = [

@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(120) NOT NULL,
   email VARCHAR(190) NOT NULL,
-  role ENUM('admin','agent','read') NOT NULL DEFAULT 'admin',
+  role ENUM('super_admin','admin') NOT NULL DEFAULT 'admin',
   password_hash VARCHAR(255) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -21,6 +21,34 @@ CREATE TABLE IF NOT EXISTS users (
 INSERT INTO users (name, email, role, password_hash)
 VALUES ('Admin', 'admin@dolice.local', 'admin', '$2y$10$QvOC3u9SXVYISUzBZX/WGOV/XEplLzwzUkqYj8k1bpJRjvmeeQ4Iu')
 ON DUPLICATE KEY UPDATE email = email;
+
+-- Audit logs (actions admin)
+CREATE TABLE IF NOT EXISTS audit_logs (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NULL,
+  user_email VARCHAR(190) NULL,
+  action VARCHAR(120) NOT NULL,
+  entity VARCHAR(120) NULL,
+  entity_id INT UNSIGNED NULL,
+  meta_json MEDIUMTEXT NULL,
+  ip VARCHAR(64) NULL,
+  user_agent VARCHAR(255) NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_audit_created (created_at, id),
+  KEY idx_audit_action (action, created_at),
+  KEY idx_audit_entity (entity, entity_id, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Role capabilities (RBAC): which role can do what
+CREATE TABLE IF NOT EXISTS role_capabilities (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  role VARCHAR(40) NOT NULL,
+  capability VARCHAR(120) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_role_capability (role, capability),
+  KEY idx_role (role),
+  KEY idx_cap (capability)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Services
 CREATE TABLE IF NOT EXISTS services (

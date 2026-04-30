@@ -12,9 +12,7 @@ final class PostsController extends BaseController
 {
     public function index(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['posts.view']);
 
         $this->view('admin.posts.index', [
             'title' => 'Articles',
@@ -28,9 +26,7 @@ final class PostsController extends BaseController
 
     public function create(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['posts.create']);
 
         $this->view('admin.posts.form', [
             'title' => 'Nouvel article',
@@ -43,9 +39,7 @@ final class PostsController extends BaseController
 
     public function store(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['posts.create']);
 
         $title = trim((string)($_POST['title'] ?? ''));
         $slug = trim((string)($_POST['slug'] ?? ''));
@@ -92,9 +86,7 @@ final class PostsController extends BaseController
 
     public function edit(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['posts.update']);
 
         $id = (int)($_GET['id'] ?? 0);
         $post = $id > 0 ? Post::find($id) : null;
@@ -114,9 +106,7 @@ final class PostsController extends BaseController
 
     public function update(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['posts.update']);
 
         $id = (int)($_POST['id'] ?? 0);
         $post = $id > 0 ? Post::find($id) : null;
@@ -176,9 +166,7 @@ final class PostsController extends BaseController
 
     public function delete(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['posts.delete']);
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {

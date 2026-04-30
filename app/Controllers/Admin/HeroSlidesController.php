@@ -12,9 +12,7 @@ final class HeroSlidesController extends BaseController
 {
     public function index(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['hero_slides.view']);
 
         $slides = [];
         $error = $_SESSION['flash_error'] ?? null;
@@ -37,9 +35,7 @@ final class HeroSlidesController extends BaseController
 
     public function create(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['hero_slides.create']);
 
         $this->view('admin.hero_slides.form', [
             'title' => 'Nouveau slide',
@@ -52,9 +48,7 @@ final class HeroSlidesController extends BaseController
 
     public function store(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['hero_slides.create']);
 
         $title = trim((string)($_POST['title'] ?? '')) ?: null;
         $subtitle = trim((string)($_POST['subtitle'] ?? '')) ?: null;
@@ -95,9 +89,7 @@ final class HeroSlidesController extends BaseController
 
     public function edit(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['hero_slides.update']);
 
         $id = (int)($_GET['id'] ?? 0);
         $slide = $id > 0 ? HeroSlide::find($id) : null;
@@ -117,9 +109,7 @@ final class HeroSlidesController extends BaseController
 
     public function update(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['hero_slides.update']);
 
         $id = (int)($_POST['id'] ?? 0);
         $slide = $id > 0 ? HeroSlide::find($id) : null;
@@ -172,9 +162,7 @@ final class HeroSlidesController extends BaseController
 
     public function delete(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['hero_slides.delete']);
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {

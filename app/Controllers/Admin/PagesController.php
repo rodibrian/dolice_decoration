@@ -11,9 +11,7 @@ final class PagesController extends BaseController
 {
     public function index(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['pages.view']);
 
         $this->view('admin.pages.index', [
             'title' => 'Pages',
@@ -26,9 +24,7 @@ final class PagesController extends BaseController
 
     public function edit(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['pages.update']);
 
         $key = trim((string)($_GET['page_key'] ?? ''));
         if ($key === '') {
@@ -55,9 +51,7 @@ final class PagesController extends BaseController
 
     public function update(): void
     {
-        if (!Auth::check()) {
-            $this->redirect('/admin/login');
-        }
+        $this->requireAdmin(['pages.update']);
 
         $key = trim((string)($_POST['page_key'] ?? ''));
         $title = trim((string)($_POST['title'] ?? ''));

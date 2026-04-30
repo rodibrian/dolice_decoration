@@ -1,6 +1,37 @@
 <?php
 /** @var string $content */
 /** @var string|null $title */
+
+$companyName = \App\Models\Setting::get('company_name', 'Dolice Decoration') ?? 'Dolice Decoration';
+$companySlogan = \App\Models\Setting::get('company_slogan', 'Finition & décoration de bâtiment.') ?? 'Finition & décoration de bâtiment.';
+$companyLogo = \App\Models\Setting::get('company_logo', null);
+$companyLogoUrl = '';
+if (!empty($companyLogo)) {
+  $isAbsLogo = preg_match('#^https?://#i', (string)$companyLogo) === 1;
+  $companyLogoUrl = $isAbsLogo
+    ? (string)$companyLogo
+    : ((env('APP_URL', '') ?: '') . (string)$companyLogo);
+}
+
+$theme = \App\Models\Setting::get('site_theme', 'default') ?? 'default';
+$theme = in_array($theme, ['default', 'ocean', 'sunset'], true) ? $theme : 'default';
+
+$heroCoverRaw = trim((string)(\App\Models\Setting::get('hero_cover_image', '') ?? ''));
+$heroCoverUrl = '';
+if ($heroCoverRaw !== '') {
+  $isAbsoluteCover = preg_match('#^https?://#i', $heroCoverRaw) === 1;
+  $heroCoverUrl = $isAbsoluteCover
+    ? $heroCoverRaw
+    : (rtrim((string)(env('APP_URL', '') ?: ''), '/') . '/' . ltrim($heroCoverRaw, '/'));
+}
+
+$isOn = static function (string $k, bool $defaultOn = true): bool {
+  $v = \App\Models\Setting::get($k, null);
+  if ($v === null || $v === '') {
+    return $defaultOn;
+  }
+  return (string)$v === '1';
+};
 ?>
 <!doctype html>
 <html lang="fr">
@@ -29,11 +60,16 @@
   <link rel="stylesheet" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/assets/site.css', ENT_QUOTES, 'UTF-8') ?>">
   <meta name="app-base" content="<?= htmlspecialchars((string)(env('APP_URL', '') ?: ''), ENT_QUOTES, 'UTF-8') ?>">
 </head>
-<body>
+<body class="theme-<?= htmlspecialchars($theme, ENT_QUOTES, 'UTF-8') ?>" <?= $heroCoverUrl !== '' ? 'style="--hero-cover:url(\'' . htmlspecialchars($heroCoverUrl, ENT_QUOTES, 'UTF-8') . '\')"' : '' ?>>
   <nav class="navbar navbar-expand-lg navbar-blur">
     <div class="container py-2">
       <a class="navbar-brand fw-bold" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">
-        <i class="bi bi-buildings text-brand me-2"></i>Dolice Decoration
+        <?php if ($companyLogoUrl !== ''): ?>
+          <img src="<?= htmlspecialchars($companyLogoUrl, ENT_QUOTES, 'UTF-8') ?>" alt="" style="height:28px;width:auto;object-fit:contain" class="me-2 align-text-bottom">
+        <?php else: ?>
+          <i class="bi bi-buildings text-brand me-2"></i>
+        <?php endif; ?>
+        <?= htmlspecialchars($companyName, ENT_QUOTES, 'UTF-8') ?>
       </a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mainOffcanvas" aria-controls="mainOffcanvas" aria-label="Menu">
@@ -41,14 +77,16 @@
       </button>
 
       <div class="d-none d-lg-flex align-items-center gap-3 ms-auto">
-        <a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a>
-        <a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">Réalisations</a>
-        <a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">Blog</a>
-        <a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>">FAQ</a>
-        <a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">Contact</a>
-        <a class="btn btn-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">
-          <i class="bi bi-clipboard-check me-2"></i>Demander un devis
-        </a>
+        <?php if ($isOn('nav_show_services', true)): ?><a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a><?php endif; ?>
+        <?php if ($isOn('nav_show_projects', true)): ?><a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">Réalisations</a><?php endif; ?>
+        <?php if ($isOn('nav_show_blog', true)): ?><a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">Blog</a><?php endif; ?>
+        <?php if ($isOn('nav_show_faq', true)): ?><a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>">FAQ</a><?php endif; ?>
+        <?php if ($isOn('nav_show_contact', true)): ?><a class="nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">Contact</a><?php endif; ?>
+        <?php if ($isOn('nav_show_quote', true)): ?>
+          <a class="btn btn-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-clipboard-check me-2"></i>Demander un devis
+          </a>
+        <?php endif; ?>
       </div>
     </div>
   </nav>
@@ -62,18 +100,20 @@
     <div class="offcanvas-body">
       <div class="list-group list-group-flush">
         <a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">Accueil</a>
-        <a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/notre-histoire', ENT_QUOTES, 'UTF-8') ?>">Notre histoire</a>
-        <a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a>
-        <a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">Réalisations</a>
-        <a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">Blog</a>
-        <a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>">FAQ</a>
-        <a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">Contact</a>
+        <?php if ($isOn('nav_show_history', true)): ?><a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/notre-histoire', ENT_QUOTES, 'UTF-8') ?>">Notre histoire</a><?php endif; ?>
+        <?php if ($isOn('nav_show_services', true)): ?><a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a><?php endif; ?>
+        <?php if ($isOn('nav_show_projects', true)): ?><a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">Réalisations</a><?php endif; ?>
+        <?php if ($isOn('nav_show_blog', true)): ?><a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">Blog</a><?php endif; ?>
+        <?php if ($isOn('nav_show_faq', true)): ?><a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>">FAQ</a><?php endif; ?>
+        <?php if ($isOn('nav_show_contact', true)): ?><a class="list-group-item list-group-item-action" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">Contact</a><?php endif; ?>
       </div>
 
       <div class="d-grid gap-2 mt-4">
-        <a class="btn btn-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">
-          <i class="bi bi-clipboard-check me-2"></i>Demander un devis
-        </a>
+        <?php if ($isOn('nav_show_quote', true)): ?>
+          <a class="btn btn-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">
+            <i class="bi bi-clipboard-check me-2"></i>Demander un devis
+          </a>
+        <?php endif; ?>
         <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/login', ENT_QUOTES, 'UTF-8') ?>">
           <i class="bi bi-shield-lock me-2"></i>Admin
         </a>
@@ -202,24 +242,31 @@
     <div class="container">
       <div class="row g-4">
         <div class="col-lg-4">
-          <div class="fw-bold h5 mb-2"><i class="bi bi-buildings me-2 text-brand"></i>Dolice Decoration</div>
-          <p class="mb-0">Finition & décoration de bâtiment. Qualité, précision et accompagnement.</p>
+          <div class="fw-bold h5 mb-2">
+            <?php if ($companyLogoUrl !== ''): ?>
+              <img src="<?= htmlspecialchars($companyLogoUrl, ENT_QUOTES, 'UTF-8') ?>" alt="" style="height:26px;width:auto;object-fit:contain" class="me-2 align-text-bottom">
+            <?php else: ?>
+              <i class="bi bi-buildings me-2 text-brand"></i>
+            <?php endif; ?>
+            <?= htmlspecialchars($companyName, ENT_QUOTES, 'UTF-8') ?>
+          </div>
+          <p class="mb-0"><?= htmlspecialchars($companySlogan, ENT_QUOTES, 'UTF-8') ?></p>
         </div>
         <div class="col-6 col-lg-2">
           <div class="fw-semibold mb-2">Pages</div>
           <div class="d-flex flex-column gap-2">
-            <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a>
-            <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">Réalisations</a>
-            <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">Blog</a>
-            <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">Contact</a>
+            <?php if ($isOn('footer_show_services', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a><?php endif; ?>
+            <?php if ($isOn('footer_show_projects', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">Réalisations</a><?php endif; ?>
+            <?php if ($isOn('footer_show_blog', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">Blog</a><?php endif; ?>
+            <?php if ($isOn('footer_show_contact', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">Contact</a><?php endif; ?>
           </div>
         </div>
         <div class="col-6 col-lg-2">
           <div class="fw-semibold mb-2">Infos</div>
           <div class="d-flex flex-column gap-2">
-            <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/notre-histoire', ENT_QUOTES, 'UTF-8') ?>">Notre histoire</a>
-            <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>">FAQ</a>
-            <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">Demander un devis</a>
+            <?php if ($isOn('footer_show_history', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/notre-histoire', ENT_QUOTES, 'UTF-8') ?>">Notre histoire</a><?php endif; ?>
+            <?php if ($isOn('footer_show_faq', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>">FAQ</a><?php endif; ?>
+            <?php if ($isOn('footer_show_quote', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">Demander un devis</a><?php endif; ?>
           </div>
         </div>
         <div class="col-lg-4">
@@ -227,7 +274,9 @@
           <div class="d-flex flex-column gap-2">
             <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope me-2"></i>Écrire un message</a>
             <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i>Demande de devis</a>
-            <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/login', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-shield-lock me-2"></i>Espace admin</a>
+            <?php if ($isOn('footer_show_admin', true)): ?>
+              <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/login', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-shield-lock me-2"></i>Espace admin</a>
+            <?php endif; ?>
           </div>
         </div>
       </div>
