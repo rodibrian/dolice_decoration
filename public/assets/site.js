@@ -42,6 +42,13 @@
     }
 
     var routePath = fullUrl.pathname || '/';
+    // URL.pathname is percent-encoded; decode to avoid double-encoding when
+    // putting it into a querystring (URLSearchParams will encode once).
+    try {
+      routePath = decodeURIComponent(routePath);
+    } catch (e) {
+      // keep as-is
+    }
     if (basePath && routePath.toLowerCase().startsWith(basePath.toLowerCase())) {
       routePath = routePath.slice(basePath.length) || '/';
     }
@@ -49,9 +56,8 @@
 
     var fb = new URL(base + '/index.php', window.location.href);
     fb.searchParams.set('path', routePath);
-    // Keep any existing query params except modal (we'll set it later).
+    // Keep any existing query params (including modal=1 for JSON endpoints).
     fullUrl.searchParams.forEach(function (v, k) {
-      if (k === 'modal') return;
       fb.searchParams.set(k, v);
     });
     return fb;
@@ -59,13 +65,54 @@
 
   async function fetchJsonWithRewriteFallback(fullUrl) {
     var res = await fetch(fullUrl.toString(), { headers: { Accept: 'application/json' } });
-    if (res.status === 404) {
+
+    function looksLikeJson(r) {
+      try {
+        var ct = (r.headers.get('content-type') || '').toLowerCase();
+        return ct.indexOf('application/json') !== -1;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // If pretty URLs are not working (404) OR they work but drop query params (returns HTML),
+    // fallback to index.php?path=/route while keeping the same search params (modal=1).
+    if (res.status === 404 || (res.ok && !looksLikeJson(res))) {
       var fb = buildFallbackUrl(fullUrl);
       if (fb) {
         res = await fetch(fb.toString(), { headers: { Accept: 'application/json' } });
       }
     }
+
     return res;
+  }
+
+  async function readJsonOrThrow(res, urlForDebug) {
+    var ct = '';
+    try {
+      ct = (res.headers.get('content-type') || '').toLowerCase();
+    } catch (e) {
+      ct = '';
+    }
+    if (ct.indexOf('application/json') === -1) {
+      var text = '';
+      try {
+        text = await res.text();
+      } catch (e2) {
+        text = '';
+      }
+      var snippet = (text || '').trim().slice(0, 220);
+      throw new Error(
+        'Réponse non-JSON (' +
+          (res.status || 0) +
+          ') ct=' +
+          (ct || 'n/a') +
+          ' url=' +
+          String(urlForDebug || '') +
+          (snippet ? ' body=' + snippet : '')
+      );
+    }
+    return await res.json();
   }
 
   function safeText(el, value) {
@@ -186,8 +233,16 @@
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
-  function buildCarousel(images) {
-    var id = 'projectModalCarousel';
+  function escapeHtmlAttr(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;');
+  }
+
+  function buildCarousel(images, carouselId) {
+    var id = carouselId || 'projectModalCarousel';
     var indicators = images
       .map(function (_, i) {
         return (
@@ -211,7 +266,7 @@
           (i === 0 ? 'active' : '') +
           '">' +
           '<img class="d-block w-100" style="height:100%;object-fit:cover" src="' +
-          src +
+          escapeHtmlAttr(src) +
           '" alt="">' +
           '</div>'
         );
@@ -221,7 +276,7 @@
     return (
       '<div id="' +
       id +
-      '" class="carousel slide w-100 h-100" data-bs-ride="carousel">' +
+      '" class="carousel slide w-100 h-100" data-bs-ride="carousel" data-bs-interval="4500" data-bs-wrap="true">' +
       (images.length > 1 ? '<div class="carousel-indicators">' + indicators + '</div>' : '') +
       '<div class="carousel-inner w-100 h-100">' +
       inner +
@@ -240,8 +295,24 @@
           '<span class="visually-hidden">Suivant</span>' +
           '</button>'
         : '') +
-      '</div>'
+        '</div>'
     );
+  }
+
+  function disposeBootstrapCarouselIn(container) {
+    if (!container) return;
+    var c = container.querySelector('.carousel');
+    if (c && window.bootstrap && window.bootstrap.Carousel) {
+      var inst = window.bootstrap.Carousel.getInstance(c);
+      if (inst) {
+        try {
+          inst.dispose();
+        } catch (e) {
+          // ignore
+        }
+      }
+    }
+    container.innerHTML = '';
   }
 
   function initProjectModal() {
@@ -278,7 +349,7 @@
       setBadge(badgeCategoryEl, '', '');
       setBadge(badgeTypeEl, '', '');
       setBadge(badgeDateEl, '', '');
-      if (wrap) wrap.innerHTML = '';
+      if (wrap) disposeBootstrapCarouselIn(wrap);
       if (skeletonEl) skeletonEl.classList.remove('d-none');
       if (carouselWrap) carouselWrap.classList.add('d-none');
     }
@@ -292,8 +363,8 @@
 
       try {
         var res = await fetchJsonWithRewriteFallback(url);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        var data = await res.json();
+        if (!res.ok) throw new Error('HTTP ' + res.status + ' url=' + (res.url || url.toString()));
+        var data = await readJsonOrThrow(res, url.toString());
 
         var project = data && data.project ? data.project : {};
         var images = (data && data.images) || [];
@@ -310,17 +381,32 @@
         setBadge(badgeDateEl, project.project_date, '');
 
         if (images.length > 0 && wrap) {
-          wrap.innerHTML = buildCarousel(images);
+          wrap.innerHTML = buildCarousel(images, 'projectModalCarousel');
           if (skeletonEl) skeletonEl.classList.add('d-none');
           if (carouselWrap) carouselWrap.classList.remove('d-none');
+          var carEl = wrap.querySelector('.carousel');
+          if (carEl && images.length > 1 && window.bootstrap && window.bootstrap.Carousel) {
+            window.bootstrap.Carousel.getOrCreateInstance(carEl, { interval: 4500, ride: 'carousel' });
+          }
         } else {
           // Keep skeleton if no images
           if (skeletonEl) skeletonEl.classList.remove('d-none');
           if (carouselWrap) carouselWrap.classList.add('d-none');
         }
       } catch (err) {
+        try {
+          // eslint-disable-next-line no-console
+          console.error('[project modal] load failed', { href: href, resolved: url.toString(), err: err });
+        } catch (e) {
+          // ignore
+        }
         if (titleEl) titleEl.textContent = 'Erreur de chargement';
-        if (descEl) descEl.textContent = "Impossible de charger les détails. Réessaye ou ouvre la page.";
+        if (descEl) {
+          descEl.textContent =
+            "Impossible de charger les détails. Réessaye ou ouvre la page.\n" +
+            "Debug: " +
+            String((err && err.message) || err || '');
+        }
       }
     }
 
@@ -371,8 +457,8 @@
 
       try {
         var res = await fetchJsonWithRewriteFallback(url);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        var data = await res.json();
+        if (!res.ok) throw new Error('HTTP ' + res.status + ' url=' + (res.url || url.toString()));
+        var data = await readJsonOrThrow(res, url.toString());
         var service = (data && data.service) || {};
 
         safeText(titleEl, service.title || 'Service');
@@ -403,8 +489,19 @@
           openPageEl.classList.remove('d-none');
         }
       } catch (err) {
+        try {
+          // eslint-disable-next-line no-console
+          console.error('[service modal] load failed', { href: href, resolved: url.toString(), err: err });
+        } catch (e) {
+          // ignore
+        }
         safeText(titleEl, 'Erreur de chargement');
-        safeText(descEl, "Impossible de charger les détails. Vérifie que le service existe.");
+        safeText(
+          descEl,
+          "Impossible de charger les détails. Vérifie que le service existe.\n" +
+            "Debug: " +
+            String((err && err.message) || err || '')
+        );
       }
     }
 
@@ -431,6 +528,8 @@
     var contentEl = modalEl.querySelector('[data-post-modal-content]');
     var skeletonEl = modalEl.querySelector('[data-post-modal-skeleton]');
     var imgEl = modalEl.querySelector('[data-post-modal-image]');
+    var carouselWrap = modalEl.querySelector('[data-post-modal-carousel-wrap]');
+    var wrap = modalEl.querySelector('#postModalCarouselWrap');
     var openPageEl = modalEl.querySelector('[data-post-modal-open-page]');
 
     function reset() {
@@ -438,6 +537,8 @@
       safeText(metaEl, '');
       safeText(excerptEl, '');
       safeText(contentEl, '');
+      if (wrap) disposeBootstrapCarouselIn(wrap);
+      if (carouselWrap) carouselWrap.classList.add('d-none');
       resetMedia(skeletonEl, imgEl);
       if (openPageEl) openPageEl.classList.add('d-none');
     }
@@ -451,8 +552,8 @@
 
       try {
         var res = await fetchJsonWithRewriteFallback(url);
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        var data = await res.json();
+        if (!res.ok) throw new Error('HTTP ' + res.status + ' url=' + (res.url || url.toString()));
+        var data = await readJsonOrThrow(res, url.toString());
         var post = (data && data.post) || {};
 
         safeText(titleEl, post.title || 'Article');
@@ -467,9 +568,29 @@
         if (content.length > 900) content = content.slice(0, 900) + '…';
         safeText(contentEl, content);
 
-        if (post.image) {
-          showMedia(skeletonEl, imgEl, post.image);
+        var images = (data && data.images) || [];
+        if (!Array.isArray(images)) images = [];
+        if (images.length === 0 && post.image) images = [post.image];
+
+        if (images.length > 1 && wrap) {
+          wrap.innerHTML = buildCarousel(images, 'postModalCarousel');
+          if (skeletonEl) skeletonEl.classList.add('d-none');
+          if (carouselWrap) carouselWrap.classList.remove('d-none');
+          if (imgEl) {
+            imgEl.classList.add('d-none');
+            imgEl.removeAttribute('src');
+          }
+          var carEl = wrap.querySelector('.carousel');
+          if (carEl && window.bootstrap && window.bootstrap.Carousel) {
+            window.bootstrap.Carousel.getOrCreateInstance(carEl, { interval: 4500, ride: 'carousel' });
+          }
+        } else if (images.length === 1) {
+          if (wrap) disposeBootstrapCarouselIn(wrap);
+          if (carouselWrap) carouselWrap.classList.add('d-none');
+          showMedia(skeletonEl, imgEl, images[0]);
         } else {
+          if (wrap) disposeBootstrapCarouselIn(wrap);
+          if (carouselWrap) carouselWrap.classList.add('d-none');
           resetMedia(skeletonEl, imgEl);
         }
 
@@ -478,8 +599,22 @@
           openPageEl.classList.remove('d-none');
         }
       } catch (err) {
+        try {
+          // eslint-disable-next-line no-console
+          console.error('[post modal] load failed', { href: href, resolved: url.toString(), err: err });
+        } catch (e) {
+          // ignore
+        }
         safeText(titleEl, 'Erreur de chargement');
-        safeText(contentEl, "Impossible de charger les détails. Vérifie que l'article existe.");
+        safeText(
+          contentEl,
+          "Impossible de charger les détails. Vérifie que l'article existe.\n" +
+            "Debug: " +
+            String((err && err.message) || err || '')
+        );
+        if (wrap) disposeBootstrapCarouselIn(wrap);
+        if (carouselWrap) carouselWrap.classList.add('d-none');
+        resetMedia(skeletonEl, imgEl);
       }
     }
 

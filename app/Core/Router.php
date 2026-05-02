@@ -34,7 +34,9 @@ final class Router
         $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
         $overridePath = trim((string)($_GET['path'] ?? ''));
         if ($overridePath !== '') {
-            $path = $this->normalize($overridePath);
+            // `path` can come from a querystring (index.php?path=/route) and may be URL-encoded.
+            $decoded = rawurldecode($overridePath);
+            $path = $this->normalize($decoded);
         } else {
             $path = $this->normalize(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/');
         }

@@ -51,6 +51,23 @@ $isActive = static function (string $path) use ($uri): string {
   $path = rtrim($path, '/') ?: '/';
   return $uri === $path ? 'is-active' : '';
 };
+
+// Base URL used by public JS (modals / rewrite fallback).
+// Prefer APP_URL when set; otherwise derive from current request (works on XAMPP subfolders).
+$appBase = trim((string)(env('APP_URL', '') ?: ''));
+if ($appBase === '') {
+  $https = (isset($_SERVER['HTTPS']) && (string)$_SERVER['HTTPS'] !== '' && (string)$_SERVER['HTTPS'] !== 'off');
+  $scheme = $https ? 'https' : 'http';
+  $host = (string)($_SERVER['HTTP_HOST'] ?? '');
+  if ($host !== '') {
+    // When served from a subfolder (e.g. /dolice_decoration/public), keep that basePath.
+    // The router will strip it when dispatching.
+    $appBase = $scheme . '://' . $host . ($basePath !== '' ? $basePath : '');
+  } else {
+    $appBase = $basePath !== '' ? $basePath : '';
+  }
+}
+$appBase = rtrim($appBase, '/');
 ?>
 <!doctype html>
 <html lang="fr">
@@ -77,7 +94,7 @@ $isActive = static function (string $path) use ($uri): string {
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide@3.6.0/dist/css/glide.theme.min.css">
   <!-- Site theme -->
   <link rel="stylesheet" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/assets/site.css', ENT_QUOTES, 'UTF-8') ?>">
-  <meta name="app-base" content="<?= htmlspecialchars((string)(env('APP_URL', '') ?: ''), ENT_QUOTES, 'UTF-8') ?>">
+  <meta name="app-base" content="<?= htmlspecialchars($appBase, ENT_QUOTES, 'UTF-8') ?>">
 </head>
 <body class="theme-<?= htmlspecialchars($theme, ENT_QUOTES, 'UTF-8') ?>" <?= $heroCoverUrl !== '' ? 'style="--hero-cover:url(\'' . htmlspecialchars($heroCoverUrl, ENT_QUOTES, 'UTF-8') . '\')"' : '' ?>>
   <nav class="navbar navbar-expand-lg navbar-blur">
@@ -233,18 +250,21 @@ $isActive = static function (string $path) use ($uri): string {
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
         </div>
         <div class="modal-body">
-          <div class="row g-4">
+          <div class="row g-4 align-items-lg-start">
             <div class="col-lg-7">
               <div class="ratio ratio-16x9 bg-light rounded-4 overflow-hidden border">
                 <div class="d-flex align-items-center justify-content-center w-100 h-100 skeleton" data-post-modal-skeleton></div>
                 <img class="w-100 h-100 d-none" style="object-fit:cover" alt="" data-post-modal-image>
+                <div id="postModalCarouselWrap" class="w-100 h-100 d-none" data-post-modal-carousel-wrap></div>
               </div>
             </div>
             <div class="col-lg-5">
               <div class="text-secondary small mb-2" data-post-modal-meta></div>
               <h3 class="h4 mb-3" data-post-modal-title></h3>
-              <div class="text-secondary mb-3" data-post-modal-excerpt></div>
-              <div class="text-secondary" style="white-space:pre-wrap" data-post-modal-content></div>
+              <div class="post-modal-text-scroll">
+                <div class="text-secondary mb-3" data-post-modal-excerpt></div>
+                <div class="text-secondary" style="white-space:pre-wrap" data-post-modal-content></div>
+              </div>
             </div>
           </div>
         </div>

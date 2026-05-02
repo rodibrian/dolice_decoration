@@ -63,6 +63,8 @@ final class PostsController extends BaseController
             $this->redirect('/admin/posts/create');
         }
 
+        $slug = Post::ensureUniqueSlug($slug, null);
+
         $imagePath = null;
         if (isset($_FILES['featured_image']) && is_array($_FILES['featured_image'])) {
             $imagePath = Upload::storeImage($_FILES['featured_image']);
@@ -139,6 +141,8 @@ final class PostsController extends BaseController
             $_SESSION['flash_error'] = "Titre et slug requis.";
             $this->redirect('/admin/posts/edit?id=' . $id);
         }
+
+        $slug = Post::ensureUniqueSlug($slug, $id);
 
         $imagePath = (string)($post['featured_image'] ?? '');
         if (isset($_FILES['featured_image']) && is_array($_FILES['featured_image'])) {
