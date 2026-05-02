@@ -6,6 +6,7 @@ namespace App\Controllers\Admin;
 use App\Controllers\BaseController;
 use App\Core\AdminAudit;
 use App\Core\Auth;
+use App\Core\SiteTheme;
 use App\Core\Upload;
 use App\Models\Setting;
 
@@ -99,11 +100,7 @@ final class HomeSettingsController extends BaseController
         };
 
         // Theme
-        $theme = (string)($_POST['site_theme'] ?? 'default');
-        $allowedThemes = ['default', 'ocean', 'sunset'];
-        if (!in_array($theme, $allowedThemes, true)) {
-            $theme = 'default';
-        }
+        $theme = SiteTheme::normalize((string)($_POST['site_theme'] ?? SiteTheme::DEFAULT));
         Setting::set('site_theme', $theme);
 
         // Hero texts

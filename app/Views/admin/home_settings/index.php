@@ -39,7 +39,8 @@ $isOn = static function (string $k, bool $defaultOn = true) use ($settings): boo
     return (string)$v === '1';
 };
 
-$theme = $get('site_theme', 'default');
+$theme = \App\Core\SiteTheme::normalize($get('site_theme', \App\Core\SiteTheme::DEFAULT));
+$themeCatalog = \App\Core\SiteTheme::catalog();
 ?>
 
 <section class="card">
@@ -105,17 +106,27 @@ $theme = $get('site_theme', 'default');
 
     <hr class="sep">
 
-    <div class="grid2">
-      <div style="grid-column:1/-1" class="fw-semibold">Thème du site (3 thèmes)</div>
-      <label>
-        Choisir un thème
-        <select name="site_theme">
-          <option value="default" <?= $theme === 'default' ? 'selected' : '' ?>>Default (orange/bleu)</option>
-          <option value="ocean" <?= $theme === 'ocean' ? 'selected' : '' ?>>Ocean (bleu/teal)</option>
-          <option value="sunset" <?= $theme === 'sunset' ? 'selected' : '' ?>>Sunset (rose/violet)</option>
-        </select>
-      </label>
-      <div class="muted small d-flex align-items-end">Le thème s’applique sur tout le site (navbar, boutons, badges, etc.).</div>
+    <div class="admin-form-section">
+      <div class="fw-semibold mb-1">Thème du site (5 palettes)</div>
+      <p class="small text-secondary mb-3">Couleurs inspirées des palettes <a href="https://flatuicolors.com/" target="_blank" rel="noopener noreferrer">Flat UI Colors</a> : le site public et les accents de l’administration suivent le thème choisi.</p>
+      <div class="theme-pick-grid">
+        <?php foreach (\App\Core\SiteTheme::allowedIds() as $tid):
+            $meta = $themeCatalog[$tid] ?? ['label' => $tid, 'mode' => '', 'palette' => '', 'swatches' => []];
+            $sel = $theme === $tid;
+        ?>
+        <label class="theme-pick-card<?= $sel ? ' is-selected' : '' ?>">
+          <input type="radio" name="site_theme" value="<?= htmlspecialchars($tid, ENT_QUOTES, 'UTF-8') ?>" <?= $sel ? 'checked' : '' ?> class="theme-pick-input">
+          <span class="theme-pick-swatches" aria-hidden="true">
+            <?php foreach ($meta['swatches'] as $hex): ?>
+              <span class="theme-pick-dot" style="background:<?= htmlspecialchars((string)$hex, ENT_QUOTES, 'UTF-8') ?>"></span>
+            <?php endforeach; ?>
+          </span>
+          <span class="theme-pick-title"><?= htmlspecialchars((string)$meta['label'], ENT_QUOTES, 'UTF-8') ?></span>
+          <span class="theme-pick-badge"><?= htmlspecialchars((string)$meta['mode'], ENT_QUOTES, 'UTF-8') ?></span>
+          <span class="theme-pick-hint"><?= htmlspecialchars((string)$meta['palette'], ENT_QUOTES, 'UTF-8') ?></span>
+        </label>
+        <?php endforeach; ?>
+      </div>
     </div>
 
     <hr class="sep">

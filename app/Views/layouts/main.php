@@ -13,8 +13,8 @@ if (!empty($companyLogo)) {
     : ((env('APP_URL', '') ?: '') . (string)$companyLogo);
 }
 
-$theme = \App\Models\Setting::get('site_theme', 'default') ?? 'default';
-$theme = in_array($theme, ['default', 'ocean', 'sunset'], true) ? $theme : 'default';
+$theme = \App\Core\SiteTheme::normalize(\App\Models\Setting::get('site_theme', \App\Core\SiteTheme::DEFAULT) ?? \App\Core\SiteTheme::DEFAULT);
+$themeTone = in_array($theme, ['midnight', 'obsidian'], true) ? 'dark' : 'light';
 
 $heroCoverRaw = trim((string)(\App\Models\Setting::get('hero_cover_image', '') ?? ''));
 $heroCoverUrl = '';
@@ -102,7 +102,7 @@ $appBase = rtrim($appBase, '/');
   <link rel="stylesheet" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/assets/site.css', ENT_QUOTES, 'UTF-8') ?>">
   <meta name="app-base" content="<?= htmlspecialchars($appBase, ENT_QUOTES, 'UTF-8') ?>">
 </head>
-<body class="theme-<?= htmlspecialchars($theme, ENT_QUOTES, 'UTF-8') ?>" <?= $heroCoverUrl !== '' ? 'style="--hero-cover:url(\'' . htmlspecialchars($heroCoverUrl, ENT_QUOTES, 'UTF-8') . '\')"' : '' ?>>
+<body class="theme-<?= htmlspecialchars($theme, ENT_QUOTES, 'UTF-8') ?> theme-tone-<?= htmlspecialchars($themeTone, ENT_QUOTES, 'UTF-8') ?>" <?= $heroCoverUrl !== '' ? 'style="--hero-cover:url(\'' . htmlspecialchars($heroCoverUrl, ENT_QUOTES, 'UTF-8') . '\')"' : '' ?>>
   <?php if ($showMainNav): ?>
   <nav class="navbar navbar-expand-lg navbar-blur">
     <div class="container py-2">
