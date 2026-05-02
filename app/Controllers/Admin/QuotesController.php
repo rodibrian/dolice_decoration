@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Models\QuoteRequest;
 
@@ -64,8 +65,15 @@ final class QuotesController extends BaseController
         $notes = trim((string)($_POST['internal_notes'] ?? ''));
         $notes = $notes === '' ? null : $notes;
 
+        $prevStatus = (string)($quote['status'] ?? '');
         QuoteRequest::updateStatus($id, $status);
         QuoteRequest::updateNotes($id, $notes);
+
+        AdminAudit::log('quote.update', 'quote_request', $id, [
+            'status_before' => $prevStatus,
+            'status_after' => $status,
+            'has_internal_notes' => $notes !== null && $notes !== '',
+        ]);
 
         $_SESSION['flash_success'] = "Devis mis à jour.";
         $this->redirect('/admin/quotes/show?id=' . $id);

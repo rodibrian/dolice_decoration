@@ -4,12 +4,11 @@
 $user = \App\Core\Auth::user();
 $role = is_array($user) ? (string)($user['role'] ?? '') : '';
 $isSuper = ($role === 'super_admin');
-$canContent = \App\Core\Auth::can('services.view') || \App\Core\Auth::can('projects.view') || \App\Core\Auth::can('posts.view') || \App\Core\Auth::can('testimonials.view') || \App\Core\Auth::can('partners.view') || \App\Core\Auth::can('hero_slides.view') || \App\Core\Auth::can('pages.view') || \App\Core\Auth::can('settings.view');
-$canInbox = \App\Core\Auth::can('quotes.view') || \App\Core\Auth::can('messages.view');
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/admin', PHP_URL_PATH) ?: '/admin';
 $isActive = static function (string $prefix) use ($uri): string {
     return str_starts_with($uri, $prefix) ? 'is-active' : '';
 };
+$isDashboardHome = (bool)preg_match('#/admin/?$#', rtrim($uri, '/'));
 ?>
 <!doctype html>
 <html lang="fr">
@@ -34,95 +33,7 @@ $isActive = static function (string $prefix) use ($uri): string {
           <span class="admin-brand-text">Dolice Admin</span>
         </a>
 
-        <nav class="admin-nav">
-          <div class="admin-nav-title">Gestion</div>
-          <?php if (\App\Core\Auth::can('services.view')): ?>
-            <a class="admin-nav-link <?= $isActive('/admin/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/services', ENT_QUOTES, 'UTF-8') ?>">
-              <i class="bi bi-tools"></i><span>Services</span>
-            </a>
-          <?php endif; ?>
-          <?php if (\App\Core\Auth::can('projects.view')): ?>
-            <a class="admin-nav-link <?= $isActive('/admin/projects') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/projects', ENT_QUOTES, 'UTF-8') ?>">
-              <i class="bi bi-building-gear"></i><span>Réalisations</span>
-            </a>
-          <?php endif; ?>
-          <?php if (\App\Core\Auth::can('posts.view')): ?>
-            <a class="admin-nav-link <?= $isActive('/admin/posts') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/posts', ENT_QUOTES, 'UTF-8') ?>">
-              <i class="bi bi-newspaper"></i><span>Blog</span>
-            </a>
-          <?php endif; ?>
-          <?php if (\App\Core\Auth::can('testimonials.view')): ?>
-            <a class="admin-nav-link <?= $isActive('/admin/testimonials') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/testimonials', ENT_QUOTES, 'UTF-8') ?>">
-              <i class="bi bi-chat-quote"></i><span>Témoignages</span>
-            </a>
-          <?php endif; ?>
-          <?php if (\App\Core\Auth::can('partners.view')): ?>
-            <a class="admin-nav-link <?= $isActive('/admin/partners') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/partners', ENT_QUOTES, 'UTF-8') ?>">
-              <i class="bi bi-people"></i><span>Partenaires</span>
-            </a>
-          <?php endif; ?>
-          <?php if (\App\Core\Auth::can('hero_slides.view')): ?>
-            <a class="admin-nav-link <?= $isActive('/admin/hero-slides') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/hero-slides', ENT_QUOTES, 'UTF-8') ?>">
-              <i class="bi bi-images"></i><span>Slides accueil</span>
-            </a>
-          <?php endif; ?>
-
-          <?php if (\App\Core\Auth::can('quotes.view')): ?>
-            <a class="admin-nav-link <?= $isActive('/admin/quotes') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/quotes', ENT_QUOTES, 'UTF-8') ?>">
-              <i class="bi bi-file-earmark-text"></i><span>Devis</span>
-            </a>
-          <?php endif; ?>
-          <?php if (\App\Core\Auth::can('messages.view')): ?>
-            <a class="admin-nav-link <?= $isActive('/admin/messages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/messages', ENT_QUOTES, 'UTF-8') ?>">
-              <i class="bi bi-envelope"></i><span>Messages</span>
-            </a>
-          <?php endif; ?>
-
-          <?php if ($isSuper): ?>
-            <div class="admin-nav-title mt-3">Super admin</div>
-            <a class="admin-nav-link <?= $isActive('/admin/users') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/users', ENT_QUOTES, 'UTF-8') ?>">
-              <i class="bi bi-person-gear"></i><span>Utilisateurs</span>
-            </a>
-            <a class="admin-nav-link <?= $isActive('/admin/roles') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/roles', ENT_QUOTES, 'UTF-8') ?>">
-              <i class="bi bi-sliders"></i><span>Autorisations</span>
-            </a>
-            <a class="admin-nav-link <?= $isActive('/admin/logs') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/logs', ENT_QUOTES, 'UTF-8') ?>">
-              <i class="bi bi-activity"></i><span>Logs</span>
-            </a>
-          <?php endif; ?>
-
-          <?php if (\App\Core\Auth::can('pages.view') || \App\Core\Auth::can('settings.view')): ?>
-            <div class="admin-nav-title mt-3">Configuration</div>
-            <?php if (\App\Core\Auth::can('settings.view')): ?>
-              <a class="admin-nav-link <?= $isActive('/admin/home') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/home', ENT_QUOTES, 'UTF-8') ?>">
-                <i class="bi bi-house-gear"></i><span>Gérer Accueil</span>
-              </a>
-              <a class="admin-nav-link <?= $isActive('/admin/company') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/company', ENT_QUOTES, 'UTF-8') ?>">
-                <i class="bi bi-building-gear"></i><span>Gérer Entreprise</span>
-              </a>
-            <?php endif; ?>
-            <?php if (\App\Core\Auth::can('notifications.view')): ?>
-              <a class="admin-nav-link <?= $isActive('/admin/notifications') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/notifications', ENT_QUOTES, 'UTF-8') ?>">
-                <i class="bi bi-bell"></i><span>Notifications</span>
-              </a>
-            <?php endif; ?>
-            <?php if (\App\Core\Auth::can('pages.view')): ?>
-              <a class="admin-nav-link <?= $isActive('/admin/pages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/pages', ENT_QUOTES, 'UTF-8') ?>">
-                <i class="bi bi-file-text"></i><span>Pages</span>
-              </a>
-            <?php endif; ?>
-            <?php if (\App\Core\Auth::can('settings.view')): ?>
-              <a class="admin-nav-link <?= $isActive('/admin/settings') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/settings', ENT_QUOTES, 'UTF-8') ?>">
-                <i class="bi bi-gear"></i><span>Paramètres</span>
-              </a>
-            <?php endif; ?>
-          <?php endif; ?>
-
-          <div class="admin-nav-title mt-3">Raccourcis</div>
-          <a class="admin-nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-globe2"></i><span>Voir le site</span>
-          </a>
-        </nav>
+        <?php require __DIR__ . '/partials/admin_sidebar_nav.php'; ?>
 
         <div class="admin-sidebar-footer">
           <form method="post" action="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/logout', ENT_QUOTES, 'UTF-8') ?>">
@@ -161,6 +72,15 @@ $isActive = static function (string $prefix) use ($uri): string {
       </header>
 
       <main class="admin-content container-fluid px-3 px-lg-4 py-4">
+        <details class="admin-editor-guide card">
+          <summary class="admin-editor-guide-summary"><i class="bi bi-journal-text me-2 admin-editor-guide-ic"></i>Guide pour les mises à jour du site</summary>
+          <div class="admin-editor-guide-body">
+            <p><strong>Ordre conseillé.</strong> Commencez par les <strong>demandes</strong> (devis et messages), puis mettez à jour le <strong>contenu public</strong> (services, réalisations, blog, etc.). Vérifiez enfin l’<strong>identité du site</strong> (accueil, fiche entreprise, pages légales) et les <strong>paramètres</strong> si vous changez d’adresse ou de thème.</p>
+            <p><strong>Publication.</strong> Les listes utilisent souvent le statut <em>Publié</em> / <em>Brouillon</em> : seul le contenu publié est visible sur le site. Après enregistrement, ouvrez <strong>Voir le site</strong> (menu ou bouton en haut) pour contrôler le rendu.</p>
+            <p><strong>Aide au survol.</strong> Dans le menu latéral, laissez le curseur sur un libellé pour afficher une brève explication de la section.</p>
+            <p><strong>Pages statiques.</strong> L’entrée « Pages » n’apparaît plus dans le menu ; l’adresse <code>/admin/pages</code> reste utilisable si votre rôle inclut la permission <code>pages.view</code>.</p>
+          </div>
+        </details>
         <?= $content ?>
       </main>
     </div>
@@ -173,61 +93,7 @@ $isActive = static function (string $prefix) use ($uri): string {
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fermer"></button>
     </div>
     <div class="offcanvas-body">
-      <nav class="admin-nav">
-        <div class="admin-nav-title">Gestion</div>
-        <?php if (\App\Core\Auth::can('services.view')): ?>
-          <a class="admin-nav-link <?= $isActive('/admin/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/services', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-tools"></i><span>Services</span></a>
-        <?php endif; ?>
-        <?php if (\App\Core\Auth::can('projects.view')): ?>
-          <a class="admin-nav-link <?= $isActive('/admin/projects') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/projects', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-building-gear"></i><span>Réalisations</span></a>
-        <?php endif; ?>
-        <?php if (\App\Core\Auth::can('posts.view')): ?>
-          <a class="admin-nav-link <?= $isActive('/admin/posts') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/posts', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-newspaper"></i><span>Blog</span></a>
-        <?php endif; ?>
-        <?php if (\App\Core\Auth::can('testimonials.view')): ?>
-          <a class="admin-nav-link <?= $isActive('/admin/testimonials') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/testimonials', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-chat-quote"></i><span>Témoignages</span></a>
-        <?php endif; ?>
-        <?php if (\App\Core\Auth::can('partners.view')): ?>
-          <a class="admin-nav-link <?= $isActive('/admin/partners') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/partners', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-people"></i><span>Partenaires</span></a>
-        <?php endif; ?>
-        <?php if (\App\Core\Auth::can('hero_slides.view')): ?>
-          <a class="admin-nav-link <?= $isActive('/admin/hero-slides') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/hero-slides', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images"></i><span>Slides accueil</span></a>
-        <?php endif; ?>
-
-        <?php if (\App\Core\Auth::can('quotes.view')): ?>
-          <a class="admin-nav-link <?= $isActive('/admin/quotes') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/quotes', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-file-earmark-text"></i><span>Devis</span></a>
-        <?php endif; ?>
-        <?php if (\App\Core\Auth::can('messages.view')): ?>
-          <a class="admin-nav-link <?= $isActive('/admin/messages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/messages', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope"></i><span>Messages</span></a>
-        <?php endif; ?>
-
-        <?php if ($isSuper): ?>
-          <div class="admin-nav-title mt-3">Super admin</div>
-          <a class="admin-nav-link <?= $isActive('/admin/users') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/users', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-person-gear"></i><span>Utilisateurs</span></a>
-          <a class="admin-nav-link <?= $isActive('/admin/roles') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/roles', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-sliders"></i><span>Autorisations</span></a>
-          <a class="admin-nav-link <?= $isActive('/admin/logs') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/logs', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-activity"></i><span>Logs</span></a>
-        <?php endif; ?>
-
-        <?php if (\App\Core\Auth::can('pages.view') || \App\Core\Auth::can('settings.view')): ?>
-          <div class="admin-nav-title mt-3">Configuration</div>
-          <?php if (\App\Core\Auth::can('settings.view')): ?>
-            <a class="admin-nav-link <?= $isActive('/admin/home') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/home', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-house-gear"></i><span>Gérer Accueil</span></a>
-            <a class="admin-nav-link <?= $isActive('/admin/company') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/company', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-building-gear"></i><span>Gérer Entreprise</span></a>
-          <?php endif; ?>
-          <?php if (\App\Core\Auth::can('notifications.view')): ?>
-            <a class="admin-nav-link <?= $isActive('/admin/notifications') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/notifications', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-bell"></i><span>Notifications</span></a>
-          <?php endif; ?>
-          <?php if (\App\Core\Auth::can('pages.view')): ?>
-            <a class="admin-nav-link <?= $isActive('/admin/pages') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/pages', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-file-text"></i><span>Pages</span></a>
-          <?php endif; ?>
-          <?php if (\App\Core\Auth::can('settings.view')): ?>
-            <a class="admin-nav-link <?= $isActive('/admin/settings') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/settings', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-gear"></i><span>Paramètres</span></a>
-          <?php endif; ?>
-        <?php endif; ?>
-
-        <div class="admin-nav-title mt-3">Raccourcis</div>
-        <a class="admin-nav-link" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-globe2"></i><span>Voir le site</span></a>
-      </nav>
+      <?php require __DIR__ . '/partials/admin_sidebar_nav.php'; ?>
 
       <hr>
       <form method="post" action="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/logout', ENT_QUOTES, 'UTF-8') ?>">
@@ -237,6 +103,18 @@ $isActive = static function (string $prefix) use ($uri): string {
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (!window.bootstrap || typeof window.bootstrap.Tooltip !== 'function') return;
+      document.querySelectorAll('.admin-nav .admin-nav-link[data-bs-title]').forEach(function (el) {
+        try {
+          window.bootstrap.Tooltip.getOrCreateInstance(el, { container: 'body', placement: 'right', trigger: 'hover focus' });
+        } catch (e) {
+          /* ignore */
+        }
+      });
+    });
+  </script>
   <script>
     document.querySelectorAll('[data-table-filter]').forEach(function (block) {
       const table = block.querySelector('tbody');

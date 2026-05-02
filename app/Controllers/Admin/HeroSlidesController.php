@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Core\Upload;
 use App\Models\HeroSlide;
@@ -72,7 +73,7 @@ final class HeroSlidesController extends BaseController
             $this->redirect('/admin/hero-slides/create');
         }
 
-        HeroSlide::create([
+        $newId = HeroSlide::create([
             'title' => $title,
             'subtitle' => $subtitle,
             'media_type' => $mediaType,
@@ -80,6 +81,12 @@ final class HeroSlidesController extends BaseController
             'cta_label' => $ctaLabel,
             'cta_url' => $ctaUrl,
             'display_order' => $displayOrder,
+            'is_published' => $isPublished,
+        ]);
+
+        AdminAudit::log('hero_slide.create', 'hero_slide', $newId, [
+            'title' => $title,
+            'media_type' => $mediaType,
             'is_published' => $isPublished,
         ]);
 
@@ -156,6 +163,12 @@ final class HeroSlidesController extends BaseController
             'is_published' => $isPublished,
         ]);
 
+        AdminAudit::log('hero_slide.update', 'hero_slide', $id, [
+            'title' => $title,
+            'media_type' => $mediaType,
+            'is_published' => $isPublished,
+        ]);
+
         $_SESSION['flash_success'] = "Slide mis à jour.";
         $this->redirect('/admin/hero-slides');
     }
@@ -166,7 +179,11 @@ final class HeroSlidesController extends BaseController
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
+            $row = HeroSlide::find($id);
             HeroSlide::delete($id);
+            AdminAudit::log('hero_slide.delete', 'hero_slide', $id, [
+                'title' => (string)($row['title'] ?? ''),
+            ]);
             $_SESSION['flash_success'] = "Slide supprimé.";
         }
         $this->redirect('/admin/hero-slides');

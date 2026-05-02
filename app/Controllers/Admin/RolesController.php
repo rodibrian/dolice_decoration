@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
-use App\Models\AuditLog;
+use App\Core\AdminAudit;
 use App\Models\RoleCapability;
 
 final class RolesController extends BaseController
@@ -67,7 +67,7 @@ final class RolesController extends BaseController
 
         try {
             RoleCapability::setForRole($role, $caps);
-            AuditLog::add('role_capabilities.update', 'role', null, ['role' => $role, 'count' => count($caps)]);
+            AdminAudit::log('role_capabilities.update', 'role', null, ['role' => $role, 'count' => count($caps), 'caps' => $caps]);
             $_SESSION['flash_success'] = "Autorisations mises à jour.";
         } catch (\Throwable $e) {
             $_SESSION['flash_error'] = "Impossible de sauvegarder (table role_capabilities manquante ?).";

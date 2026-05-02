@@ -31,7 +31,7 @@
         <thead>
         <tr>
           <th>#</th>
-          <th>Média</th>
+          <th>Photo / média</th>
           <th>Titre</th>
           <th>Type</th>
           <th>Publié</th>
@@ -57,13 +57,13 @@
               data-status="<?= $pub ? 'oui' : 'non' ?>"
             >
               <td><?= (int)$s['id'] ?></td>
-              <td>
+              <td class="table-td-thumb">
                 <?php if ($mediaPath !== '' && $type === 'image'): ?>
-                  <div class="thumb" style="max-width:180px">
-                    <img src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . $mediaPath, ENT_QUOTES, 'UTF-8') ?>" alt="">
-                  </div>
+                  <img class="table-thumb" src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . $mediaPath, ENT_QUOTES, 'UTF-8') ?>" alt="">
+                <?php elseif ($type === 'video'): ?>
+                  <span class="table-thumb-placeholder" title="Vidéo">▶</span>
                 <?php else: ?>
-                  <span class="muted"><?= $type === 'video' ? '🎥 Vidéo' : '—' ?></span>
+                  <span class="table-thumb-placeholder" title="Aucun média">—</span>
                 <?php endif; ?>
               </td>
               <td>

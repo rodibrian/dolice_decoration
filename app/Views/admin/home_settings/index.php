@@ -1,7 +1,25 @@
 <?php
 /** @var array<string, string|null> $settings */
+/** @var array<string, array{can: bool, cap: string}> $navFooterRights */
 /** @var string|null $flash */
 /** @var string|null $error */
+
+$capLabels = [
+    'services.view' => 'Voir les services',
+    'projects.view' => 'Voir les réalisations',
+    'posts.view' => 'Voir les articles',
+    'pages.view' => 'Voir les pages',
+    'messages.view' => 'Voir les messages',
+    'quotes.view' => 'Voir les devis',
+    'admin.super' => 'Super admin',
+];
+$nfCan = static function (string $key) use ($navFooterRights): bool {
+    return (bool)($navFooterRights[$key]['can'] ?? true);
+};
+$nfCapLabel = static function (string $key) use ($navFooterRights, $capLabels): string {
+    $cap = (string)($navFooterRights[$key]['cap'] ?? '');
+    return $capLabels[$cap] ?? $cap;
+};
 
 $get = static function (string $k, string $default = '') use ($settings): string {
     $v = $settings[$k] ?? null;
@@ -14,6 +32,9 @@ $isOn = static function (string $k, bool $defaultOn = true) use ($settings): boo
     $v = $settings[$k] ?? null;
     if ($v === null || $v === '') {
         return $defaultOn;
+    }
+    if ((string)$v === '0') {
+        return false;
     }
     return (string)$v === '1';
 };
@@ -99,31 +120,71 @@ $theme = $get('site_theme', 'default');
 
     <hr class="sep">
 
-    <div class="grid2">
-      <div style="grid-column:1/-1" class="fw-semibold">Navigation (afficher / cacher)</div>
-
-      <label><input type="checkbox" name="nav_show_services" value="1" <?= $isOn('nav_show_services', true) ? 'checked' : '' ?>> Services</label>
-      <label><input type="checkbox" name="nav_show_projects" value="1" <?= $isOn('nav_show_projects', true) ? 'checked' : '' ?>> Réalisations</label>
-      <label><input type="checkbox" name="nav_show_blog" value="1" <?= $isOn('nav_show_blog', true) ? 'checked' : '' ?>> Blog</label>
-      <label><input type="checkbox" name="nav_show_faq" value="1" <?= $isOn('nav_show_faq', true) ? 'checked' : '' ?>> FAQ</label>
-      <label><input type="checkbox" name="nav_show_contact" value="1" <?= $isOn('nav_show_contact', true) ? 'checked' : '' ?>> Contact</label>
-      <label><input type="checkbox" name="nav_show_quote" value="1" <?= $isOn('nav_show_quote', true) ? 'checked' : '' ?>> Bouton “Devis”</label>
-      <label><input type="checkbox" name="nav_show_history" value="1" <?= $isOn('nav_show_history', true) ? 'checked' : '' ?>> Notre histoire</label>
+    <div class="admin-form-section">
+      <div class="fw-semibold mb-1">Navigation (afficher / cacher)</div>
+      <p class="small text-secondary mb-3 mb-lg-2">Chaque case dépend d’une permission : sans elle, la valeur actuelle est conservée et la case est verrouillée.</p>
+      <div class="grid2">
+        <?php
+        $navRows = [
+            ['nav_show_services', 'Services'],
+            ['nav_show_projects', 'Réalisations'],
+            ['nav_show_blog', 'Blog'],
+            ['nav_show_faq', 'FAQ'],
+            ['nav_show_contact', 'Contact'],
+            ['nav_show_quote', 'Bouton « Devis »'],
+            ['nav_show_history', 'Notre histoire'],
+        ];
+        foreach ($navRows as [$nk, $label]):
+            $ok = $nfCan($nk);
+        ?>
+        <div class="check-card<?= $ok ? '' : ' is-locked' ?>">
+          <label class="d-flex align-items-start gap-2 mb-0 w-100">
+            <input type="checkbox" name="<?= htmlspecialchars($nk, ENT_QUOTES, 'UTF-8') ?>" value="1" <?= $isOn($nk, true) ? 'checked' : '' ?> <?= $ok ? '' : 'disabled' ?>>
+            <span>
+              <span class="d-block fw-semibold"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></span>
+              <?php if (!$ok): ?>
+                <span class="small text-secondary">Permission requise : <?= htmlspecialchars($nfCapLabel($nk), ENT_QUOTES, 'UTF-8') ?></span>
+              <?php endif; ?>
+            </span>
+          </label>
+        </div>
+        <?php endforeach; ?>
+      </div>
     </div>
 
     <hr class="sep">
 
-    <div class="grid2">
-      <div style="grid-column:1/-1" class="fw-semibold">Footer (afficher / cacher)</div>
-
-      <label><input type="checkbox" name="footer_show_services" value="1" <?= $isOn('footer_show_services', true) ? 'checked' : '' ?>> Services</label>
-      <label><input type="checkbox" name="footer_show_projects" value="1" <?= $isOn('footer_show_projects', true) ? 'checked' : '' ?>> Réalisations</label>
-      <label><input type="checkbox" name="footer_show_blog" value="1" <?= $isOn('footer_show_blog', true) ? 'checked' : '' ?>> Blog</label>
-      <label><input type="checkbox" name="footer_show_contact" value="1" <?= $isOn('footer_show_contact', true) ? 'checked' : '' ?>> Contact</label>
-      <label><input type="checkbox" name="footer_show_history" value="1" <?= $isOn('footer_show_history', true) ? 'checked' : '' ?>> Notre histoire</label>
-      <label><input type="checkbox" name="footer_show_faq" value="1" <?= $isOn('footer_show_faq', true) ? 'checked' : '' ?>> FAQ</label>
-      <label><input type="checkbox" name="footer_show_quote" value="1" <?= $isOn('footer_show_quote', true) ? 'checked' : '' ?>> Demander un devis</label>
-      <label><input type="checkbox" name="footer_show_admin" value="1" <?= $isOn('footer_show_admin', true) ? 'checked' : '' ?>> Lien Admin</label>
+    <div class="admin-form-section">
+      <div class="fw-semibold mb-1">Footer (afficher / cacher)</div>
+      <p class="small text-secondary mb-3 mb-lg-2">Même logique que pour la navigation : droits par rubrique.</p>
+      <div class="grid2">
+        <?php
+        $footRows = [
+            ['footer_show_services', 'Services'],
+            ['footer_show_projects', 'Réalisations'],
+            ['footer_show_blog', 'Blog'],
+            ['footer_show_contact', 'Contact'],
+            ['footer_show_history', 'Notre histoire'],
+            ['footer_show_faq', 'FAQ'],
+            ['footer_show_quote', 'Demander un devis'],
+            ['footer_show_admin', 'Lien Admin'],
+        ];
+        foreach ($footRows as [$fk, $label]):
+            $ok = $nfCan($fk);
+        ?>
+        <div class="check-card<?= $ok ? '' : ' is-locked' ?>">
+          <label class="d-flex align-items-start gap-2 mb-0 w-100">
+            <input type="checkbox" name="<?= htmlspecialchars($fk, ENT_QUOTES, 'UTF-8') ?>" value="1" <?= $isOn($fk, true) ? 'checked' : '' ?> <?= $ok ? '' : 'disabled' ?>>
+            <span>
+              <span class="d-block fw-semibold"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></span>
+              <?php if (!$ok): ?>
+                <span class="small text-secondary">Permission requise : <?= htmlspecialchars($nfCapLabel($fk), ENT_QUOTES, 'UTF-8') ?></span>
+              <?php endif; ?>
+            </span>
+          </label>
+        </div>
+        <?php endforeach; ?>
+      </div>
     </div>
 
     <button class="btn primary" type="submit"><i class="bi bi-check2"></i>Enregistrer</button>

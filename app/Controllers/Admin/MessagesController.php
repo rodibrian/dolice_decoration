@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Models\ContactMessage;
 
@@ -61,7 +62,16 @@ final class MessagesController extends BaseController
             $status = 'new';
         }
 
+        $prev = (string)($message['status'] ?? '');
         ContactMessage::updateStatus($id, $status);
+        AdminAudit::log('message.update_status', 'contact_message', $id, [
+            'status_before' => $prev,
+            'status_after' => $status,
+            'subject' => (function ($s) {
+                $s = (string)$s;
+                return function_exists('mb_substr') ? mb_substr($s, 0, 80) : substr($s, 0, 80);
+            })($message['subject'] ?? ''),
+        ]);
         $_SESSION['flash_success'] = "Statut mis à jour.";
         $this->redirect('/admin/messages/show?id=' . $id);
     }

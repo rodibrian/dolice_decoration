@@ -40,6 +40,12 @@ $feedbackPct = max(0, 100 - $inboxPct - $contentPct);
 
   <hr class="sep">
 
+  <div class="admin-doc-callout">
+    <div class="admin-doc-callout-title"><i class="bi bi-lightbulb me-2"></i>Pour les éditeurs</div>
+    <p class="admin-doc-callout-text">Les cartes ci-dessous regroupent l’<strong>activité récente</strong> : traitez d’abord l’inbox (devis + messages), puis enrichissez le contenu public (réalisations, articles, témoignages). Les graphiques se mettent à jour selon les données en base — pensez à <strong>publier</strong> vos fiches pour qu’elles comptent dans « Contenu publié ».</p>
+    <p class="admin-doc-callout-text mb-0">Utilisez le menu à gauche (icône ☰ sur mobile) : les entrées sont regroupées par thème. Survolez un lien du menu pour une description rapide.</p>
+  </div>
+
   <div class="row g-3">
     <div class="col-12 col-md-6 col-xl-3">
       <a class="admin-kpi" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/quotes', ENT_QUOTES, 'UTF-8') ?>">

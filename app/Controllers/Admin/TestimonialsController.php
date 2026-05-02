@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Core\Upload;
 use App\Models\Testimonial;
@@ -65,13 +66,19 @@ final class TestimonialsController extends BaseController
             $logoPath = Upload::storeImage($_FILES['logo']);
         }
 
-        Testimonial::create([
+        $newId = Testimonial::create([
             'client_name' => $clientName,
             'client_company' => $clientCompany,
             'content' => $content,
             'rating' => $rating,
             'logo_path' => $logoPath,
             'status' => $status,
+        ]);
+
+        AdminAudit::log('testimonial.create', 'testimonial', $newId, [
+            'client_name' => $clientName,
+            'status' => $status,
+            'content_preview' => function_exists('mb_substr') ? mb_substr($content, 0, 120) : substr($content, 0, 120),
         ]);
 
         $_SESSION['flash_success'] = "Témoignage créé.";
@@ -145,6 +152,11 @@ final class TestimonialsController extends BaseController
             'status' => $status,
         ]);
 
+        AdminAudit::log('testimonial.update', 'testimonial', $id, [
+            'client_name' => $clientName,
+            'status' => $status,
+        ]);
+
         $_SESSION['flash_success'] = "Témoignage mis à jour.";
         $this->redirect('/admin/testimonials');
     }
@@ -156,6 +168,7 @@ final class TestimonialsController extends BaseController
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
             Testimonial::setStatus($id, 'approved');
+            AdminAudit::log('testimonial.approve', 'testimonial', $id, ['status' => 'approved']);
             $_SESSION['flash_success'] = "Témoignage approuvé.";
         }
         $this->redirect('/admin/testimonials');
@@ -167,7 +180,11 @@ final class TestimonialsController extends BaseController
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
+            $row = Testimonial::find($id);
             Testimonial::delete($id);
+            AdminAudit::log('testimonial.delete', 'testimonial', $id, [
+                'client_name' => (string)($row['client_name'] ?? ''),
+            ]);
             $_SESSION['flash_success'] = "Témoignage supprimé.";
         }
         $this->redirect('/admin/testimonials');

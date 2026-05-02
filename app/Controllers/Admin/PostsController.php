@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Core\Upload;
 use App\Models\Post;
@@ -70,7 +71,7 @@ final class PostsController extends BaseController
             $imagePath = Upload::storeImage($_FILES['featured_image']);
         }
 
-        Post::create([
+        $newId = Post::create([
             'title' => $title,
             'slug' => $slug,
             'excerpt' => $excerpt,
@@ -80,6 +81,12 @@ final class PostsController extends BaseController
             'keywords' => $keywords,
             'status' => $status,
             'published_at' => $publishedAt,
+        ]);
+
+        AdminAudit::log('post.create', 'post', $newId, [
+            'title' => $title,
+            'slug' => $slug,
+            'status' => $status,
         ]);
 
         $_SESSION['flash_success'] = "Article créé.";
@@ -164,6 +171,12 @@ final class PostsController extends BaseController
             'published_at' => $publishedAt,
         ]);
 
+        AdminAudit::log('post.update', 'post', $id, [
+            'title' => $title,
+            'slug' => $slug,
+            'status' => $status,
+        ]);
+
         $_SESSION['flash_success'] = "Article mis à jour.";
         $this->redirect('/admin/posts');
     }
@@ -174,7 +187,12 @@ final class PostsController extends BaseController
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
+            $row = Post::find($id);
             Post::delete($id);
+            AdminAudit::log('post.delete', 'post', $id, [
+                'title' => (string)($row['title'] ?? ''),
+                'slug' => (string)($row['slug'] ?? ''),
+            ]);
             $_SESSION['flash_success'] = "Article supprimé.";
         }
         $this->redirect('/admin/posts');

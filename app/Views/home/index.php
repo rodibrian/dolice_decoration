@@ -14,7 +14,14 @@ $primaryLabel = trim((string)($settings['home_primary_cta_label'] ?? ''));
 $primaryUrl = trim((string)($settings['home_primary_cta_url'] ?? ''));
 $secondaryLabel = trim((string)($settings['home_secondary_cta_label'] ?? ''));
 $secondaryUrl = trim((string)($settings['home_secondary_cta_url'] ?? ''));
-$slidesEnabled = ((string)($settings['home_slides_enabled'] ?? '1')) === '1';
+$vSlides = $settings['home_slides_enabled'] ?? null;
+if ($vSlides === null || $vSlides === '') {
+    $slidesEnabled = true;
+} elseif ((string)$vSlides === '0') {
+    $slidesEnabled = false;
+} else {
+    $slidesEnabled = (string)$vSlides === '1';
+}
 
 $heroCoverRaw = trim((string)($settings['hero_cover_image'] ?? ''));
 if ($heroCoverRaw === '') {

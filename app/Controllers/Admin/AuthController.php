@@ -5,8 +5,8 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Core\Auth;
+use App\Core\AdminAudit;
 use App\Models\Setting;
-use App\Models\AuditLog;
 
 final class AuthController extends BaseController
 {
@@ -57,13 +57,13 @@ final class AuthController extends BaseController
             $this->redirect('/admin/login');
         }
 
-        AuditLog::add('auth.login', 'user', (int)(Auth::user()['id'] ?? 0), ['as_super_admin' => $asSuperAdmin]);
+        AdminAudit::log('auth.login', 'user', (int)(Auth::user()['id'] ?? 0), ['as_super_admin' => $asSuperAdmin]);
         $this->redirect('/admin');
     }
 
     public function logout(): void
     {
-        AuditLog::add('auth.logout', 'user', (int)(Auth::user()['id'] ?? 0), null);
+        AdminAudit::log('auth.logout', 'user', (int)(Auth::user()['id'] ?? 0), null);
         Auth::logout();
         $this->redirect('/admin/login');
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Models\Page;
 
@@ -63,6 +64,11 @@ final class PagesController extends BaseController
         }
 
         Page::upsert($key, $title, $content === '' ? null : $content);
+        AdminAudit::log('page.update', 'page', null, [
+            'page_key' => $key,
+            'title' => $title,
+            'content_length' => strlen($content),
+        ]);
         $_SESSION['flash_success'] = "Page mise à jour.";
         $this->redirect('/admin/pages');
     }

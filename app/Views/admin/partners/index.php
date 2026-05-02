@@ -30,6 +30,7 @@
       <thead>
       <tr>
         <th>#</th>
+        <th>Logo</th>
         <th>Nom</th>
         <th>Catégorie</th>
         <th>Publié</th>
@@ -39,11 +40,19 @@
       </thead>
       <tbody>
       <?php if (empty($partners)): ?>
-        <tr><td colspan="6" class="muted">Aucun partenaire.</td></tr>
+        <tr><td colspan="7" class="muted">Aucun partenaire.</td></tr>
       <?php else: ?>
         <?php foreach ($partners as $p): ?>
           <tr data-row data-search="<?= htmlspecialchars(strtolower((string)$p['name'] . ' ' . (string)($p['category'] ?? '')), ENT_QUOTES, 'UTF-8') ?>" data-status="<?= ((int)$p['is_published'] === 1) ? 'oui' : 'non' ?>">
             <td><?= (int)$p['id'] ?></td>
+            <td class="table-td-thumb">
+              <?php $logo = trim((string)($p['logo_path'] ?? '')); ?>
+              <?php if ($logo !== ''): ?>
+                <img class="table-thumb" src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . $logo, ENT_QUOTES, 'UTF-8') ?>" alt="">
+              <?php else: ?>
+                <span class="table-thumb-placeholder" title="Aucun logo">—</span>
+              <?php endif; ?>
+            </td>
             <td><?= htmlspecialchars((string)$p['name'], ENT_QUOTES, 'UTF-8') ?></td>
             <td class="muted"><?= htmlspecialchars((string)($p['category'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td>
             <td><span class="badge text-bg-<?= ((int)$p['is_published'] === 1) ? 'success' : 'secondary' ?>"><?= ((int)$p['is_published'] === 1) ? 'Oui' : 'Non' ?></span></td>

@@ -1,7 +1,9 @@
 <?php
 /** @var list<array<string, mixed>> $projects */
+/** @var array<int, string> $projectFirstImages */
 /** @var string|null $flash */
 /** @var string|null $error */
+$projectFirstImages = $projectFirstImages ?? [];
 ?>
 <section class="card">
   <div class="row between">
@@ -30,6 +32,7 @@
       <thead>
       <tr>
         <th>#</th>
+        <th>Photo</th>
         <th>Titre</th>
         <th>Catégorie</th>
         <th>Lieu</th>
@@ -41,11 +44,19 @@
       </thead>
       <tbody>
       <?php if (empty($projects)): ?>
-        <tr><td colspan="8" class="muted">Aucune réalisation.</td></tr>
+        <tr><td colspan="9" class="muted">Aucune réalisation.</td></tr>
       <?php else: ?>
         <?php foreach ($projects as $p): ?>
           <tr data-row data-search="<?= htmlspecialchars(strtolower((string)$p['title'] . ' ' . (string)$p['slug'] . ' ' . (string)($p['category'] ?? '') . ' ' . (string)($p['location'] ?? '')), ENT_QUOTES, 'UTF-8') ?>" data-status="<?= ((string)$p['status'] === 'published') ? 'publie' : 'brouillon' ?>">
             <td><?= (int)$p['id'] ?></td>
+            <td class="table-td-thumb">
+              <?php $thumb = trim((string)($projectFirstImages[(int)$p['id']] ?? '')); ?>
+              <?php if ($thumb !== ''): ?>
+                <img class="table-thumb" src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . $thumb, ENT_QUOTES, 'UTF-8') ?>" alt="">
+              <?php else: ?>
+                <span class="table-thumb-placeholder" title="Aucune image">—</span>
+              <?php endif; ?>
+            </td>
             <td><?= htmlspecialchars((string)$p['title'], ENT_QUOTES, 'UTF-8') ?><div class="muted"><?= htmlspecialchars((string)$p['slug'], ENT_QUOTES, 'UTF-8') ?></div></td>
             <td class="muted"><?= htmlspecialchars((string)($p['category'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td>
             <td class="muted"><?= htmlspecialchars((string)($p['location'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td>

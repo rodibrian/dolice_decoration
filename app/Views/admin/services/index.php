@@ -26,6 +26,7 @@
       <thead>
       <tr>
         <th>#</th>
+        <th>Photo</th>
         <th>Titre</th>
         <th>Slug</th>
         <th>Catégorie</th>
@@ -37,11 +38,19 @@
       </thead>
       <tbody>
       <?php if (empty($services)): ?>
-        <tr><td colspan="8" class="muted">Aucun service.</td></tr>
+        <tr><td colspan="9" class="muted">Aucun service.</td></tr>
       <?php else: ?>
         <?php foreach ($services as $s): ?>
           <tr data-row data-search="<?= htmlspecialchars(strtolower((string)$s['title'] . ' ' . (string)$s['slug'] . ' ' . (string)($s['category'] ?? '')), ENT_QUOTES, 'UTF-8') ?>" data-status="<?= ((int)$s['is_published'] === 1) ? 'oui' : 'non' ?>">
             <td><?= (int)$s['id'] ?></td>
+            <td class="table-td-thumb">
+              <?php $img = trim((string)($s['image_path'] ?? '')); ?>
+              <?php if ($img !== ''): ?>
+                <img class="table-thumb" src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . $img, ENT_QUOTES, 'UTF-8') ?>" alt="">
+              <?php else: ?>
+                <span class="table-thumb-placeholder" title="Aucune image">—</span>
+              <?php endif; ?>
+            </td>
             <td><?= htmlspecialchars((string)$s['title'], ENT_QUOTES, 'UTF-8') ?></td>
             <td class="muted"><?= htmlspecialchars((string)$s['slug'], ENT_QUOTES, 'UTF-8') ?></td>
             <td class="muted"><?= htmlspecialchars((string)($s['category'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td>

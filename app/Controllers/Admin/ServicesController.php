@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Core\Upload;
 use App\Models\Service;
@@ -65,7 +66,7 @@ final class ServicesController extends BaseController
             $imagePath = Upload::storeImage($_FILES['image']);
         }
 
-        Service::create([
+        $newId = Service::create([
             'title' => $title,
             'slug' => $slug,
             'category' => $category,
@@ -77,6 +78,13 @@ final class ServicesController extends BaseController
             'show_price' => $showPrice,
             'display_order' => $displayOrder,
             'is_published' => $isPublished,
+        ]);
+
+        AdminAudit::log('service.create', 'service', $newId, [
+            'title' => $title,
+            'slug' => $slug,
+            'is_published' => $isPublished,
+            'display_order' => $displayOrder,
         ]);
 
         if (($basePrice !== null || $showPrice === 1 || $priceUnit !== null || $priceLabel !== null) && !Service::supportsPricing()) {
@@ -160,6 +168,13 @@ final class ServicesController extends BaseController
             'is_published' => $isPublished,
         ]);
 
+        AdminAudit::log('service.update', 'service', $id, [
+            'title' => $title,
+            'slug' => $slug,
+            'is_published' => $isPublished,
+            'image_changed' => isset($_FILES['image']) && is_array($_FILES['image']) && (int)($_FILES['image']['error'] ?? 0) !== UPLOAD_ERR_NO_FILE,
+        ]);
+
         if (($basePrice !== null || $showPrice === 1 || $priceUnit !== null || $priceLabel !== null) && !Service::supportsPricing()) {
             $_SESSION['flash_error'] = "Les champs prix ne peuvent pas être enregistrés tant que la base n'est pas migrée (colonnes services: base_price, show_price...). Applique l'ALTER TABLE indiqué dans `database/schema.sql`.";
         }
@@ -174,7 +189,12 @@ final class ServicesController extends BaseController
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
+            $row = Service::find($id);
             Service::delete($id);
+            AdminAudit::log('service.delete', 'service', $id, [
+                'title' => (string)($row['title'] ?? ''),
+                'slug' => (string)($row['slug'] ?? ''),
+            ]);
             $_SESSION['flash_success'] = "Service supprimé.";
         }
 

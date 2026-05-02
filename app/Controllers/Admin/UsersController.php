@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
-use App\Models\AuditLog;
+use App\Core\AdminAudit;
 use App\Models\User;
 
 final class UsersController extends BaseController
@@ -61,7 +61,7 @@ final class UsersController extends BaseController
                 'role' => $role,
                 'password_hash' => password_hash($password, PASSWORD_DEFAULT),
             ]);
-            AuditLog::add('user.create', 'user', $id, ['email' => $email, 'role' => $role]);
+            AdminAudit::log('user.create', 'user', $id, ['email' => $email, 'role' => $role]);
             $_SESSION['flash_success'] = "Utilisateur créé.";
         } catch (\Throwable $e) {
             $_SESSION['flash_error'] = "Impossible de créer l'utilisateur (vérifie la DB/role).";
@@ -125,7 +125,7 @@ final class UsersController extends BaseController
             if ($password !== '') {
                 User::updatePassword($id, password_hash($password, PASSWORD_DEFAULT));
             }
-            AuditLog::add('user.update', 'user', $id, ['email' => $email, 'role' => $role, 'pw_changed' => ($password !== '')]);
+            AdminAudit::log('user.update', 'user', $id, ['email' => $email, 'role' => $role, 'pw_changed' => ($password !== '')]);
             $_SESSION['flash_success'] = "Utilisateur mis à jour.";
         } catch (\Throwable $e) {
             $_SESSION['flash_error'] = "Impossible de mettre à jour l'utilisateur.";
@@ -153,7 +153,7 @@ final class UsersController extends BaseController
         }
 
         User::delete($id);
-        AuditLog::add('user.delete', 'user', $id, null);
+        AdminAudit::log('user.delete', 'user', $id, null);
         $_SESSION['flash_success'] = "Utilisateur supprimé.";
         $this->redirect('/admin/users');
     }

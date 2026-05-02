@@ -30,6 +30,7 @@
       <thead>
       <tr>
         <th>#</th>
+        <th>Photo</th>
         <th>Titre</th>
         <th>Slug</th>
         <th>Statut</th>
@@ -39,11 +40,19 @@
       </thead>
       <tbody>
       <?php if (empty($posts)): ?>
-        <tr><td colspan="6" class="muted">Aucun article.</td></tr>
+        <tr><td colspan="7" class="muted">Aucun article.</td></tr>
       <?php else: ?>
         <?php foreach ($posts as $p): ?>
           <tr data-row data-search="<?= htmlspecialchars(strtolower((string)$p['title'] . ' ' . (string)$p['slug'] . ' ' . (string)($p['author'] ?? '')), ENT_QUOTES, 'UTF-8') ?>" data-status="<?= ((string)$p['status'] === 'published') ? 'publie' : 'brouillon' ?>">
             <td><?= (int)$p['id'] ?></td>
+            <td class="table-td-thumb">
+              <?php $fi = trim((string)($p['featured_image'] ?? '')); ?>
+              <?php if ($fi !== ''): ?>
+                <img class="table-thumb" src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . $fi, ENT_QUOTES, 'UTF-8') ?>" alt="">
+              <?php else: ?>
+                <span class="table-thumb-placeholder" title="Aucune image">—</span>
+              <?php endif; ?>
+            </td>
             <td><?= htmlspecialchars((string)$p['title'], ENT_QUOTES, 'UTF-8') ?></td>
             <td class="muted"><?= htmlspecialchars((string)$p['slug'], ENT_QUOTES, 'UTF-8') ?></td>
             <td><span class="badge text-bg-<?= ((string)$p['status'] === 'published') ? 'success' : 'secondary' ?>"><?= ((string)$p['status'] === 'published') ? 'Publié' : 'Brouillon' ?></span></td>

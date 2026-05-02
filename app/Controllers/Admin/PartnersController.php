@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Core\Upload;
 use App\Models\Partner;
@@ -57,12 +58,17 @@ final class PartnersController extends BaseController
             $logoPath = Upload::storeImage($_FILES['logo']);
         }
 
-        Partner::create([
+        $newId = Partner::create([
             'name' => $name,
             'logo_path' => $logoPath,
             'url' => $url,
             'category' => $category,
             'display_order' => $displayOrder,
+            'is_published' => $isPublished,
+        ]);
+
+        AdminAudit::log('partner.create', 'partner', $newId, [
+            'name' => $name,
             'is_published' => $isPublished,
         ]);
 
@@ -129,6 +135,11 @@ final class PartnersController extends BaseController
             'is_published' => $isPublished,
         ]);
 
+        AdminAudit::log('partner.update', 'partner', $id, [
+            'name' => $name,
+            'is_published' => $isPublished,
+        ]);
+
         $_SESSION['flash_success'] = "Partenaire mis à jour.";
         $this->redirect('/admin/partners');
     }
@@ -139,7 +150,11 @@ final class PartnersController extends BaseController
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
+            $row = Partner::find($id);
             Partner::delete($id);
+            AdminAudit::log('partner.delete', 'partner', $id, [
+                'name' => (string)($row['name'] ?? ''),
+            ]);
             $_SESSION['flash_success'] = "Partenaire supprimé.";
         }
         $this->redirect('/admin/partners');

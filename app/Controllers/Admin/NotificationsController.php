@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Core\AdminAudit;
 use App\Models\Setting;
 use App\Services\EmailJs;
 
@@ -45,6 +46,10 @@ final class NotificationsController extends BaseController
         ] as $k) {
             $setText($k);
         }
+
+        AdminAudit::log('notifications.update', 'notifications', null, [
+            'emailjs_enabled' => $enabled,
+        ]);
 
         $_SESSION['flash_success'] = "Configuration EmailJS enregistrée.";
         $this->redirect('/admin/notifications');
@@ -98,6 +103,8 @@ final class NotificationsController extends BaseController
                 'source' => 'admin_test',
             ]);
         }
+
+        AdminAudit::log('notifications.test_send', 'notifications', null, ['type' => $type, 'ok' => $ok]);
 
         $_SESSION['flash_success'] = $ok ? "Email de test envoyé." : "Échec de l'envoi (vérifie clés/service/template).";
         $this->redirect('/admin/notifications');

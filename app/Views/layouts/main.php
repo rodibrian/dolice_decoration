@@ -30,8 +30,14 @@ $isOn = static function (string $k, bool $defaultOn = true): bool {
   if ($v === null || $v === '') {
     return $defaultOn;
   }
+  if ((string)$v === '0') {
+    return false;
+  }
   return (string)$v === '1';
 };
+
+$showMainNav = $isOn('layout_show_main_nav', true);
+$showMainFooter = $isOn('layout_show_footer', true);
 
 $footerPartners = [];
 try {
@@ -97,6 +103,7 @@ $appBase = rtrim($appBase, '/');
   <meta name="app-base" content="<?= htmlspecialchars($appBase, ENT_QUOTES, 'UTF-8') ?>">
 </head>
 <body class="theme-<?= htmlspecialchars($theme, ENT_QUOTES, 'UTF-8') ?>" <?= $heroCoverUrl !== '' ? 'style="--hero-cover:url(\'' . htmlspecialchars($heroCoverUrl, ENT_QUOTES, 'UTF-8') . '\')"' : '' ?>>
+  <?php if ($showMainNav): ?>
   <nav class="navbar navbar-expand-lg navbar-blur">
     <div class="container py-2">
       <a class="navbar-brand fw-bold" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">
@@ -156,6 +163,7 @@ $appBase = rtrim($appBase, '/');
       </div>
     </div>
   </div>
+  <?php endif; ?>
 
   <main class="site-main">
     <?= $content ?>
@@ -277,6 +285,7 @@ $appBase = rtrim($appBase, '/');
     </div>
   </div>
 
+  <?php if ($showMainFooter): ?>
   <footer class="pt-5 pb-4 mt-5">
     <div class="container">
       <div class="row g-4">
@@ -413,6 +422,7 @@ $appBase = rtrim($appBase, '/');
       </div>
     </div>
   </footer>
+  <?php endif; ?>
 
   <!-- Bootstrap bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

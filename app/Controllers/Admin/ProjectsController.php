@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Core\Upload;
 use App\Models\Project;
@@ -14,9 +15,13 @@ final class ProjectsController extends BaseController
     {
         $this->requireAdmin(['projects.view']);
 
+        $projects = Project::all();
+        $ids = array_map(static fn (array $p): int => (int)$p['id'], $projects);
+
         $this->view('admin.projects.index', [
             'title' => 'Réalisations',
-            'projects' => Project::all(),
+            'projects' => $projects,
+            'projectFirstImages' => $ids !== [] ? Project::firstImagesByProjectIds($ids) : [],
             'flash' => $_SESSION['flash_success'] ?? null,
             'error' => $_SESSION['flash_error'] ?? null,
         ], 'layouts/admin');
@@ -82,6 +87,13 @@ final class ProjectsController extends BaseController
                 }
             }
         }
+
+        AdminAudit::log('project.create', 'project', $id, [
+            'title' => $title,
+            'slug' => $slug,
+            'status' => $status,
+            'images_added' => isset($_FILES['images']) ? count(self::normalizeMultiFiles($_FILES['images'])) : 0,
+        ]);
 
         $_SESSION['flash_success'] = "Réalisation créée.";
         $this->redirect('/admin/projects');
@@ -160,6 +172,12 @@ final class ProjectsController extends BaseController
             }
         }
 
+        AdminAudit::log('project.update', 'project', $id, [
+            'title' => $title,
+            'slug' => $slug,
+            'status' => $status,
+        ]);
+
         $_SESSION['flash_success'] = "Réalisation mise à jour.";
         $this->redirect('/admin/projects');
     }
@@ -170,7 +188,12 @@ final class ProjectsController extends BaseController
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
+            $row = Project::find($id);
             Project::delete($id);
+            AdminAudit::log('project.delete', 'project', $id, [
+                'title' => (string)($row['title'] ?? ''),
+                'slug' => (string)($row['slug'] ?? ''),
+            ]);
             $_SESSION['flash_success'] = "Réalisation supprimée.";
         }
         $this->redirect('/admin/projects');
@@ -184,6 +207,9 @@ final class ProjectsController extends BaseController
         $imageId = (int)($_POST['image_id'] ?? 0);
         if ($imageId > 0) {
             Project::deleteImage($imageId);
+            AdminAudit::log('project.image.delete', 'project_image', $imageId, [
+                'project_id' => $projectId,
+            ]);
             $_SESSION['flash_success'] = "Image supprimée.";
         }
         $this->redirect('/admin/projects/edit?id=' . $projectId);

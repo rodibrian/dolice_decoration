@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
-use App\Core\Auth;
+use App\Core\AdminAudit;
 use App\Core\Upload;
 use App\Models\Setting;
 
@@ -51,6 +51,15 @@ final class SettingsController extends BaseController
             }
         }
         Setting::set('hero_cover_image', $heroCoverImage === '' ? null : $heroCoverImage);
+
+        Setting::set('layout_show_main_nav', isset($_POST['layout_show_main_nav']) ? '1' : '0');
+        Setting::set('layout_show_footer', isset($_POST['layout_show_footer']) ? '1' : '0');
+
+        AdminAudit::log('settings.update', 'settings', null, [
+            'keys' => array_merge($keys, ['hero_cover_image', 'layout_show_main_nav', 'layout_show_footer']),
+            'layout_show_main_nav' => isset($_POST['layout_show_main_nav']) ? 1 : 0,
+            'layout_show_footer' => isset($_POST['layout_show_footer']) ? 1 : 0,
+        ]);
 
         $_SESSION['flash_success'] = "Paramètres enregistrés.";
         $this->redirect('/admin/settings');

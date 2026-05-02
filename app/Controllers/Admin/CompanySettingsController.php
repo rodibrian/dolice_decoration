@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Core\AdminAudit;
 use App\Core\Upload;
 use App\Models\Setting;
 
@@ -110,6 +111,13 @@ final class CompanySettingsController extends BaseController
         ] as $k) {
             $setText($k);
         }
+
+        AdminAudit::log('company_settings.update', 'company_settings', null, [
+            'company_name' => trim((string)($_POST['company_name'] ?? '')),
+            'phones_count' => count($phones),
+            'emails_count' => count($emails),
+            'logo_updated' => isset($_FILES['company_logo_file']) && is_array($_FILES['company_logo_file']),
+        ]);
 
         $_SESSION['flash_success'] = "Entreprise mise à jour.";
         $this->redirect('/admin/company');
