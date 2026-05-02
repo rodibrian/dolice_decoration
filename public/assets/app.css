@@ -186,6 +186,85 @@ body.admin-auth{
 .admin-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:999px}
 .admin-nav::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.22)}
 
+/* Menu mobile (offcanvas) : même fond sombre que la sidebar — les .admin-nav-* sont prévus pour ce contraste */
+#adminSidebarMobile.offcanvas{
+  background:linear-gradient(180deg,var(--admin-sidebar),var(--admin-sidebar-2));
+  color:#e5e7eb;
+}
+#adminSidebarMobile .offcanvas-header{
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+#adminSidebarMobile .offcanvas-title{
+  color:#fff;
+  font-weight:800;
+}
+#adminSidebarMobile .btn-close{
+  filter:invert(1) grayscale(100%) brightness(1.2);
+  opacity:.85;
+}
+#adminSidebarMobile .btn-close:hover{
+  opacity:1;
+}
+#adminSidebarMobile .offcanvas-body{
+  background:transparent;
+  color:inherit;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  flex:1 1 auto;
+  overflow:hidden;
+  padding-bottom:max(1rem, env(safe-area-inset-bottom, 0px));
+}
+/* Défilement dans la nav uniquement → scrollbar à gauche (direction: rtl), comme la sidebar bureau */
+#adminSidebarMobile .admin-nav{
+  flex:1 1 auto;
+  min-height:0;
+  margin-top:0;
+  margin-left:calc(-1 * var(--bs-offcanvas-padding-x, 1rem));
+  margin-right:calc(-1 * var(--bs-offcanvas-padding-x, 1rem));
+  padding-left:var(--bs-offcanvas-padding-x, 1rem);
+  padding-right:var(--bs-offcanvas-padding-x, 1rem);
+  direction:rtl;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,.22) rgba(255,255,255,.06);
+}
+#adminSidebarMobile .admin-nav > *{
+  direction:ltr;
+}
+#adminSidebarMobile .admin-nav::-webkit-scrollbar{
+  width:6px;
+}
+#adminSidebarMobile .admin-nav::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.06);
+  border-radius:999px;
+}
+#adminSidebarMobile .admin-nav::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,.20);
+  border-radius:999px;
+}
+#adminSidebarMobile .admin-nav::-webkit-scrollbar-thumb:hover{
+  background:rgba(255,255,255,.32);
+}
+#adminSidebarMobile .offcanvas-body > form{
+  flex-shrink:0;
+  margin-top:.5rem;
+}
+#adminSidebarMobile hr{
+  flex-shrink:0;
+  margin-top:.75rem;
+  border-color:rgba(255,255,255,.14);
+  opacity:1;
+}
+#adminSidebarMobile .btn-outline-secondary{
+  color:#e5e7eb;
+  border-color:rgba(255,255,255,.38);
+}
+#adminSidebarMobile .btn-outline-secondary:hover{
+  background:rgba(255,255,255,.10);
+  border-color:rgba(255,255,255,.48);
+  color:#fff;
+}
+
 .admin-main{
   flex:1 1 auto;
   display:flex;
@@ -229,6 +308,8 @@ body.admin-auth{
   background:var(--admin-card);
   border-radius:18px;
   box-shadow:0 14px 36px rgba(15,23,42,.06);
+  min-width:0;
+  max-width:100%;
 }
 .muted{color:var(--admin-muted)}
 .page-title{display:flex;align-items:center;gap:10px;margin:0}
@@ -301,8 +382,22 @@ textarea{resize:vertical}
 .row.between{justify-content:space-between;align-items:center}
 .row.between > .btn{width:auto;margin-left:auto;white-space:nowrap}
 .crud-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
-.crud-toolbar .form-control,.crud-toolbar .form-select{max-width:260px}
-.table-wrap{overflow:auto;border-radius:16px;border:1px solid rgba(15,23,42,.10);background:#fff}
+@media (min-width:768px){
+  .crud-toolbar .form-control,
+  .crud-toolbar .form-select{
+    max-width:260px;
+  }
+}
+.table-wrap{
+  overflow-x:auto;
+  overflow-y:visible;
+  -webkit-overflow-scrolling:touch;
+  border-radius:16px;
+  border:1px solid rgba(15,23,42,.10);
+  background:#fff;
+  max-width:100%;
+  min-width:0;
+}
 .table{width:100%;border-collapse:collapse;min-width:760px;margin-bottom:0}
 .table th,.table td{padding:10px 12px;border-bottom:1px solid rgba(15,23,42,.08);text-align:left;vertical-align:top}
 .table th{
@@ -398,4 +493,172 @@ textarea{resize:vertical}
   border-radius:14px;
   padding:10px 12px;
   background:#fff;
+}
+
+/* -------- Admin mobile : cartes, tableaux, barres d’outils -------- */
+@media (max-width:767.98px){
+  body.admin-shell{
+    font-size:0.9375rem;
+  }
+  .admin-content.container-fluid{
+    padding-top:1rem !important;
+    padding-bottom:1.25rem !important;
+    padding-left:max(0.65rem, env(safe-area-inset-left, 0px)) !important;
+    padding-right:max(0.65rem, env(safe-area-inset-right, 0px)) !important;
+  }
+  .admin-topbar .container-fluid{
+    padding-left:max(0.5rem, env(safe-area-inset-left, 0px));
+    padding-right:max(0.5rem, env(safe-area-inset-right, 0px));
+  }
+  .admin-topbar-kicker{
+    font-size:0.62rem;
+  }
+  .admin-topbar-page{
+    font-size:0.92rem;
+    line-height:1.2;
+    overflow-wrap:anywhere;
+  }
+  .admin-topbar .btn-sm{
+    font-size:0.75rem;
+    padding:0.35rem 0.5rem;
+  }
+
+  .card{
+    padding:0.85rem 0.7rem;
+    border-radius:14px;
+    margin-bottom:12px;
+  }
+  .page-title{
+    font-size:1.02rem;
+    line-height:1.25;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .page-icon{
+    width:32px;
+    height:32px;
+    font-size:15px;
+    border-radius:12px;
+  }
+  .page-subtitle{
+    font-size:0.85rem;
+  }
+
+  .row.between{
+    flex-direction:column;
+    align-items:stretch !important;
+    gap:10px;
+  }
+  .row.between > .btn{
+    margin-left:0 !important;
+    width:100%;
+    justify-content:center;
+    order:2;
+  }
+  .row.between > h1.page-title,
+  .row.between > .page-title{
+    order:1;
+    width:100%;
+  }
+
+  .crud-toolbar{
+    flex-direction:column;
+    align-items:stretch;
+    gap:8px;
+    margin:10px 0;
+  }
+  .crud-toolbar .form-control,
+  .crud-toolbar .form-select{
+    width:100%;
+    max-width:none !important;
+    font-size:0.9rem;
+  }
+  .crud-toolbar [data-toolbar-actions="1"]{
+    margin-left:0 !important;
+    width:100% !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+  }
+  .crud-toolbar [data-toolbar-actions="1"] .btn{
+    width:100%;
+    justify-content:center;
+  }
+
+  .table-wrap{
+    border-radius:12px;
+    margin-left:0;
+    margin-right:0;
+  }
+  .table{
+    min-width:760px;
+    font-size:0.8125rem;
+  }
+  .table th,
+  .table td{
+    padding:7px 6px;
+  }
+  .table th{
+    font-size:0.62rem;
+    letter-spacing:0.04em;
+  }
+  .table td{
+    word-break:break-word;
+    hyphens:auto;
+  }
+  .table .actions{
+    flex-direction:column;
+    align-items:stretch;
+    gap:6px;
+    min-width:5.5rem;
+  }
+  .table .actions .btn{
+    width:100%;
+    justify-content:center;
+    padding:7px 8px;
+    font-size:0.78rem;
+  }
+  .table .badge{
+    font-size:0.68rem;
+  }
+
+  label{
+    font-size:0.875rem;
+    margin:8px 0;
+  }
+  input,
+  select,
+  textarea{
+    padding:9px 10px;
+    font-size:0.9rem;
+  }
+  .btn{
+    padding:9px 12px;
+    font-size:0.875rem;
+  }
+
+  .stats-grid{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+  .stat-value{
+    font-size:1.45rem;
+  }
+  .admin-kpi{
+    padding:12px;
+    min-height:0;
+  }
+  .admin-kpi-value{
+    font-size:1.45rem;
+  }
+  .admin-kpi-label,
+  .admin-kpi-note{
+    font-size:0.82rem;
+  }
+  .media-grid{
+    grid-template-columns:repeat(auto-fill, minmax(110px, 1fr));
+    gap:8px;
+  }
+  .panel-card h3{
+    font-size:0.98rem;
+  }
 }
