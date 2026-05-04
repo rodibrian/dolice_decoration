@@ -1134,3 +1134,37 @@ body.theme-tone-dark .navbar-blur .lang-switch .lang-switch-select{
   max-width:100%;
 }
 
+/* Thèmes sombres : sections « soft », en-têtes de page, FAQ */
+body.theme-tone-dark .bg-soft{
+  background:linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--brand-2) 22%, transparent),
+    color-mix(in srgb, var(--brand) 16%, transparent)
+  );
+}
+body.theme-tone-dark .page-header .text-secondary,
+body.theme-tone-dark .services-hero .text-secondary,
+body.theme-tone-dark .projects-hero .text-secondary,
+body.theme-tone-dark .blog-hero .text-secondary,
+body.theme-tone-dark .faq-hero .text-secondary,
+body.theme-tone-dark .contact-hero .text-secondary{
+  color:var(--site-muted-text) !important;
+}
+body.theme-tone-dark .faq-accordion .accordion-item{
+  background:var(--site-card-bg);
+  border-color:rgba(255,255,255,.1);
+}
+body.theme-tone-dark .faq-accordion .accordion-button{
+  background:var(--site-card-bg);
+  color:var(--site-body-text);
+}
+body.theme-tone-dark .faq-accordion .accordion-button:not(.collapsed){
+  background:color-mix(in srgb, var(--brand) 14%, var(--site-card-bg));
+  color:var(--site-body-text);
+}
+body.theme-tone-dark .breadcrumb-item a{
+  color:color-mix(in srgb, var(--brand) 35%, var(--site-muted-text));
+}
+body.theme-tone-dark .breadcrumb-item.active{
+  color:var(--site-body-text);
+}

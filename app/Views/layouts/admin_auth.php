@@ -3,9 +3,11 @@
 /** @var string|null $title */
 /** @var string|null $heroCoverUrl */
 $adminSiteTheme = \App\Core\SiteTheme::normalize(\App\Models\Setting::get('site_theme', \App\Core\SiteTheme::DEFAULT) ?? \App\Core\SiteTheme::DEFAULT);
+$adminTone = in_array($adminSiteTheme, ['midnight', 'obsidian'], true) ? 'admin-tone-dark' : 'admin-tone-light';
+$htmlLang = \App\Core\Locale::current();
 ?>
 <!doctype html>
-<html lang="fr">
+<html lang="<?= htmlspecialchars($htmlLang, ENT_QUOTES, 'UTF-8') ?>">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,7 +20,7 @@ $adminSiteTheme = \App\Core\SiteTheme::normalize(\App\Models\Setting::get('site_
   <link rel="stylesheet" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/assets/app.css', ENT_QUOTES, 'UTF-8') ?>">
   <meta name="admin-auth-cover" content="<?= htmlspecialchars((string)($heroCoverUrl ?? ''), ENT_QUOTES, 'UTF-8') ?>">
 </head>
-<body class="admin-shell admin-auth site-theme-<?= htmlspecialchars($adminSiteTheme, ENT_QUOTES, 'UTF-8') ?>">
+<body class="admin-shell admin-auth <?= htmlspecialchars($adminTone, ENT_QUOTES, 'UTF-8') ?> site-theme-<?= htmlspecialchars($adminSiteTheme, ENT_QUOTES, 'UTF-8') ?>">
   <main class="admin-auth-shell" style="--admin-auth-cover:url('<?= htmlspecialchars((string)($heroCoverUrl ?? ''), ENT_QUOTES, 'UTF-8') ?>')">
     <?= $content ?>
   </main>

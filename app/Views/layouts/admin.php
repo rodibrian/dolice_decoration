@@ -10,6 +10,7 @@ $isActive = static function (string $prefix) use ($uri): string {
 };
 $isDashboardHome = (bool)preg_match('#/admin/?$#', rtrim($uri, '/'));
 $adminSiteTheme = \App\Core\SiteTheme::normalize(\App\Models\Setting::get('site_theme', \App\Core\SiteTheme::DEFAULT) ?? \App\Core\SiteTheme::DEFAULT);
+$adminTone = in_array($adminSiteTheme, ['midnight', 'obsidian'], true) ? 'admin-tone-dark' : 'admin-tone-light';
 $htmlLang = \App\Core\Locale::current();
 ?>
 <!doctype html>
@@ -25,7 +26,7 @@ $htmlLang = \App\Core\Locale::current();
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/assets/app.css', ENT_QUOTES, 'UTF-8') ?>">
 </head>
-<body class="admin-shell admin-light site-theme-<?= htmlspecialchars($adminSiteTheme, ENT_QUOTES, 'UTF-8') ?>">
+<body class="admin-shell <?= htmlspecialchars($adminTone, ENT_QUOTES, 'UTF-8') ?> site-theme-<?= htmlspecialchars($adminSiteTheme, ENT_QUOTES, 'UTF-8') ?>">
   <div class="admin-layout">
     <!-- Sidebar (desktop) -->
     <aside class="admin-sidebar d-none d-lg-flex">
