@@ -8,9 +8,27 @@ use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Core\Upload;
 use App\Models\Post;
+use App\Models\Translation;
 
 final class PostsController extends BaseController
 {
+    private function savePostTranslations(int $postId): void
+    {
+        Translation::saveLocale('post', $postId, 'en', [
+            'title' => trim((string)($_POST['tr_en_title'] ?? '')),
+            'excerpt' => trim((string)($_POST['tr_en_excerpt'] ?? '')),
+            'content' => trim((string)($_POST['tr_en_content'] ?? '')),
+            'author' => trim((string)($_POST['tr_en_author'] ?? '')),
+            'keywords' => trim((string)($_POST['tr_en_keywords'] ?? '')),
+        ]);
+        Translation::saveLocale('post', $postId, 'mg', [
+            'title' => trim((string)($_POST['tr_mg_title'] ?? '')),
+            'excerpt' => trim((string)($_POST['tr_mg_excerpt'] ?? '')),
+            'content' => trim((string)($_POST['tr_mg_content'] ?? '')),
+            'author' => trim((string)($_POST['tr_mg_author'] ?? '')),
+            'keywords' => trim((string)($_POST['tr_mg_keywords'] ?? '')),
+        ]);
+    }
     public function index(): void
     {
         $this->requireAdmin(['posts.view']);
@@ -32,6 +50,8 @@ final class PostsController extends BaseController
         $this->view('admin.posts.form', [
             'title' => 'Nouvel article',
             'post' => null,
+            'trans_en' => [],
+            'trans_mg' => [],
             'error' => $_SESSION['flash_error'] ?? null,
         ], 'layouts/admin');
 
@@ -89,6 +109,8 @@ final class PostsController extends BaseController
             'status' => $status,
         ]);
 
+        $this->savePostTranslations($newId);
+
         $_SESSION['flash_success'] = "Article créé.";
         $this->redirect('/admin/posts');
     }
@@ -107,6 +129,8 @@ final class PostsController extends BaseController
         $this->view('admin.posts.form', [
             'title' => 'Modifier article',
             'post' => $post,
+            'trans_en' => Translation::tableReady() ? Translation::mapFor('post', $id, 'en') : [],
+            'trans_mg' => Translation::tableReady() ? Translation::mapFor('post', $id, 'mg') : [],
             'error' => $_SESSION['flash_error'] ?? null,
         ], 'layouts/admin');
 
@@ -177,6 +201,8 @@ final class PostsController extends BaseController
             'status' => $status,
         ]);
 
+        $this->savePostTranslations($id);
+
         $_SESSION['flash_success'] = "Article mis à jour.";
         $this->redirect('/admin/posts');
     }
@@ -188,6 +214,7 @@ final class PostsController extends BaseController
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
             $row = Post::find($id);
+            Translation::deleteForEntity('post', $id);
             Post::delete($id);
             AdminAudit::log('post.delete', 'post', $id, [
                 'title' => (string)($row['title'] ?? ''),

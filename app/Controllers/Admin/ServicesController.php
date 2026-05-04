@@ -8,9 +8,25 @@ use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Core\Upload;
 use App\Models\Service;
+use App\Models\Translation;
 
 final class ServicesController extends BaseController
 {
+    private function saveServiceTranslations(int $serviceId): void
+    {
+        Translation::saveLocale('service', $serviceId, 'en', [
+            'title' => trim((string)($_POST['tr_en_title'] ?? '')),
+            'description' => trim((string)($_POST['tr_en_description'] ?? '')),
+            'category' => trim((string)($_POST['tr_en_category'] ?? '')),
+            'price_label' => trim((string)($_POST['tr_en_price_label'] ?? '')),
+        ]);
+        Translation::saveLocale('service', $serviceId, 'mg', [
+            'title' => trim((string)($_POST['tr_mg_title'] ?? '')),
+            'description' => trim((string)($_POST['tr_mg_description'] ?? '')),
+            'category' => trim((string)($_POST['tr_mg_category'] ?? '')),
+            'price_label' => trim((string)($_POST['tr_mg_price_label'] ?? '')),
+        ]);
+    }
     public function index(): void
     {
         $this->requireAdmin(['services.view']);
@@ -31,6 +47,8 @@ final class ServicesController extends BaseController
         $this->view('admin.services.form', [
             'title' => 'Nouveau service',
             'service' => null,
+            'trans_en' => [],
+            'trans_mg' => [],
             'error' => $_SESSION['flash_error'] ?? null,
         ], 'layouts/admin');
 
@@ -91,6 +109,8 @@ final class ServicesController extends BaseController
             $_SESSION['flash_error'] = "Les champs prix ne peuvent pas être enregistrés tant que la base n'est pas migrée (colonnes services: base_price, show_price...). Applique l'ALTER TABLE indiqué dans `database/schema.sql`.";
         }
 
+        $this->saveServiceTranslations($newId);
+
         $_SESSION['flash_success'] = "Service créé.";
         $this->redirect('/admin/services');
     }
@@ -106,9 +126,12 @@ final class ServicesController extends BaseController
             $this->redirect('/admin/services');
         }
 
+        $sid = (int)$service['id'];
         $this->view('admin.services.form', [
             'title' => 'Modifier service',
             'service' => $service,
+            'trans_en' => Translation::tableReady() ? Translation::mapFor('service', $sid, 'en') : [],
+            'trans_mg' => Translation::tableReady() ? Translation::mapFor('service', $sid, 'mg') : [],
             'error' => $_SESSION['flash_error'] ?? null,
         ], 'layouts/admin');
 
@@ -179,6 +202,8 @@ final class ServicesController extends BaseController
             $_SESSION['flash_error'] = "Les champs prix ne peuvent pas être enregistrés tant que la base n'est pas migrée (colonnes services: base_price, show_price...). Applique l'ALTER TABLE indiqué dans `database/schema.sql`.";
         }
 
+        $this->saveServiceTranslations($id);
+
         $_SESSION['flash_success'] = "Service mis à jour.";
         $this->redirect('/admin/services');
     }
@@ -190,6 +215,7 @@ final class ServicesController extends BaseController
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
             $row = Service::find($id);
+            Translation::deleteForEntity('service', $id);
             Service::delete($id);
             AdminAudit::log('service.delete', 'service', $id, [
                 'title' => (string)($row['title'] ?? ''),

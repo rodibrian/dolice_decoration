@@ -8,6 +8,7 @@ use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Core\Upload;
 use App\Models\HeroSlide;
+use App\Models\Translation;
 
 final class HeroSlidesController extends BaseController
 {
@@ -180,6 +181,7 @@ final class HeroSlidesController extends BaseController
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
             $row = HeroSlide::find($id);
+            Translation::deleteForEntity('hero_slide', $id);
             HeroSlide::delete($id);
             AdminAudit::log('hero_slide.delete', 'hero_slide', $id, [
                 'title' => (string)($row['title'] ?? ''),

@@ -3,7 +3,7 @@
 /** @var string|null $title */
 
 $companyName = \App\Models\Setting::get('company_name', 'Dolice Decoration') ?? 'Dolice Decoration';
-$companySlogan = \App\Models\Setting::get('company_slogan', 'Finition & décoration de bâtiment.') ?? 'Finition & décoration de bâtiment.';
+$companySlogan = \App\Models\Setting::get('company_slogan', t('meta.default_slogan')) ?? t('meta.default_slogan');
 $companyLogo = \App\Models\Setting::get('company_logo', null);
 $companyLogoUrl = '';
 if (!empty($companyLogo)) {
@@ -45,6 +45,13 @@ try {
 } catch (\Throwable $e) {
   $footerPartners = [];
 }
+foreach ($footerPartners as $i => $fp) {
+  $pid = (int)($fp['id'] ?? 0);
+  if ($pid > 0) {
+    $footerPartners[$i] = \App\Models\Translation::mergeRow('partner', $pid, $fp, ['name', 'category']);
+  }
+}
+$htmlLang = \App\Core\Locale::current();
 
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $scriptName = (string)($_SERVER['SCRIPT_NAME'] ?? '');
@@ -76,11 +83,11 @@ if ($appBase === '') {
 $appBase = rtrim($appBase, '/');
 ?>
 <!doctype html>
-<html lang="fr">
+<html lang="<?= htmlspecialchars($htmlLang, ENT_QUOTES, 'UTF-8') ?>">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?= htmlspecialchars($title ?? 'Dolice Decoration', ENT_QUOTES, 'UTF-8') ?></title>
+  <title><?= htmlspecialchars($title ?? t('meta.site_brand'), ENT_QUOTES, 'UTF-8') ?></title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -115,21 +122,22 @@ $appBase = rtrim($appBase, '/');
         <?= htmlspecialchars($companyName, ENT_QUOTES, 'UTF-8') ?>
       </a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mainOffcanvas" aria-controls="mainOffcanvas" aria-label="Menu">
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mainOffcanvas" aria-controls="mainOffcanvas" aria-label="<?= htmlspecialchars(t('nav.menu'), ENT_QUOTES, 'UTF-8') ?>">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="d-none d-lg-flex align-items-center gap-3 ms-auto">
-        <?php if ($isOn('nav_show_services', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a><?php endif; ?>
-        <?php if ($isOn('nav_show_projects', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/realisations') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">Réalisations</a><?php endif; ?>
-        <?php if ($isOn('nav_show_blog', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/blog') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">Blog</a><?php endif; ?>
-        <?php if ($isOn('nav_show_faq', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/faq') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>">FAQ</a><?php endif; ?>
-        <?php if ($isOn('nav_show_contact', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/contact') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">Contact</a><?php endif; ?>
+      <div class="d-none d-lg-flex align-items-center gap-2 ms-auto">
+        <?php if ($isOn('nav_show_services', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.services'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+        <?php if ($isOn('nav_show_projects', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/realisations') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.projects'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+        <?php if ($isOn('nav_show_blog', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/blog') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.blog'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+        <?php if ($isOn('nav_show_faq', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/faq') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.faq'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+        <?php if ($isOn('nav_show_contact', true)): ?><a class="nav-link nav-link-pro <?= $isActive('/contact') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.contact'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
         <?php if ($isOn('nav_show_quote', true)): ?>
           <a class="btn btn-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-clipboard-check me-2"></i>Demander un devis
+            <i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars(t('nav.quote'), ENT_QUOTES, 'UTF-8') ?>
           </a>
         <?php endif; ?>
+        <?php require __DIR__ . '/../partials/lang_switch.php'; ?>
       </div>
     </div>
   </nav>
@@ -137,28 +145,35 @@ $appBase = rtrim($appBase, '/');
   <!-- Offcanvas mobile menu -->
   <div class="offcanvas offcanvas-end" tabindex="-1" id="mainOffcanvas" aria-labelledby="mainOffcanvasLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="mainOffcanvasLabel">Menu</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fermer"></button>
+      <h5 class="offcanvas-title" id="mainOffcanvasLabel"><?= htmlspecialchars(t('nav.menu'), ENT_QUOTES, 'UTF-8') ?></h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="<?= htmlspecialchars(t('nav.menu_close'), ENT_QUOTES, 'UTF-8') ?>"></button>
     </div>
     <div class="offcanvas-body">
       <div class="list-group list-group-flush">
-        <a class="list-group-item list-group-item-action <?= $isActive('/') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">Accueil</a>
-        <?php if ($isOn('nav_show_history', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/notre-histoire') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/notre-histoire', ENT_QUOTES, 'UTF-8') ?>">Notre histoire</a><?php endif; ?>
-        <?php if ($isOn('nav_show_services', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a><?php endif; ?>
-        <?php if ($isOn('nav_show_projects', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/realisations') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">Réalisations</a><?php endif; ?>
-        <?php if ($isOn('nav_show_blog', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/blog') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">Blog</a><?php endif; ?>
-        <?php if ($isOn('nav_show_faq', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/faq') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>">FAQ</a><?php endif; ?>
-        <?php if ($isOn('nav_show_contact', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/contact') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">Contact</a><?php endif; ?>
+        <a class="list-group-item list-group-item-action <?= $isActive('/') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.home'), ENT_QUOTES, 'UTF-8') ?></a>
+        <?php if ($isOn('nav_show_history', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/notre-histoire') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/notre-histoire', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.history'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+        <?php if ($isOn('nav_show_services', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/services') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.services'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+        <?php if ($isOn('nav_show_projects', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/realisations') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.projects'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+        <?php if ($isOn('nav_show_blog', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/blog') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.blog'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+        <?php if ($isOn('nav_show_faq', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/faq') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.faq'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+        <?php if ($isOn('nav_show_contact', true)): ?><a class="list-group-item list-group-item-action <?= $isActive('/contact') ?>" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.contact'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
       </div>
 
       <div class="d-grid gap-2 mt-4">
         <?php if ($isOn('nav_show_quote', true)): ?>
           <a class="btn btn-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-clipboard-check me-2"></i>Demander un devis
+            <i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars(t('nav.quote'), ENT_QUOTES, 'UTF-8') ?>
           </a>
         <?php endif; ?>
+        <div class="d-flex justify-content-center">
+          <?php
+            $langSwitchWrapClass = 'w-100';
+            require __DIR__ . '/../partials/lang_switch.php';
+            unset($langSwitchWrapClass);
+          ?>
+        </div>
         <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/login', ENT_QUOTES, 'UTF-8') ?>">
-          <i class="bi bi-shield-lock me-2"></i>Admin
+          <i class="bi bi-shield-lock me-2"></i><?= htmlspecialchars(t('nav.admin'), ENT_QUOTES, 'UTF-8') ?>
         </a>
       </div>
     </div>
@@ -174,8 +189,8 @@ $appBase = rtrim($appBase, '/');
     <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
       <div class="modal-content rounded-4 overflow-hidden">
         <div class="modal-header">
-          <h5 class="modal-title" id="projectDetailsModalLabel">Réalisation</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          <h5 class="modal-title" id="projectDetailsModalLabel"><?= htmlspecialchars(t('modal.project_title'), ENT_QUOTES, 'UTF-8') ?></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= htmlspecialchars(t('modal.close'), ENT_QUOTES, 'UTF-8') ?>"></button>
         </div>
         <div class="modal-body">
           <div class="row g-4">
@@ -202,8 +217,8 @@ $appBase = rtrim($appBase, '/');
           </div>
         </div>
         <div class="modal-footer">
-          <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-2"></i>Voir tout</a>
-          <button type="button" class="btn btn-brand" data-bs-dismiss="modal">Fermer</button>
+          <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-2"></i><?= htmlspecialchars(t('modal.view_all'), ENT_QUOTES, 'UTF-8') ?></a>
+          <button type="button" class="btn btn-brand" data-bs-dismiss="modal"><?= htmlspecialchars(t('modal.close'), ENT_QUOTES, 'UTF-8') ?></button>
         </div>
       </div>
     </div>
@@ -214,8 +229,8 @@ $appBase = rtrim($appBase, '/');
     <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
       <div class="modal-content rounded-4 overflow-hidden">
         <div class="modal-header">
-          <h5 class="modal-title" id="serviceDetailsModalLabel">Service</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          <h5 class="modal-title" id="serviceDetailsModalLabel"><?= htmlspecialchars(t('modal.service_title'), ENT_QUOTES, 'UTF-8') ?></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= htmlspecialchars(t('modal.close'), ENT_QUOTES, 'UTF-8') ?>"></button>
         </div>
         <div class="modal-body">
           <div class="row g-4">
@@ -241,9 +256,9 @@ $appBase = rtrim($appBase, '/');
           </div>
         </div>
         <div class="modal-footer">
-          <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-tools me-2"></i>Voir tout</a>
-          <a class="btn btn-brand d-none" data-service-modal-open-page href="#"><i class="bi bi-box-arrow-up-right me-2"></i>Ouvrir la page</a>
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fermer</button>
+          <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-tools me-2"></i><?= htmlspecialchars(t('modal.view_all'), ENT_QUOTES, 'UTF-8') ?></a>
+          <a class="btn btn-brand d-none" data-service-modal-open-page href="#"><i class="bi bi-box-arrow-up-right me-2"></i><?= htmlspecialchars(t('modal.open_page'), ENT_QUOTES, 'UTF-8') ?></a>
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><?= htmlspecialchars(t('modal.close'), ENT_QUOTES, 'UTF-8') ?></button>
         </div>
       </div>
     </div>
@@ -254,8 +269,8 @@ $appBase = rtrim($appBase, '/');
     <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
       <div class="modal-content rounded-4 overflow-hidden">
         <div class="modal-header">
-          <h5 class="modal-title" id="postDetailsModalLabel">Article</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          <h5 class="modal-title" id="postDetailsModalLabel"><?= htmlspecialchars(t('modal.post_title'), ENT_QUOTES, 'UTF-8') ?></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= htmlspecialchars(t('modal.close'), ENT_QUOTES, 'UTF-8') ?>"></button>
         </div>
         <div class="modal-body">
           <div class="row g-4 align-items-lg-start">
@@ -277,9 +292,9 @@ $appBase = rtrim($appBase, '/');
           </div>
         </div>
         <div class="modal-footer">
-          <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-newspaper me-2"></i>Voir tout</a>
-          <a class="btn btn-brand d-none" data-post-modal-open-page href="#"><i class="bi bi-box-arrow-up-right me-2"></i>Ouvrir la page</a>
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fermer</button>
+          <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-newspaper me-2"></i><?= htmlspecialchars(t('modal.view_all'), ENT_QUOTES, 'UTF-8') ?></a>
+          <a class="btn btn-brand d-none" data-post-modal-open-page href="#"><i class="bi bi-box-arrow-up-right me-2"></i><?= htmlspecialchars(t('modal.open_page'), ENT_QUOTES, 'UTF-8') ?></a>
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><?= htmlspecialchars(t('modal.close'), ENT_QUOTES, 'UTF-8') ?></button>
         </div>
       </div>
     </div>
@@ -301,35 +316,35 @@ $appBase = rtrim($appBase, '/');
           <p class="mb-0"><?= htmlspecialchars($companySlogan, ENT_QUOTES, 'UTF-8') ?></p>
         </div>
         <div class="col-6 col-lg-2">
-          <div class="fw-semibold mb-2">Pages</div>
+          <div class="fw-semibold mb-2"><?= htmlspecialchars(t('footer.pages'), ENT_QUOTES, 'UTF-8') ?></div>
           <div class="d-flex flex-column gap-2">
-            <?php if ($isOn('footer_show_services', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a><?php endif; ?>
-            <?php if ($isOn('footer_show_projects', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">Réalisations</a><?php endif; ?>
-            <?php if ($isOn('footer_show_blog', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">Blog</a><?php endif; ?>
-            <?php if ($isOn('footer_show_contact', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">Contact</a><?php endif; ?>
+            <?php if ($isOn('footer_show_services', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.services'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+            <?php if ($isOn('footer_show_projects', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.projects'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+            <?php if ($isOn('footer_show_blog', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.blog'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+            <?php if ($isOn('footer_show_contact', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.contact'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
           </div>
         </div>
         <div class="col-6 col-lg-2">
-          <div class="fw-semibold mb-2">Infos</div>
+          <div class="fw-semibold mb-2"><?= htmlspecialchars(t('footer.info'), ENT_QUOTES, 'UTF-8') ?></div>
           <div class="d-flex flex-column gap-2">
-            <?php if ($isOn('footer_show_history', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/notre-histoire', ENT_QUOTES, 'UTF-8') ?>">Notre histoire</a><?php endif; ?>
-            <?php if ($isOn('footer_show_faq', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>">FAQ</a><?php endif; ?>
-            <?php if ($isOn('footer_show_quote', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">Demander un devis</a><?php endif; ?>
+            <?php if ($isOn('footer_show_history', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/notre-histoire', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.history'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+            <?php if ($isOn('footer_show_faq', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/faq', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.faq'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
+            <?php if ($isOn('footer_show_quote', true)): ?><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.quote'), ENT_QUOTES, 'UTF-8') ?></a><?php endif; ?>
           </div>
         </div>
         <div class="col-lg-2">
-          <div class="fw-semibold mb-2">Contact</div>
+          <div class="fw-semibold mb-2"><?= htmlspecialchars(t('footer.contact_block'), ENT_QUOTES, 'UTF-8') ?></div>
           <div class="d-flex flex-column gap-2">
-            <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope me-2"></i>Écrire un message</a>
-            <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i>Demande de devis</a>
+            <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope me-2"></i><?= htmlspecialchars(t('footer.write'), ENT_QUOTES, 'UTF-8') ?></a>
+            <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars(t('footer.quote_req'), ENT_QUOTES, 'UTF-8') ?></a>
             <?php if ($isOn('footer_show_admin', true)): ?>
-              <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/login', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-shield-lock me-2"></i>Espace admin</a>
+              <a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/login', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-shield-lock me-2"></i><?= htmlspecialchars(t('footer.admin_space'), ENT_QUOTES, 'UTF-8') ?></a>
             <?php endif; ?>
           </div>
         </div>
         <div class="col-lg-2">
           <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
-            <div class="fw-semibold">Partenaires</div>
+            <div class="fw-semibold"><?= htmlspecialchars(t('footer.partners'), ENT_QUOTES, 'UTF-8') ?></div>
             <a class="small" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>"></a>
           </div>
           <div class="footer-partners">
@@ -365,10 +380,10 @@ $appBase = rtrim($appBase, '/');
                   <?= $url !== '' ? '' : 'role="button"' ?>
                   data-bs-toggle="tooltip"
                   data-bs-placement="top"
-                  data-bs-title="<?= htmlspecialchars($hint !== '' ? $hint : 'Partenaire', ENT_QUOTES, 'UTF-8') ?>"
+                  data-bs-title="<?= htmlspecialchars($hint !== '' ? $hint : t('footer.partner'), ENT_QUOTES, 'UTF-8') ?>"
                   onclick="<?= $url === '' ? 'return false' : '' ?>"
                 >
-                  <img src="<?= htmlspecialchars($logoUrl, ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($name !== '' ? $name : 'Partenaire', ENT_QUOTES, 'UTF-8') ?>">
+                  <img src="<?= htmlspecialchars($logoUrl, ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($name !== '' ? $name : t('footer.partner'), ENT_QUOTES, 'UTF-8') ?>">
                 </a>
               <?php endif; ?>
             <?php endforeach; ?>
@@ -379,17 +394,17 @@ $appBase = rtrim($appBase, '/');
 
       <hr class="border-light opacity-10 my-4">
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
-        <div class="small">© <?= date('Y') ?> Dolice Decoration. Tous droits réservés.</div>
+        <div class="small"><?= htmlspecialchars(t('footer.rights', ['year' => (string)date('Y')]), ENT_QUOTES, 'UTF-8') ?></div>
         <div class="d-flex align-items-center gap-3 flex-wrap justify-content-md-end">
           <?php
             $socials = [
-              ['k' => 'facebook', 'label' => 'Facebook', 'icon' => 'bi-facebook'],
-              ['k' => 'instagram', 'label' => 'Instagram', 'icon' => 'bi-instagram'],
-              ['k' => 'linkedin', 'label' => 'LinkedIn', 'icon' => 'bi-linkedin'],
-              ['k' => 'twitter', 'label' => 'X', 'icon' => 'bi-twitter-x'],
-              ['k' => 'youtube', 'label' => 'YouTube', 'icon' => 'bi-youtube'],
-              ['k' => 'tiktok', 'label' => 'TikTok', 'icon' => 'bi-tiktok'],
-              ['k' => 'whatsapp', 'label' => 'WhatsApp', 'icon' => 'bi-whatsapp'],
+              ['k' => 'facebook', 'label' => t('public.social.facebook'), 'icon' => 'bi-facebook'],
+              ['k' => 'instagram', 'label' => t('public.social.instagram'), 'icon' => 'bi-instagram'],
+              ['k' => 'linkedin', 'label' => t('public.social.linkedin'), 'icon' => 'bi-linkedin'],
+              ['k' => 'twitter', 'label' => t('public.social.twitter'), 'icon' => 'bi-twitter-x'],
+              ['k' => 'youtube', 'label' => t('public.social.youtube'), 'icon' => 'bi-youtube'],
+              ['k' => 'tiktok', 'label' => t('public.social.tiktok'), 'icon' => 'bi-tiktok'],
+              ['k' => 'whatsapp', 'label' => t('public.social.whatsapp'), 'icon' => 'bi-whatsapp'],
             ];
             $hasSocial = false;
             foreach ($socials as $s) {
@@ -417,7 +432,7 @@ $appBase = rtrim($appBase, '/');
               <?php endforeach; ?>
             </div>
           <?php endif; ?>
-          <div class="small opacity-75">Design Bootstrap + AOS + Glide + PureCounter.</div>
+          <div class="small opacity-75"><?= htmlspecialchars(t('public.common.design_credit'), ENT_QUOTES, 'UTF-8') ?></div>
         </div>
       </div>
     </div>
@@ -432,6 +447,26 @@ $appBase = rtrim($appBase, '/');
   <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide@3.6.0/dist/glide.min.js"></script>
   <!-- PureCounter -->
   <script src="https://cdn.jsdelivr.net/npm/@srexi/purecounterjs@1.5.0/dist/purecounter_vanilla.js"></script>
+  <?php
+    $siteI18n = [
+      'carousel_prev' => t('public.common.carousel_prev'),
+      'carousel_next' => t('public.common.carousel_next'),
+      'slide_aria' => t('public.common.slide_aria'),
+      'modal_project' => t('modal.project_title'),
+      'modal_service' => t('modal.service_title'),
+      'modal_post' => t('modal.post_title'),
+      'service_meta' => t('public.js.service_meta'),
+      'price_from' => t('public.quote.price_from'),
+      'price_suffix' => t('public.common.price_suffix'),
+      'load_error_title' => t('public.js.load_error_title'),
+      'project_load_error' => t('public.js.project_load_error'),
+      'service_load_error' => t('public.js.service_load_error'),
+      'post_load_error' => t('public.js.post_load_error'),
+      'non_json' => t('public.js.non_json'),
+      'snippet_prefix' => t('public.js.snippet_prefix'),
+    ];
+  ?>
+  <script type="application/json" id="site-i18n"><?= json_encode($siteI18n, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></script>
   <!-- Site JS -->
   <script src="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/assets/site.js', ENT_QUOTES, 'UTF-8') ?>"></script>
 </body>

@@ -6,16 +6,23 @@ namespace App\Controllers;
 use App\Models\QuoteRequest;
 use App\Models\Service;
 use App\Models\Setting;
+use App\Models\Translation;
 use App\Services\EmailJs;
 
 final class QuotesPublicController extends BaseController
 {
     public function showForm(): void
     {
+        $services = array_map(static function (array $row): array {
+            $id = (int)($row['id'] ?? 0);
+
+            return $id > 0 ? Translation::mergeRow('service', $id, $row, ['title', 'description', 'category', 'price_label', 'price_unit']) : $row;
+        }, Service::published());
+
         $this->view('quotes.form', [
-            'title' => 'Demander un devis',
+            'title' => t('nav.quote'),
             'flash' => $_SESSION['flash_public'] ?? null,
-            'services' => Service::published(),
+            'services' => $services,
         ]);
         unset($_SESSION['flash_public']);
     }
@@ -41,13 +48,33 @@ final class QuotesPublicController extends BaseController
         $budget = trim((string)($_POST['budget'] ?? '')) ?: null;
         $contactPref = trim((string)($_POST['contact_preference'] ?? '')) ?: null;
 
+        $prefRaw = strtolower(trim((string)($contactPref ?? '')));
+        $prefLabel = match ($prefRaw) {
+            'phone', 'téléphone', 'telephone', 'tel' => t('public.forms.contact_phone'),
+            'email', 'mail' => t('public.forms.contact_email'),
+            'whatsapp' => t('public.social.whatsapp'),
+            default => $contactPref !== null && trim((string)$contactPref) !== '' ? (string)$contactPref : '',
+        };
+
         $extra = [];
-        if ($city !== null) $extra[] = "Ville: " . $city;
-        if ($address !== null) $extra[] = "Adresse: " . $address;
-        if ($surface !== null) $extra[] = "Surface / dimensions: " . $surface;
-        if ($timeline !== null) $extra[] = "Délai souhaité: " . $timeline;
-        if ($budget !== null) $extra[] = "Budget indicatif: " . $budget;
-        if ($contactPref !== null) $extra[] = "Contact préféré: " . $contactPref;
+        if ($city !== null) {
+            $extra[] = t('public.quote.msg_city', ['value' => $city]);
+        }
+        if ($address !== null) {
+            $extra[] = t('public.quote.msg_address', ['value' => $address]);
+        }
+        if ($surface !== null) {
+            $extra[] = t('public.quote.msg_surface', ['value' => $surface]);
+        }
+        if ($timeline !== null) {
+            $extra[] = t('public.quote.msg_timeline', ['value' => $timeline]);
+        }
+        if ($budget !== null) {
+            $extra[] = t('public.quote.msg_budget', ['value' => $budget]);
+        }
+        if ($prefLabel !== '') {
+            $extra[] = t('public.quote.msg_contact_pref', ['value' => $prefLabel]);
+        }
 
         $messageParts = [];
         if (!empty($extra)) {
@@ -65,7 +92,7 @@ final class QuotesPublicController extends BaseController
         $serviceIds = array_values(array_unique($serviceIds));
 
         if ($name === '') {
-            $_SESSION['flash_public'] = "Merci d’indiquer votre nom.";
+            $_SESSION['flash_public'] = t('public.forms.name_required');
             $this->redirect('/devis');
         }
 
@@ -92,7 +119,11 @@ final class QuotesPublicController extends BaseController
                 $all = Service::published();
                 $map = [];
                 foreach ($all as $s) {
-                    $map[(int)($s['id'] ?? 0)] = (string)($s['title'] ?? '');
+                    $sid = (int)($s['id'] ?? 0);
+                    if ($sid > 0) {
+                        $s = Translation::mergeRow('service', $sid, $s, ['title']);
+                    }
+                    $map[$sid] = (string)($s['title'] ?? '');
                 }
                 foreach ($serviceIds as $sid) {
                     $t = trim((string)($map[(int)$sid] ?? ''));
@@ -123,7 +154,7 @@ final class QuotesPublicController extends BaseController
             // ignore
         }
 
-        $_SESSION['flash_public'] = "Demande envoyée. Nous vous recontactons rapidement.";
+        $_SESSION['flash_public'] = t('public.forms.sent_ok');
         $this->redirect('/devis');
     }
 }

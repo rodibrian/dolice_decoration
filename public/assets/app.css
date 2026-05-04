@@ -941,3 +941,14 @@ body.admin-shell.site-theme-obsidian{
   --admin-primary:#e74c3c;
   --admin-secondary:#bdc3c7;
 }
+
+.admin-topbar .lang-switch .lang-switch-select{
+  width:auto;
+  min-width:5.75rem;
+  max-width:7rem;
+  padding:.22rem 1.5rem .22rem .38rem;
+  font-size:.78rem;
+  line-height:1.25;
+  border-radius:.35rem;
+  cursor:pointer;
+}

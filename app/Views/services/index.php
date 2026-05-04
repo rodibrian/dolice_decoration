@@ -18,8 +18,8 @@ $categories = array_values($cats);
   <div class="container">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-3">
-        <li class="breadcrumb-item"><a href="<?= htmlspecialchars($base . '/', ENT_QUOTES, 'UTF-8') ?>">Accueil</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Services</li>
+        <li class="breadcrumb-item"><a href="<?= htmlspecialchars($base . '/', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('public.common.breadcrumb_home'), ENT_QUOTES, 'UTF-8') ?></a></li>
+        <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars(t('nav.services'), ENT_QUOTES, 'UTF-8') ?></li>
       </ol>
     </nav>
 
@@ -27,21 +27,21 @@ $categories = array_values($cats);
       <div class="col-lg-7">
         <div class="d-inline-flex align-items-center gap-2 badge text-bg-light border rounded-pill px-3 py-2">
           <i class="bi bi-tools text-brand"></i>
-          <span>Prestations claires • Qualité premium • Devis rapide</span>
+          <span><?= htmlspecialchars(t('public.services_list.hero_badge'), ENT_QUOTES, 'UTF-8') ?></span>
         </div>
-        <h1 class="display-6 fw-bold mt-3 mb-2 section-title">Services</h1>
-        <p class="lead text-secondary mb-0">Choisis une prestation, consulte les détails en un clic, et fais une demande de devis adaptée à ton projet.</p>
+        <h1 class="display-6 fw-bold mt-3 mb-2 section-title"><?= htmlspecialchars(t('public.services_list.hero_title'), ENT_QUOTES, 'UTF-8') ?></h1>
+        <p class="lead text-secondary mb-0"><?= htmlspecialchars(t('public.services_list.hero_lead'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
       <div class="col-lg-5">
         <div class="card border-0 shadow-sm">
           <div class="card-body p-4">
-            <div class="fw-semibold mb-2">Besoin d’un devis ?</div>
-            <div class="text-secondary mb-3">Sélectionne les services souhaités et reçois une proposition claire.</div>
+            <div class="fw-semibold mb-2"><?= htmlspecialchars(t('public.services_list.aside_title'), ENT_QUOTES, 'UTF-8') ?></div>
+            <div class="text-secondary mb-3"><?= htmlspecialchars(t('public.services_list.aside_text'), ENT_QUOTES, 'UTF-8') ?></div>
             <div class="d-grid gap-2">
-              <a class="btn btn-brand" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i>Demander un devis</a>
-              <a class="btn btn-light border" href="<?= htmlspecialchars($base . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-2"></i>Voir nos réalisations</a>
+              <a class="btn btn-brand" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars(t('public.services_list.cta_quote'), ENT_QUOTES, 'UTF-8') ?></a>
+              <a class="btn btn-light border" href="<?= htmlspecialchars($base . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-2"></i><?= htmlspecialchars(t('public.services_list.cta_projects'), ENT_QUOTES, 'UTF-8') ?></a>
             </div>
-            <div class="text-secondary small mt-3">Par <span class="fw-semibold"><?= htmlspecialchars($companyName, ENT_QUOTES, 'UTF-8') ?></span></div>
+            <div class="text-secondary small mt-3"><?= htmlspecialchars(t('public.common.by_company', ['company' => $companyName]), ENT_QUOTES, 'UTF-8') ?></div>
           </div>
         </div>
       </div>
@@ -55,13 +55,13 @@ $categories = array_values($cats);
       <div class="col-lg-6">
         <div class="input-group">
           <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-          <input class="form-control" type="search" placeholder="Rechercher un service..." data-services-search>
+          <input class="form-control" type="search" placeholder="<?= htmlspecialchars(t('public.services_list.search_ph'), ENT_QUOTES, 'UTF-8') ?>" data-services-search>
           <button class="btn btn-light border" type="button" data-services-reset><i class="bi bi-x-lg"></i></button>
         </div>
       </div>
       <div class="col-lg-6">
         <div class="d-flex flex-wrap gap-2 justify-content-lg-end" data-services-tags>
-          <button class="btn btn-sm btn-brand" type="button" data-cat="__all">Tous</button>
+          <button class="btn btn-sm btn-brand" type="button" data-cat="__all"><?= htmlspecialchars(t('public.common.tag_all'), ENT_QUOTES, 'UTF-8') ?></button>
           <?php foreach (array_slice($categories, 0, 10) as $c): ?>
             <button class="btn btn-sm btn-light border" type="button" data-cat="<?= htmlspecialchars(strtolower($c), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($c, ENT_QUOTES, 'UTF-8') ?></button>
           <?php endforeach; ?>
@@ -73,7 +73,7 @@ $categories = array_values($cats);
       <?php foreach ($services as $s): ?>
         <?php
           $title = (string)($s['title'] ?? '');
-          $category = (string)($s['category'] ?? 'Service');
+          $category = (string)($s['category'] ?? '');
           $slug = (string)($s['slug'] ?? '');
           $img = trim((string)($s['image_path'] ?? ''));
           $imgUrl = '';
@@ -85,9 +85,9 @@ $categories = array_values($cats);
           $show = (int)($s['show_price'] ?? 0) === 1;
           $priceBadge = '';
           if ($show && $bp !== null && $bp !== '') {
-            $label = trim((string)($s['price_label'] ?? '')) ?: 'À partir de';
+            $label = trim((string)($s['price_label'] ?? '')) ?: t('public.quote.price_from');
             $unit = trim((string)($s['price_unit'] ?? ''));
-            $priceBadge = $label . ' ' . number_format((float)$bp, 0, ',', ' ') . ' Ar' . ($unit !== '' ? (' ' . $unit) : '');
+            $priceBadge = $label . ' ' . number_format((float)$bp, 0, ',', ' ') . t('public.common.price_suffix') . ($unit !== '' ? (' ' . $unit) : '');
           }
 
           $desc = trim((string)($s['description'] ?? ''));
@@ -102,7 +102,7 @@ $categories = array_values($cats);
             data-service-modal="1"
             data-service-card
             data-search="<?= htmlspecialchars($hay, ENT_QUOTES, 'UTF-8') ?>"
-            data-cat="<?= htmlspecialchars(strtolower($category), ENT_QUOTES, 'UTF-8') ?>"
+            data-cat="<?= htmlspecialchars(strtolower($category !== '' ? $category : t('nav.services')), ENT_QUOTES, 'UTF-8') ?>"
             href="<?= htmlspecialchars($base . '/services/' . $slug, ENT_QUOTES, 'UTF-8') ?>"
           >
             <article class="card card-hover h-100 service-card">
@@ -118,14 +118,14 @@ $categories = array_values($cats);
               </div>
               <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between mb-2">
-                  <span class="badge text-bg-light border"><?= htmlspecialchars($category !== '' ? $category : 'Service', ENT_QUOTES, 'UTF-8') ?></span>
-                  <span class="text-secondary small">Détails <i class="bi bi-arrow-right ms-1"></i></span>
+                  <span class="badge text-bg-light border"><?= htmlspecialchars($category !== '' ? $category : t('nav.services'), ENT_QUOTES, 'UTF-8') ?></span>
+                  <span class="text-secondary small"><?= htmlspecialchars(t('public.common.details'), ENT_QUOTES, 'UTF-8') ?> <i class="bi bi-arrow-right ms-1"></i></span>
                 </div>
                 <h2 class="h5 mb-2"><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h2>
                 <?php if ($desc !== ''): ?>
                   <div class="text-secondary service-excerpt"><?= htmlspecialchars($desc, ENT_QUOTES, 'UTF-8') ?></div>
                 <?php else: ?>
-                  <div class="text-secondary">Clique pour voir les détails et demander un devis.</div>
+                  <div class="text-secondary"><?= htmlspecialchars(t('public.services_list.card_no_desc'), ENT_QUOTES, 'UTF-8') ?></div>
                 <?php endif; ?>
               </div>
             </article>
@@ -135,7 +135,7 @@ $categories = array_values($cats);
     </div>
 
     <div class="text-secondary small mt-3" data-services-empty style="display:none">
-      Aucun service ne correspond à ta recherche.
+      <?= htmlspecialchars(t('public.services_list.empty_search'), ENT_QUOTES, 'UTF-8') ?>
     </div>
   </div>
 </section>
@@ -191,4 +191,3 @@ $categories = array_values($cats);
     apply();
   })();
 </script>
-

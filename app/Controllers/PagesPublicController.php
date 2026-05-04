@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Models\ContactMessage;
 use App\Models\Page;
 use App\Models\Setting;
-use App\Models\ContactMessage;
+use App\Models\Translation;
 use App\Services\EmailJs;
 
 final class PagesPublicController extends BaseController
@@ -34,12 +35,15 @@ final class PagesPublicController extends BaseController
         }
 
         $page = Page::findByKey($key);
+        if (is_array($page) && isset($page['id'])) {
+            $page = Translation::mergeRow('page', (int)$page['id'], $page, ['title', 'content']);
+        }
         if ($page === null) {
             // Public fallback pages for first run when DB content is not seeded yet.
             $fallbackTitles = [
-                'about' => 'Notre histoire',
-                'faq' => 'FAQ',
-                'contact' => 'Contact',
+                'about' => t('nav.history'),
+                'faq' => t('nav.faq'),
+                'contact' => t('nav.contact'),
             ];
 
             if (!isset($fallbackTitles[$key])) {
@@ -49,9 +53,9 @@ final class PagesPublicController extends BaseController
             }
 
             $fallbackContents = [
-                'about' => "Nous construisons des espaces durables, soignés et fonctionnels. Notre équipe accompagne chaque client avec sérieux, du besoin initial à la livraison.",
-                'faq' => "Questions fréquentes:\n\n- Quels travaux réalisez-vous ?\n- Quels sont vos délais moyens ?\n- Comment demander un devis ?\n- Quelles zones couvrez-vous ?\n\nPour une réponse personnalisée, utilisez le formulaire de contact.",
-                'contact' => "Vous pouvez nous contacter via le formulaire ci-dessous pour toute demande d'information ou de devis.",
+                'about' => t('public.fallback_pages.about_content'),
+                'faq' => t('public.fallback_pages.faq_content'),
+                'contact' => t('public.fallback_pages.contact_content'),
             ];
 
             $page = [
@@ -86,7 +90,7 @@ final class PagesPublicController extends BaseController
         }
 
         if ($name === '' || $message === '') {
-            $_SESSION['flash_public'] = "Merci de remplir au moins le nom et le message.";
+            $_SESSION['flash_public'] = t('public.forms.name_and_message_required');
             $this->redirect('/contact');
         }
 
@@ -125,7 +129,7 @@ final class PagesPublicController extends BaseController
             // ignore
         }
 
-        $_SESSION['flash_public'] = "Message envoyé. Merci !";
+        $_SESSION['flash_public'] = t('public.forms.message_sent_ok');
         $this->redirect('/contact');
     }
 }

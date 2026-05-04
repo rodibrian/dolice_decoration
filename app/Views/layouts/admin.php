@@ -10,9 +10,10 @@ $isActive = static function (string $prefix) use ($uri): string {
 };
 $isDashboardHome = (bool)preg_match('#/admin/?$#', rtrim($uri, '/'));
 $adminSiteTheme = \App\Core\SiteTheme::normalize(\App\Models\Setting::get('site_theme', \App\Core\SiteTheme::DEFAULT) ?? \App\Core\SiteTheme::DEFAULT);
+$htmlLang = \App\Core\Locale::current();
 ?>
 <!doctype html>
-<html lang="fr">
+<html lang="<?= htmlspecialchars($htmlLang, ENT_QUOTES, 'UTF-8') ?>">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -38,7 +39,7 @@ $adminSiteTheme = \App\Core\SiteTheme::normalize(\App\Models\Setting::get('site_
 
         <div class="admin-sidebar-footer">
           <form method="post" action="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/logout', ENT_QUOTES, 'UTF-8') ?>">
-            <button class="btn btn-outline-secondary w-100" type="submit"><i class="bi bi-box-arrow-right me-2"></i>Déconnexion</button>
+            <button class="btn btn-outline-secondary w-100" type="submit"><i class="bi bi-box-arrow-right me-2"></i><?= htmlspecialchars(t('admin.logout'), ENT_QUOTES, 'UTF-8') ?></button>
           </form>
         </div>
       </div>
@@ -55,17 +56,18 @@ $adminSiteTheme = \App\Core\SiteTheme::normalize(\App\Models\Setting::get('site_
                 <i class="bi bi-list"></i>
               </button>
               <div class="admin-topbar-title">
-                <div class="admin-topbar-kicker">Administration</div>
+                <div class="admin-topbar-kicker"><?= htmlspecialchars(t('admin.topbar_kicker'), ENT_QUOTES, 'UTF-8') ?></div>
                 <div class="admin-topbar-page"><?= htmlspecialchars($title ?? 'Admin', ENT_QUOTES, 'UTF-8') ?></div>
               </div>
             </div>
 
             <div class="d-flex align-items-center gap-2">
               <a class="btn btn-sm btn-light border" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">
-                <i class="bi bi-globe2 me-1"></i>Site
+                <i class="bi bi-globe2 me-1"></i><?= htmlspecialchars(t('admin.site'), ENT_QUOTES, 'UTF-8') ?>
               </a>
+              <?php require __DIR__ . '/../partials/lang_switch.php'; ?>
               <form class="d-none d-md-block" method="post" action="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/logout', ENT_QUOTES, 'UTF-8') ?>">
-                <button class="btn btn-sm btn-outline-secondary" type="submit"><i class="bi bi-box-arrow-right me-1"></i>Déconnexion</button>
+                <button class="btn btn-sm btn-outline-secondary" type="submit"><i class="bi bi-box-arrow-right me-1"></i><?= htmlspecialchars(t('admin.logout'), ENT_QUOTES, 'UTF-8') ?></button>
               </form>
             </div>
           </div>
@@ -74,7 +76,7 @@ $adminSiteTheme = \App\Core\SiteTheme::normalize(\App\Models\Setting::get('site_
 
       <main class="admin-content container-fluid px-3 px-lg-4 py-4">
         <details class="admin-editor-guide card">
-          <summary class="admin-editor-guide-summary"><i class="bi bi-journal-text me-2 admin-editor-guide-ic"></i>Guide pour les mises à jour du site</summary>
+          <summary class="admin-editor-guide-summary"><i class="bi bi-journal-text me-2 admin-editor-guide-ic"></i><?= htmlspecialchars(t('admin.guide_title'), ENT_QUOTES, 'UTF-8') ?></summary>
           <div class="admin-editor-guide-body">
             <p><strong>Ordre conseillé.</strong> Commencez par les <strong>demandes</strong> (devis et messages), puis mettez à jour le <strong>contenu public</strong> (services, réalisations, blog, etc.). Vérifiez enfin l’<strong>identité du site</strong> (accueil, fiche entreprise, pages légales) et les <strong>paramètres</strong> si vous changez d’adresse ou de thème.</p>
             <p><strong>Publication.</strong> Les listes utilisent souvent le statut <em>Publié</em> / <em>Brouillon</em> : seul le contenu publié est visible sur le site. Après enregistrement, ouvrez <strong>Voir le site</strong> (menu ou bouton en haut) pour contrôler le rendu.</p>
@@ -91,14 +93,14 @@ $adminSiteTheme = \App\Core\SiteTheme::normalize(\App\Models\Setting::get('site_
   <div class="offcanvas offcanvas-start" tabindex="-1" id="adminSidebarMobile" aria-labelledby="adminSidebarMobileLabel">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="adminSidebarMobileLabel"><i class="bi bi-shield-lock me-2"></i>Dolice Admin</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fermer"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="<?= htmlspecialchars(t('nav.menu_close'), ENT_QUOTES, 'UTF-8') ?>"></button>
     </div>
     <div class="offcanvas-body">
       <?php require __DIR__ . '/partials/admin_sidebar_nav.php'; ?>
 
       <hr>
       <form method="post" action="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/admin/logout', ENT_QUOTES, 'UTF-8') ?>">
-        <button class="btn btn-outline-secondary w-100" type="submit"><i class="bi bi-box-arrow-right me-2"></i>Déconnexion</button>
+        <button class="btn btn-outline-secondary w-100" type="submit"><i class="bi bi-box-arrow-right me-2"></i><?= htmlspecialchars(t('admin.logout'), ENT_QUOTES, 'UTF-8') ?></button>
       </form>
     </div>
   </div>

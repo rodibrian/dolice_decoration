@@ -3,11 +3,11 @@
 /** @var string|null $title */
 ?>
 <!doctype html>
-<html lang="fr">
+<html lang="<?= htmlspecialchars(\App\Core\Locale::current(), ENT_QUOTES, 'UTF-8') ?>">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?= htmlspecialchars($title ?? 'Impression', ENT_QUOTES, 'UTF-8') ?></title>
+  <title><?= htmlspecialchars($title ?? t('meta.print_default_title'), ENT_QUOTES, 'UTF-8') ?></title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
   <style>
     :root{ --ink:#0f172a; --muted:#64748b; --border:#e5e7eb; --brand:#ff7a18; }

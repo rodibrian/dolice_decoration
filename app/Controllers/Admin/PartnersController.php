@@ -8,6 +8,7 @@ use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Core\Upload;
 use App\Models\Partner;
+use App\Models\Translation;
 
 final class PartnersController extends BaseController
 {
@@ -151,6 +152,7 @@ final class PartnersController extends BaseController
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
             $row = Partner::find($id);
+            Translation::deleteForEntity('partner', $id);
             Partner::delete($id);
             AdminAudit::log('partner.delete', 'partner', $id, [
                 'name' => (string)($row['name'] ?? ''),

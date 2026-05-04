@@ -1,7 +1,11 @@
 <?php
 /** @var array<string, mixed>|null $service */
+/** @var array<string, string> $trans_en */
+/** @var array<string, string> $trans_mg */
 /** @var string|null $error */
 
+$trans_en = $trans_en ?? [];
+$trans_mg = $trans_mg ?? [];
 $isEdit = is_array($service) && isset($service['id']);
 $action = $isEdit ? '/admin/services/update' : '/admin/services/store';
 ?>
@@ -89,6 +93,50 @@ $action = $isEdit ? '/admin/services/update' : '/admin/services/store';
         Publié
       </label>
     </div>
+
+    <hr class="sep">
+    <h3 style="margin:0 0 8px"><?= htmlspecialchars(t('admin.services.trans_en'), ENT_QUOTES, 'UTF-8') ?> / <?= htmlspecialchars(t('admin.services.trans_mg'), ENT_QUOTES, 'UTF-8') ?></h3>
+    <p class="small text-secondary mb-3"><?= htmlspecialchars(t('admin.home.trans_hint'), ENT_QUOTES, 'UTF-8') ?></p>
+    <div class="d-flex gap-2 flex-wrap mb-3">
+      <button class="btn btn-sm btn-light border" type="button" data-tr-toggle="en">Content In English</button>
+      <button class="btn btn-sm btn-light border" type="button" data-tr-toggle="mg">Ampiditra Malagasy</button>
+    </div>
+
+    <div class="grid2">
+      <div class="d-none" data-tr-panel="en">
+        <div class="fw-semibold mb-2"><?= htmlspecialchars(t('admin.services.trans_en'), ENT_QUOTES, 'UTF-8') ?></div>
+        <label>Titre <input type="text" name="tr_en_title" value="<?= htmlspecialchars((string)($trans_en['title'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"></label>
+        <label>Catégorie <input type="text" name="tr_en_category" value="<?= htmlspecialchars((string)($trans_en['category'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"></label>
+        <label>Libellé prix <input type="text" name="tr_en_price_label" value="<?= htmlspecialchars((string)($trans_en['price_label'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"></label>
+        <label>Description <textarea name="tr_en_description" rows="6"><?= htmlspecialchars((string)($trans_en['description'] ?? ''), ENT_QUOTES, 'UTF-8') ?></textarea></label>
+      </div>
+      <div class="d-none" data-tr-panel="mg">
+        <div class="fw-semibold mb-2"><?= htmlspecialchars(t('admin.services.trans_mg'), ENT_QUOTES, 'UTF-8') ?></div>
+        <label>Titre <input type="text" name="tr_mg_title" value="<?= htmlspecialchars((string)($trans_mg['title'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"></label>
+        <label>Catégorie <input type="text" name="tr_mg_category" value="<?= htmlspecialchars((string)($trans_mg['category'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"></label>
+        <label>Libellé prix <input type="text" name="tr_mg_price_label" value="<?= htmlspecialchars((string)($trans_mg['price_label'] ?? ''), ENT_QUOTES, 'UTF-8') ?>"></label>
+        <label>Description <textarea name="tr_mg_description" rows="6"><?= htmlspecialchars((string)($trans_mg['description'] ?? ''), ENT_QUOTES, 'UTF-8') ?></textarea></label>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const root = document.currentScript?.closest('form');
+        if (!root) return;
+        const panels = {
+          en: root.querySelector('[data-tr-panel="en"]'),
+          mg: root.querySelector('[data-tr-panel="mg"]'),
+        };
+        root.querySelectorAll('[data-tr-toggle]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const k = btn.getAttribute('data-tr-toggle');
+            const p = panels[k];
+            if (!p) return;
+            p.classList.toggle('d-none');
+          });
+        });
+      })();
+    </script>
 
     <button class="btn primary" type="submit"><?= $isEdit ? 'Enregistrer' : 'Créer' ?></button>
   </form>

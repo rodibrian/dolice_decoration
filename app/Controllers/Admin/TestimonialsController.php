@@ -8,6 +8,7 @@ use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Core\Upload;
 use App\Models\Testimonial;
+use App\Models\Translation;
 
 final class TestimonialsController extends BaseController
 {
@@ -181,6 +182,7 @@ final class TestimonialsController extends BaseController
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
             $row = Testimonial::find($id);
+            Translation::deleteForEntity('testimonial', $id);
             Testimonial::delete($id);
             AdminAudit::log('testimonial.delete', 'testimonial', $id, [
                 'client_name' => (string)($row['client_name'] ?? ''),

@@ -4,9 +4,20 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Models\Service;
+use App\Models\Translation;
 
 final class ServicesPublicController extends BaseController
 {
+    /**
+     * @param array<string, mixed> $row
+     * @return array<string, mixed>
+     */
+    private function mergeServiceTranslations(array $row): array
+    {
+        $id = (int)($row['id'] ?? 0);
+
+        return $id > 0 ? Translation::mergeRow('service', $id, $row, ['title', 'description', 'category', 'price_label', 'price_unit']) : $row;
+    }
     /**
      * @return string
      */
@@ -18,9 +29,10 @@ final class ServicesPublicController extends BaseController
 
     public function index(): void
     {
+        $services = array_map(fn (array $s): array => $this->mergeServiceTranslations($s), Service::published());
         $this->view('services.index', [
-            'title' => 'Services',
-            'services' => Service::published(),
+            'title' => t('nav.services'),
+            'services' => $services,
         ]);
     }
 
@@ -33,6 +45,8 @@ final class ServicesPublicController extends BaseController
             echo '404';
             return;
         }
+
+        $service = $this->mergeServiceTranslations($service);
 
         $isModal = isset($_GET['modal']) && (string)$_GET['modal'] === '1';
         if ($isModal) {

@@ -15,8 +15,8 @@ $email = \App\Models\Setting::get('email', null);
   <div class="container">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-3">
-        <li class="breadcrumb-item"><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">Accueil</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Devis</li>
+        <li class="breadcrumb-item"><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.home'), ENT_QUOTES, 'UTF-8') ?></a></li>
+        <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars(t('nav.quote'), ENT_QUOTES, 'UTF-8') ?></li>
       </ol>
     </nav>
 
@@ -24,18 +24,18 @@ $email = \App\Models\Setting::get('email', null);
       <div class="col-lg-7">
         <div class="d-inline-flex align-items-center gap-2 badge text-bg-light border rounded-pill px-3 py-2">
           <i class="bi bi-lightning-charge-fill text-brand"></i>
-          <span>Réponse rapide • Estimation gratuite • Suivi pro</span>
+          <span><?= htmlspecialchars(t('public.quote.badge'), ENT_QUOTES, 'UTF-8') ?></span>
         </div>
-        <h1 class="display-6 fw-bold mt-3 mb-2 section-title">Demander un devis</h1>
-        <p class="lead text-secondary mb-0">Décris ton projet en quelques minutes. Nous te recontactons rapidement avec une proposition claire.</p>
+        <h1 class="display-6 fw-bold mt-3 mb-2 section-title"><?= htmlspecialchars(t('public.quote.title'), ENT_QUOTES, 'UTF-8') ?></h1>
+        <p class="lead text-secondary mb-0"><?= htmlspecialchars(t('public.quote.subtitle'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
       <div class="col-lg-5">
         <div class="card border-0 shadow-sm quote-steps">
           <div class="card-body p-4">
-            <div class="fw-semibold mb-3">Comment ça marche</div>
-            <div class="quote-step"><span class="quote-step-n">1</span><div><div class="fw-semibold">Infos essentielles</div><div class="text-secondary small">Contact + projet + localisation.</div></div></div>
-            <div class="quote-step"><span class="quote-step-n">2</span><div><div class="fw-semibold">Services (optionnel)</div><div class="text-secondary small">Choisis des prestations, total estimatif si prix dispo.</div></div></div>
-            <div class="quote-step"><span class="quote-step-n">3</span><div><div class="fw-semibold">Validation</div><div class="text-secondary small">On te répond et on planifie la suite.</div></div></div>
+            <div class="fw-semibold mb-3"><?= htmlspecialchars(t('public.quote.how_title'), ENT_QUOTES, 'UTF-8') ?></div>
+            <div class="quote-step"><span class="quote-step-n">1</span><div><div class="fw-semibold"><?= htmlspecialchars(t('public.quote.step1_title'), ENT_QUOTES, 'UTF-8') ?></div><div class="text-secondary small"><?= htmlspecialchars(t('public.quote.step1_sub'), ENT_QUOTES, 'UTF-8') ?></div></div></div>
+            <div class="quote-step"><span class="quote-step-n">2</span><div><div class="fw-semibold"><?= htmlspecialchars(t('public.quote.step2_title'), ENT_QUOTES, 'UTF-8') ?></div><div class="text-secondary small"><?= htmlspecialchars(t('public.quote.step2_sub'), ENT_QUOTES, 'UTF-8') ?></div></div></div>
+            <div class="quote-step"><span class="quote-step-n">3</span><div><div class="fw-semibold"><?= htmlspecialchars(t('public.quote.step3_title'), ENT_QUOTES, 'UTF-8') ?></div><div class="text-secondary small"><?= htmlspecialchars(t('public.quote.step3_sub'), ENT_QUOTES, 'UTF-8') ?></div></div></div>
           </div>
         </div>
       </div>
@@ -58,32 +58,32 @@ $email = \App\Models\Setting::get('email', null);
 
               <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                 <div>
-                  <div class="fw-semibold">Tes informations</div>
-                  <div class="text-secondary small">On utilise ces infos uniquement pour te recontacter.</div>
+                  <div class="fw-semibold"><?= htmlspecialchars(t('public.quote.your_info'), ENT_QUOTES, 'UTF-8') ?></div>
+                  <div class="text-secondary small"><?= htmlspecialchars(t('public.quote.your_info_sub'), ENT_QUOTES, 'UTF-8') ?></div>
                 </div>
-                <span class="badge text-bg-light border"><i class="bi bi-shield-lock me-1"></i>Données protégées</span>
+                <span class="badge text-bg-light border"><i class="bi bi-shield-lock me-1"></i><?= htmlspecialchars(t('public.quote.protected'), ENT_QUOTES, 'UTF-8') ?></span>
               </div>
 
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label">Nom complet <span class="text-danger">*</span></label>
-                  <input class="form-control" type="text" name="name" required placeholder="Ex: Jean Rakoto">
+                  <label class="form-label"><?= htmlspecialchars(t('public.forms.full_name'), ENT_QUOTES, 'UTF-8') ?> <span class="text-danger">*</span></label>
+                  <input class="form-control" type="text" name="name" required placeholder="<?= htmlspecialchars(t('public.forms.full_name_ph'), ENT_QUOTES, 'UTF-8') ?>">
                 </div>
                 <div class="col-md-3">
-                  <label class="form-label">Téléphone</label>
-                  <input class="form-control" type="text" name="phone" inputmode="tel" placeholder="Ex: 034 00 000 00">
+                  <label class="form-label"><?= htmlspecialchars(t('public.forms.phone'), ENT_QUOTES, 'UTF-8') ?></label>
+                  <input class="form-control" type="text" name="phone" inputmode="tel" placeholder="<?= htmlspecialchars(t('public.forms.phone_ph'), ENT_QUOTES, 'UTF-8') ?>">
                 </div>
                 <div class="col-md-3">
-                  <label class="form-label">Email</label>
-                  <input class="form-control" type="email" name="email" inputmode="email" placeholder="Ex: vous@email.com">
+                  <label class="form-label"><?= htmlspecialchars(t('public.forms.email'), ENT_QUOTES, 'UTF-8') ?></label>
+                  <input class="form-control" type="email" name="email" inputmode="email" placeholder="<?= htmlspecialchars(t('public.forms.email_ph'), ENT_QUOTES, 'UTF-8') ?>">
                 </div>
                 <div class="col-md-4">
-                  <label class="form-label">Contact préféré</label>
+                  <label class="form-label"><?= htmlspecialchars(t('public.forms.contact_preference'), ENT_QUOTES, 'UTF-8') ?></label>
                   <select class="form-select" name="contact_preference">
                     <option value="">—</option>
-                    <option value="Téléphone">Téléphone</option>
-                    <option value="WhatsApp">WhatsApp</option>
-                    <option value="Email">Email</option>
+                    <option value="phone"><?= htmlspecialchars(t('public.forms.contact_phone'), ENT_QUOTES, 'UTF-8') ?></option>
+                    <option value="whatsapp"><?= htmlspecialchars(t('public.social.whatsapp'), ENT_QUOTES, 'UTF-8') ?></option>
+                    <option value="email"><?= htmlspecialchars(t('public.forms.contact_email'), ENT_QUOTES, 'UTF-8') ?></option>
                   </select>
                 </div>
               </div>
@@ -92,48 +92,59 @@ $email = \App\Models\Setting::get('email', null);
 
               <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                 <div>
-                  <div class="fw-semibold">Projet</div>
-                  <div class="text-secondary small">Plus tu es précis, plus le devis est rapide.</div>
+                  <div class="fw-semibold"><?= htmlspecialchars(t('public.quote.project'), ENT_QUOTES, 'UTF-8') ?></div>
+                  <div class="text-secondary small"><?= htmlspecialchars(t('public.quote.project_sub'), ENT_QUOTES, 'UTF-8') ?></div>
                 </div>
-                <span class="badge text-bg-light border"><i class="bi bi-clipboard-check me-1"></i>2–3 min</span>
+                <span class="badge text-bg-light border"><i class="bi bi-clipboard-check me-1"></i><?= htmlspecialchars(t('public.quote.time_badge'), ENT_QUOTES, 'UTF-8') ?></span>
               </div>
 
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label">Type de projet</label>
-                  <input class="form-control" type="text" name="project_type" placeholder="Ex: plafond, peinture, sol...">
+                  <label class="form-label"><?= htmlspecialchars(t('public.quote.project_type'), ENT_QUOTES, 'UTF-8') ?></label>
+                  <input class="form-control" type="text" name="project_type" placeholder="<?= htmlspecialchars(t('public.quote.project_type_ph'), ENT_QUOTES, 'UTF-8') ?>">
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Ville / Quartier</label>
-                  <input class="form-control" type="text" name="city" placeholder="Ex: Antananarivo, Itaosy">
+                  <label class="form-label"><?= htmlspecialchars(t('public.quote.city'), ENT_QUOTES, 'UTF-8') ?></label>
+                  <input class="form-control" type="text" name="city" placeholder="<?= htmlspecialchars(t('public.quote.city_ph'), ENT_QUOTES, 'UTF-8') ?>">
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Adresse (optionnel)</label>
-                  <input class="form-control" type="text" name="address" placeholder="Rue, lot, repère...">
+                  <label class="form-label"><?= htmlspecialchars(t('public.quote.address'), ENT_QUOTES, 'UTF-8') ?></label>
+                  <input class="form-control" type="text" name="address" placeholder="<?= htmlspecialchars(t('public.quote.address_ph'), ENT_QUOTES, 'UTF-8') ?>">
                 </div>
                 <div class="col-md-3">
-                  <label class="form-label">Surface / dimensions</label>
-                  <input class="form-control" type="text" name="surface" placeholder="Ex: 40 m² / 12m x 3m">
+                  <label class="form-label"><?= htmlspecialchars(t('public.quote.surface'), ENT_QUOTES, 'UTF-8') ?></label>
+                  <input class="form-control" type="text" name="surface" placeholder="<?= htmlspecialchars(t('public.quote.surface_ph'), ENT_QUOTES, 'UTF-8') ?>">
                 </div>
                 <div class="col-md-3">
-                  <label class="form-label">Délai souhaité</label>
+                  <label class="form-label"><?= htmlspecialchars(t('public.quote.timeline'), ENT_QUOTES, 'UTF-8') ?></label>
                   <select class="form-select" name="timeline">
                     <option value="">—</option>
-                    <option value="Urgent (1-7 jours)">Urgent (1-7 jours)</option>
-                    <option value="2-3 semaines">2-3 semaines</option>
-                    <option value="1 mois +">1 mois +</option>
+                    <?php
+                      $tlUrgent = t('public.quote.timeline_urgent');
+                      $tl23 = t('public.quote.timeline_2_3w');
+                      $tl1m = t('public.quote.timeline_1m');
+                    ?>
+                    <option value="<?= htmlspecialchars($tlUrgent, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($tlUrgent, ENT_QUOTES, 'UTF-8') ?></option>
+                    <option value="<?= htmlspecialchars($tl23, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($tl23, ENT_QUOTES, 'UTF-8') ?></option>
+                    <option value="<?= htmlspecialchars($tl1m, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($tl1m, ENT_QUOTES, 'UTF-8') ?></option>
                   </select>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Budget indicatif (optionnel)</label>
+                  <label class="form-label"><?= htmlspecialchars(t('public.quote.budget'), ENT_QUOTES, 'UTF-8') ?></label>
                   <select class="form-select" name="budget">
                     <option value="">—</option>
-                    <option value="< 1M Ar">&lt; 1M Ar</option>
-                    <option value="1M – 3M Ar">1M – 3M Ar</option>
-                    <option value="3M – 8M Ar">3M – 8M Ar</option>
-                    <option value="8M+ Ar">8M+ Ar</option>
+                    <?php
+                      $b1 = t('public.quote.budget_lt1m');
+                      $b2 = t('public.quote.budget_1_3m');
+                      $b3 = t('public.quote.budget_3_8m');
+                      $b4 = t('public.quote.budget_8m');
+                    ?>
+                    <option value="<?= htmlspecialchars($b1, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($b1, ENT_QUOTES, 'UTF-8') ?></option>
+                    <option value="<?= htmlspecialchars($b2, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($b2, ENT_QUOTES, 'UTF-8') ?></option>
+                    <option value="<?= htmlspecialchars($b3, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($b3, ENT_QUOTES, 'UTF-8') ?></option>
+                    <option value="<?= htmlspecialchars($b4, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($b4, ENT_QUOTES, 'UTF-8') ?></option>
                   </select>
-                  <div class="form-text">Indication facultative pour ajuster la proposition.</div>
+                  <div class="form-text"><?= htmlspecialchars(t('public.quote.budget_hint'), ENT_QUOTES, 'UTF-8') ?></div>
                 </div>
               </div>
 
@@ -142,11 +153,11 @@ $email = \App\Models\Setting::get('email', null);
                 <div class="mt-0">
                   <div class="d-flex align-items-end justify-content-between flex-wrap gap-2 mb-2">
                     <div>
-                      <div class="fw-semibold">Services souhaités <span class="text-secondary small">(optionnel)</span></div>
-                      <div class="text-secondary small">Tu peux sélectionner plusieurs services.</div>
+                      <div class="fw-semibold"><?= htmlspecialchars(t('public.quote.services_wanted'), ENT_QUOTES, 'UTF-8') ?> <span class="text-secondary small">(<?= htmlspecialchars(t('public.forms.optional'), ENT_QUOTES, 'UTF-8') ?>)</span></div>
+                      <div class="text-secondary small"><?= htmlspecialchars(t('public.quote.services_wanted_sub'), ENT_QUOTES, 'UTF-8') ?></div>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                      <input class="form-control form-control-sm" style="max-width:260px" type="search" placeholder="Rechercher un service..." data-service-search>
+                      <input class="form-control form-control-sm" style="max-width:260px" type="search" placeholder="<?= htmlspecialchars(t('public.quote.search_service_ph'), ENT_QUOTES, 'UTF-8') ?>" data-service-search>
                       <button class="btn btn-sm btn-light border" type="button" data-services-reset><i class="bi bi-x-lg"></i></button>
                     </div>
                   </div>
@@ -160,8 +171,8 @@ $email = \App\Models\Setting::get('email', null);
                           $showPrice = (int)($s['show_price'] ?? 0) === 1;
                           $basePrice = $s['base_price'] ?? null;
                           $unit = trim((string)($s['price_unit'] ?? ''));
-                          $label = trim((string)($s['price_label'] ?? '')) ?: 'À partir de';
-                          $priceText = 'Prix sur demande';
+                          $label = trim((string)($s['price_label'] ?? '')) ?: t('public.quote.price_from');
+                          $priceText = t('public.quote.price_on_request');
                           $priceValue = '';
                           if ($showPrice && $basePrice !== null && $basePrice !== '') {
                               $priceValue = (string)(float)$basePrice;
@@ -175,15 +186,15 @@ $email = \App\Models\Setting::get('email', null);
                               <span class="fw-semibold d-block"><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></span>
                               <span class="text-secondary small"><?= htmlspecialchars($priceText, ENT_QUOTES, 'UTF-8') ?></span>
                             </span>
-                            <span class="quote-service-tag badge text-bg-light border"><?= htmlspecialchars((string)($s['category'] ?? 'Service'), ENT_QUOTES, 'UTF-8') ?></span>
+                            <span class="quote-service-tag badge text-bg-light border"><?= htmlspecialchars((string)($s['category'] ?? t('nav.services')), ENT_QUOTES, 'UTF-8') ?></span>
                           </label>
                         </div>
                       <?php endforeach; ?>
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
-                      <div class="text-secondary small"><i class="bi bi-calculator me-1"></i>Total estimatif (si prix disponibles)</div>
-                      <div class="fw-bold" data-quote-estimate>Total: —</div>
+                      <div class="text-secondary small"><i class="bi bi-calculator me-1"></i><?= htmlspecialchars(t('public.quote.estimate_hint'), ENT_QUOTES, 'UTF-8') ?></div>
+                      <div class="fw-bold" data-quote-estimate><?= htmlspecialchars(t('public.quote.total_prefix'), ENT_QUOTES, 'UTF-8') ?> —</div>
                     </div>
                   </div>
                 </div>
@@ -192,13 +203,13 @@ $email = \App\Models\Setting::get('email', null);
               <hr class="my-4">
 
               <div class="mt-0">
-                <label class="form-label">Détails supplémentaires</label>
-                <textarea class="form-control" name="message" rows="7" placeholder="Décris ton besoin: contexte, contraintes, style souhaité, références..."></textarea>
-                <div class="form-text">Astuce: indique la surface, la localisation et le délai si possible (ça accélère le devis).</div>
+                <label class="form-label"><?= htmlspecialchars(t('public.quote.more_details'), ENT_QUOTES, 'UTF-8') ?></label>
+                <textarea class="form-control" name="message" rows="7" placeholder="<?= htmlspecialchars(t('public.quote.more_details_ph'), ENT_QUOTES, 'UTF-8') ?>"></textarea>
+                <div class="form-text"><?= htmlspecialchars(t('public.quote.more_details_hint'), ENT_QUOTES, 'UTF-8') ?></div>
               </div>
               <div class="d-flex gap-2 flex-wrap mt-4">
-                <button class="btn btn-brand" type="submit"><i class="bi bi-send me-2"></i>Envoyer la demande</button>
-                <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-2"></i>Voir nos réalisations</a>
+                <button class="btn btn-brand" type="submit"><i class="bi bi-send me-2"></i><?= htmlspecialchars(t('public.quote.send'), ENT_QUOTES, 'UTF-8') ?></button>
+                <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-2"></i><?= htmlspecialchars(t('public.quote.see_projects'), ENT_QUOTES, 'UTF-8') ?></a>
               </div>
             </form>
           </div>
@@ -209,26 +220,26 @@ $email = \App\Models\Setting::get('email', null);
           <div class="card border-0 shadow-sm">
             <div class="card-body p-4">
               <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
-                <div class="fw-semibold"><i class="bi bi-receipt-cutoff me-2 text-brand"></i>Résumé</div>
-                <span class="badge text-bg-light border" data-quote-count>0 service</span>
+                <div class="fw-semibold"><i class="bi bi-receipt-cutoff me-2 text-brand"></i><?= htmlspecialchars(t('public.quote.summary'), ENT_QUOTES, 'UTF-8') ?></div>
+                <span class="badge text-bg-light border" data-quote-count>0 <?= htmlspecialchars(t('public.quote.services_count_one'), ENT_QUOTES, 'UTF-8') ?></span>
               </div>
-              <div class="text-secondary small mb-3">Estimation indicative selon les prix visibles.</div>
+              <div class="text-secondary small mb-3"><?= htmlspecialchars(t('public.quote.summary_sub'), ENT_QUOTES, 'UTF-8') ?></div>
 
               <div class="d-flex align-items-center justify-content-between border rounded-4 p-3 mb-3" style="background:rgba(255,255,255,.7)">
-                <div class="text-secondary small">Total estimatif</div>
+                <div class="text-secondary small"><?= htmlspecialchars(t('public.quote.total_estimate'), ENT_QUOTES, 'UTF-8') ?></div>
                 <div class="h5 mb-0" data-quote-estimate-side>—</div>
               </div>
 
-              <div class="fw-semibold mb-2">À fournir idéalement</div>
+              <div class="fw-semibold mb-2"><?= htmlspecialchars(t('public.quote.ideal_title'), ENT_QUOTES, 'UTF-8') ?></div>
               <ul class="text-secondary small mb-3">
-                <li>Type de travaux + surface/dimensions</li>
-                <li>Localisation + délai</li>
-                <li>Photos / références (si dispo)</li>
+                <li><?= htmlspecialchars(t('public.quote.ideal_li1'), ENT_QUOTES, 'UTF-8') ?></li>
+                <li><?= htmlspecialchars(t('public.quote.ideal_li2'), ENT_QUOTES, 'UTF-8') ?></li>
+                <li><?= htmlspecialchars(t('public.quote.ideal_li3'), ENT_QUOTES, 'UTF-8') ?></li>
               </ul>
 
               <div class="border-top pt-3">
-                <div class="fw-semibold mb-2">Besoin d’aide ?</div>
-                <div class="text-secondary small mb-2">Contacte <span class="fw-semibold"><?= htmlspecialchars($companyName, ENT_QUOTES, 'UTF-8') ?></span></div>
+                <div class="fw-semibold mb-2"><?= htmlspecialchars(t('public.quote.help_title'), ENT_QUOTES, 'UTF-8') ?></div>
+                <div class="text-secondary small mb-2"><?= htmlspecialchars(t('public.quote.help_contact', ['company' => $companyName]), ENT_QUOTES, 'UTF-8') ?></div>
                 <div class="d-flex flex-column gap-2">
                   <?php if (!empty($phone)): ?>
                     <a class="btn btn-sm btn-light border text-start" href="tel:<?= htmlspecialchars((string)$phone, ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-telephone me-2 text-brand"></i><?= htmlspecialchars((string)$phone, ENT_QUOTES, 'UTF-8') ?></a>
@@ -279,9 +290,14 @@ $email = \App\Models\Setting::get('email', null);
         total += p;
         hasAny = true;
       });
-      if (estimateEl) estimateEl.textContent = hasAny ? ('Total: ' + formatAr(total)) : 'Total: —';
+      var totalPrefix = <?= json_encode(t('public.quote.total_prefix'), JSON_UNESCAPED_UNICODE) ?>;
+      if (estimateEl) estimateEl.textContent = hasAny ? (totalPrefix + ' ' + formatAr(total)) : (totalPrefix + ' —');
       if (estimateSide) estimateSide.textContent = hasAny ? formatAr(total) : '—';
-      if (countEl) countEl.textContent = selectedCount + (selectedCount > 1 ? ' services' : ' service');
+      if (countEl) {
+        var s1 = <?= json_encode(t('public.quote.services_count_one'), JSON_UNESCAPED_UNICODE) ?>;
+        var sN = <?= json_encode(t('public.quote.services_count_many'), JSON_UNESCAPED_UNICODE) ?>;
+        countEl.textContent = selectedCount + ' ' + (selectedCount > 1 ? sN : s1);
+      }
     }
 
     function applySearch() {

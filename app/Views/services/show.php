@@ -3,18 +3,18 @@
 $showPrice = (int)($service['show_price'] ?? 0) === 1;
 $basePrice = $service['base_price'] ?? null;
 $priceUnit = trim((string)($service['price_unit'] ?? ''));
-$priceLabel = trim((string)($service['price_label'] ?? '')) ?: 'À partir de';
+$priceLabel = trim((string)($service['price_label'] ?? '')) ?: t('public.quote.price_from');
 $priceText = '';
 if ($showPrice && $basePrice !== null && $basePrice !== '') {
-    $priceText = $priceLabel . ' ' . number_format((float)$basePrice, 0, ',', ' ') . ' Ar' . ($priceUnit !== '' ? (' ' . $priceUnit) : '');
+    $priceText = $priceLabel . ' ' . number_format((float)$basePrice, 0, ',', ' ') . t('public.common.price_suffix') . ($priceUnit !== '' ? (' ' . $priceUnit) : '');
 }
 ?>
 <div class="page-header py-4">
   <div class="container">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-2">
-        <li class="breadcrumb-item"><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>">Accueil</a></li>
-        <li class="breadcrumb-item"><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">Services</a></li>
+        <li class="breadcrumb-item"><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('public.common.breadcrumb_home'), ENT_QUOTES, 'UTF-8') ?></a></li>
+        <li class="breadcrumb-item"><a href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('nav.services'), ENT_QUOTES, 'UTF-8') ?></a></li>
         <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars((string)$service['title'], ENT_QUOTES, 'UTF-8') ?></li>
       </ol>
     </nav>
@@ -22,7 +22,7 @@ if ($showPrice && $basePrice !== null && $basePrice !== '') {
     <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-end gap-3">
       <div>
         <h1 class="display-6 fw-bold mb-1 section-title"><?= htmlspecialchars((string)$service['title'], ENT_QUOTES, 'UTF-8') ?></h1>
-        <div class="text-secondary">Une prestation pensée pour votre besoin.</div>
+        <div class="text-secondary"><?= htmlspecialchars(t('public.service_detail.tagline'), ENT_QUOTES, 'UTF-8') ?></div>
         <?php if ($priceText !== ''): ?>
           <div class="mt-2">
             <span class="badge text-bg-light border"><i class="bi bi-cash-coin me-1"></i><?= htmlspecialchars($priceText, ENT_QUOTES, 'UTF-8') ?></span>
@@ -31,10 +31,10 @@ if ($showPrice && $basePrice !== null && $basePrice !== '') {
       </div>
       <div class="d-flex gap-2 flex-wrap">
         <a class="btn btn-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">
-          <i class="bi bi-clipboard-check me-2"></i>Demander un devis
+          <i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars(t('public.service_detail.cta_quote'), ENT_QUOTES, 'UTF-8') ?>
         </a>
         <a class="btn btn-outline-primary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/contact', ENT_QUOTES, 'UTF-8') ?>">
-          <i class="bi bi-chat-square-dots me-2"></i>Parler à un conseiller
+          <i class="bi bi-chat-square-dots me-2"></i><?= htmlspecialchars(t('public.service_detail.cta_advisor'), ENT_QUOTES, 'UTF-8') ?>
         </a>
       </div>
     </div>
@@ -54,12 +54,12 @@ if ($showPrice && $basePrice !== null && $basePrice !== '') {
       <div class="col-lg-7" data-aos="fade-up">
         <div class="card border-0 shadow-sm">
           <div class="card-body p-4">
-            <h2 class="h4 mb-3">Détails</h2>
+            <h2 class="h4 mb-3"><?= htmlspecialchars(t('public.service_detail.details_heading'), ENT_QUOTES, 'UTF-8') ?></h2>
             <div class="text-secondary" style="white-space:pre-wrap"><?= htmlspecialchars((string)($service['description'] ?? ''), ENT_QUOTES, 'UTF-8') ?></div>
             <hr class="my-4">
             <div class="d-flex flex-wrap gap-2">
-              <a class="btn btn-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-send me-2"></i>Demander un devis</a>
-              <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-2"></i>Voir des exemples</a>
+              <a class="btn btn-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-send me-2"></i><?= htmlspecialchars(t('public.service_detail.cta_quote'), ENT_QUOTES, 'UTF-8') ?></a>
+              <a class="btn btn-outline-secondary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-2"></i><?= htmlspecialchars(t('public.service_detail.cta_examples'), ENT_QUOTES, 'UTF-8') ?></a>
             </div>
           </div>
         </div>
@@ -67,4 +67,3 @@ if ($showPrice && $basePrice !== null && $basePrice !== '') {
     </div>
   </div>
 </section>
-

@@ -4,9 +4,20 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Models\Project;
+use App\Models\Translation;
 
 final class ProjectsPublicController extends BaseController
 {
+    /**
+     * @param array<string, mixed> $row
+     * @return array<string, mixed>
+     */
+    private function mergeProjectTranslations(array $row): array
+    {
+        $id = (int)($row['id'] ?? 0);
+
+        return $id > 0 ? Translation::mergeRow('project', $id, $row, ['title', 'description', 'location', 'category', 'work_type']) : $row;
+    }
     /**
      * @return string
      */
@@ -26,16 +37,20 @@ final class ProjectsPublicController extends BaseController
         );
         $imageMap = Project::imagesByProjectIds($projectIds, 5);
 
-        $projects = array_map(static function (array $project) use ($imageMap): array {
+        $projects = array_map(function (array $project) use ($imageMap): array {
             $id = (int)($project['id'] ?? 0);
             $imgs = $imageMap[$id] ?? [];
             $project['images'] = $imgs;
             $project['cover_image'] = $imgs[0] ?? null;
+            if ($id > 0) {
+                $project = Translation::mergeRow('project', $id, $project, ['title', 'description', 'location', 'category', 'work_type']);
+            }
+
             return $project;
         }, $projects);
 
         $this->view('projects.index', [
-            'title' => 'Réalisations',
+            'title' => t('nav.projects'),
             'projects' => $projects,
             'category' => $category,
         ]);
@@ -50,6 +65,8 @@ final class ProjectsPublicController extends BaseController
             echo '404';
             return;
         }
+
+        $project = $this->mergeProjectTranslations($project);
 
         $images = Project::images((int)$project['id']);
 

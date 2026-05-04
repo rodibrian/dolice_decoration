@@ -8,6 +8,7 @@ use App\Core\AdminAudit;
 use App\Core\Auth;
 use App\Core\Upload;
 use App\Models\Project;
+use App\Models\Translation;
 
 final class ProjectsController extends BaseController
 {
@@ -189,6 +190,7 @@ final class ProjectsController extends BaseController
         $id = (int)($_POST['id'] ?? 0);
         if ($id > 0) {
             $row = Project::find($id);
+            Translation::deleteForEntity('project', $id);
             Project::delete($id);
             AdminAudit::log('project.delete', 'project', $id, [
                 'title' => (string)($row['title'] ?? ''),

@@ -4,9 +4,20 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Models\Post;
+use App\Models\Translation;
 
 final class BlogController extends BaseController
 {
+    /**
+     * @param array<string, mixed> $post
+     * @return array<string, mixed>
+     */
+    private function mergePostTranslations(array $post): array
+    {
+        $id = (int)($post['id'] ?? 0);
+
+        return $id > 0 ? Translation::mergeRow('post', $id, $post, ['title', 'excerpt', 'content', 'author', 'keywords']) : $post;
+    }
     /**
      * @return string
      */
@@ -18,9 +29,10 @@ final class BlogController extends BaseController
 
     public function index(): void
     {
+        $posts = array_map(fn (array $p): array => $this->mergePostTranslations($p), Post::published());
         $this->view('blog.index', [
-            'title' => 'Blog',
-            'posts' => Post::published(),
+            'title' => t('nav.blog'),
+            'posts' => $posts,
         ]);
     }
 
@@ -33,6 +45,8 @@ final class BlogController extends BaseController
             echo '404';
             return;
         }
+
+        $post = $this->mergePostTranslations($post);
 
         $isModal = isset($_GET['modal']) && (string)$_GET['modal'] === '1';
         if ($isModal) {

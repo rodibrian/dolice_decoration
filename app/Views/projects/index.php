@@ -18,8 +18,8 @@ $categories = array_values($cats);
   <div class="container">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-3">
-        <li class="breadcrumb-item"><a href="<?= htmlspecialchars($base . '/', ENT_QUOTES, 'UTF-8') ?>">Accueil</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Réalisations</li>
+        <li class="breadcrumb-item"><a href="<?= htmlspecialchars($base . '/', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('public.common.breadcrumb_home'), ENT_QUOTES, 'UTF-8') ?></a></li>
+        <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars(t('nav.projects'), ENT_QUOTES, 'UTF-8') ?></li>
       </ol>
     </nav>
 
@@ -27,27 +27,27 @@ $categories = array_values($cats);
       <div class="col-lg-7">
         <div class="d-inline-flex align-items-center gap-2 badge text-bg-light border rounded-pill px-3 py-2">
           <i class="bi bi-building-gear text-brand"></i>
-          <span>Avant / Après • Chantier • Finitions premium</span>
+          <span><?= htmlspecialchars(t('public.projects_list.hero_badge'), ENT_QUOTES, 'UTF-8') ?></span>
         </div>
-        <h1 class="display-6 fw-bold mt-3 mb-2 section-title">Réalisations</h1>
-        <p class="lead text-secondary mb-0">Découvre quelques projets livrés: plafonds, peinture, revêtements, aménagements… Clique sur une réalisation pour voir plus de détails.</p>
+        <h1 class="display-6 fw-bold mt-3 mb-2 section-title"><?= htmlspecialchars(t('public.projects_list.hero_title'), ENT_QUOTES, 'UTF-8') ?></h1>
+        <p class="lead text-secondary mb-0"><?= htmlspecialchars(t('public.projects_list.hero_lead'), ENT_QUOTES, 'UTF-8') ?></p>
         <?php if (!empty($category)): ?>
           <div class="mt-3">
-            <span class="badge text-bg-light border"><i class="bi bi-funnel me-1"></i>Filtre: <?= htmlspecialchars((string)$category, ENT_QUOTES, 'UTF-8') ?></span>
-            <a class="ms-2 small" href="<?= htmlspecialchars($base . '/realisations', ENT_QUOTES, 'UTF-8') ?>">retirer</a>
+            <span class="badge text-bg-light border"><i class="bi bi-funnel me-1"></i><?= htmlspecialchars(t('public.common.filter_prefix'), ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars((string)$category, ENT_QUOTES, 'UTF-8') ?></span>
+            <a class="ms-2 small" href="<?= htmlspecialchars($base . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('public.common.filter_remove'), ENT_QUOTES, 'UTF-8') ?></a>
           </div>
         <?php endif; ?>
       </div>
       <div class="col-lg-5">
         <div class="card border-0 shadow-sm">
           <div class="card-body p-4">
-            <div class="fw-semibold mb-2">Envie d’un projet similaire ?</div>
-            <div class="text-secondary mb-3">Décris ton besoin et on te propose une solution adaptée.</div>
+            <div class="fw-semibold mb-2"><?= htmlspecialchars(t('public.projects_list.aside_title'), ENT_QUOTES, 'UTF-8') ?></div>
+            <div class="text-secondary mb-3"><?= htmlspecialchars(t('public.projects_list.aside_text'), ENT_QUOTES, 'UTF-8') ?></div>
             <div class="d-grid gap-2">
-              <a class="btn btn-brand" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i>Demander un devis</a>
-              <a class="btn btn-light border" href="<?= htmlspecialchars($base . '/services', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-tools me-2"></i>Voir les services</a>
+              <a class="btn btn-brand" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars(t('public.projects_list.cta_quote'), ENT_QUOTES, 'UTF-8') ?></a>
+              <a class="btn btn-light border" href="<?= htmlspecialchars($base . '/services', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-tools me-2"></i><?= htmlspecialchars(t('public.projects_list.cta_services'), ENT_QUOTES, 'UTF-8') ?></a>
             </div>
-            <div class="text-secondary small mt-3">Par <span class="fw-semibold"><?= htmlspecialchars($companyName, ENT_QUOTES, 'UTF-8') ?></span></div>
+            <div class="text-secondary small mt-3"><?= htmlspecialchars(t('public.common.by_company', ['company' => $companyName]), ENT_QUOTES, 'UTF-8') ?></div>
           </div>
         </div>
       </div>
@@ -61,13 +61,13 @@ $categories = array_values($cats);
       <div class="col-lg-6">
         <div class="input-group">
           <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-          <input class="form-control" type="search" placeholder="Rechercher une réalisation..." data-projects-search>
+          <input class="form-control" type="search" placeholder="<?= htmlspecialchars(t('public.projects_list.search_ph'), ENT_QUOTES, 'UTF-8') ?>" data-projects-search>
           <button class="btn btn-light border" type="button" data-projects-reset><i class="bi bi-x-lg"></i></button>
         </div>
       </div>
       <div class="col-lg-6">
         <div class="d-flex flex-wrap gap-2 justify-content-lg-end" data-projects-tags>
-          <button class="btn btn-sm btn-brand" type="button" data-cat="__all">Tous</button>
+          <button class="btn btn-sm btn-brand" type="button" data-cat="__all"><?= htmlspecialchars(t('public.common.tag_all'), ENT_QUOTES, 'UTF-8') ?></button>
           <?php foreach (array_slice($categories, 0, 10) as $c): ?>
             <button class="btn btn-sm btn-light border" type="button" data-cat="<?= htmlspecialchars(strtolower($c), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($c, ENT_QUOTES, 'UTF-8') ?></button>
           <?php endforeach; ?>
@@ -115,21 +115,21 @@ $categories = array_values($cats);
                       <?php endforeach; ?>
                     </div>
                   </div>
-                  <div class="project-media-badge badge text-bg-light border"><i class="bi bi-images me-1 text-brand"></i><?= count($imgUrls) ?> photos</div>
+                  <div class="project-media-badge badge text-bg-light border"><i class="bi bi-images me-1 text-brand"></i><?= htmlspecialchars(t('public.common.photos_count', ['count' => (string)count($imgUrls)]), ENT_QUOTES, 'UTF-8') ?></div>
                 <?php elseif (count($imgUrls) === 1): ?>
                   <img src="<?= htmlspecialchars($imgUrls[0], ENT_QUOTES, 'UTF-8') ?>" alt="">
                 <?php else: ?>
                   <div class="project-media-fallback"><i class="bi bi-image"></i></div>
                 <?php endif; ?>
                 <?php if ($isFeatured): ?>
-                  <div class="project-featured badge text-bg-warning"><i class="bi bi-star-fill me-1"></i>Vedette</div>
+                  <div class="project-featured badge text-bg-warning"><i class="bi bi-star-fill me-1"></i><?= htmlspecialchars(t('home.sections.project_featured'), ENT_QUOTES, 'UTF-8') ?></div>
                 <?php endif; ?>
               </div>
 
               <div class="card-body">
                 <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
-                  <span class="badge text-bg-light border"><?= htmlspecialchars($cat !== '' ? $cat : 'Réalisation', ENT_QUOTES, 'UTF-8') ?></span>
-                  <span class="text-secondary small">Détails <i class="bi bi-arrow-right ms-1"></i></span>
+                  <span class="badge text-bg-light border"><?= htmlspecialchars($cat !== '' ? $cat : t('public.common.project_fallback_cat'), ENT_QUOTES, 'UTF-8') ?></span>
+                  <span class="text-secondary small"><?= htmlspecialchars(t('public.common.details'), ENT_QUOTES, 'UTF-8') ?> <i class="bi bi-arrow-right ms-1"></i></span>
                 </div>
                 <h2 class="h5 mb-1"><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h2>
                 <div class="text-secondary small"><i class="bi bi-geo-alt me-1"></i><?= htmlspecialchars($location, ENT_QUOTES, 'UTF-8') ?></div>
@@ -141,7 +141,7 @@ $categories = array_values($cats);
     </div>
 
     <div class="text-secondary small mt-3" data-projects-empty style="display:none">
-      Aucune réalisation ne correspond à ta recherche.
+      <?= htmlspecialchars(t('public.projects_list.empty_search'), ENT_QUOTES, 'UTF-8') ?>
     </div>
   </div>
 </section>
@@ -197,4 +197,3 @@ $categories = array_values($cats);
     apply();
   })();
 </script>
-

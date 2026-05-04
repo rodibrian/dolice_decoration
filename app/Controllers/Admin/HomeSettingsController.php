@@ -9,6 +9,7 @@ use App\Core\Auth;
 use App\Core\SiteTheme;
 use App\Core\Upload;
 use App\Models\Setting;
+use App\Models\Translation;
 
 final class HomeSettingsController extends BaseController
 {
@@ -78,6 +79,8 @@ final class HomeSettingsController extends BaseController
             'title' => 'Gérer Accueil',
             'settings' => Setting::allKeyed(),
             'navFooterRights' => self::navFooterRights(),
+            'trans_en' => Translation::tableReady() ? Translation::mapFor('site', 0, 'en') : [],
+            'trans_mg' => Translation::tableReady() ? Translation::mapFor('site', 0, 'mg') : [],
             'flash' => $_SESSION['flash_success'] ?? null,
             'error' => $_SESSION['flash_error'] ?? null,
         ], 'layouts/admin');
@@ -139,6 +142,23 @@ final class HomeSettingsController extends BaseController
             'home_slides_enabled' => isset($_POST['home_slides_enabled']) && (string)$_POST['home_slides_enabled'] === '1',
             'hero_cover_updated' => isset($_FILES['hero_cover_file']) && is_array($_FILES['hero_cover_file']),
         ]);
+
+        if (Translation::tableReady()) {
+            Translation::saveLocale('site', 0, 'en', [
+                'home_badge_text' => trim((string)($_POST['en_home_badge_text'] ?? '')),
+                'home_hero_title' => trim((string)($_POST['en_home_hero_title'] ?? '')),
+                'home_hero_subtitle' => trim((string)($_POST['en_home_hero_subtitle'] ?? '')),
+                'home_primary_cta_label' => trim((string)($_POST['en_home_primary_cta_label'] ?? '')),
+                'home_secondary_cta_label' => trim((string)($_POST['en_home_secondary_cta_label'] ?? '')),
+            ]);
+            Translation::saveLocale('site', 0, 'mg', [
+                'home_badge_text' => trim((string)($_POST['mg_home_badge_text'] ?? '')),
+                'home_hero_title' => trim((string)($_POST['mg_home_hero_title'] ?? '')),
+                'home_hero_subtitle' => trim((string)($_POST['mg_home_hero_subtitle'] ?? '')),
+                'home_primary_cta_label' => trim((string)($_POST['mg_home_primary_cta_label'] ?? '')),
+                'home_secondary_cta_label' => trim((string)($_POST['mg_home_secondary_cta_label'] ?? '')),
+            ]);
+        }
 
         $_SESSION['flash_success'] = "Accueil mis à jour.";
         $this->redirect('/admin/home');

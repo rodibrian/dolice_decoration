@@ -1,8 +1,19 @@
 <?php
 /** @var array<string, string|null> $settings */
 /** @var array<string, array{can: bool, cap: string}> $navFooterRights */
+/** @var array<string, string> $trans_en */
+/** @var array<string, string> $trans_mg */
 /** @var string|null $flash */
 /** @var string|null $error */
+
+$trans_en = $trans_en ?? [];
+$trans_mg = $trans_mg ?? [];
+$trEn = static function (string $k) use ($trans_en): string {
+    return htmlspecialchars((string)($trans_en[$k] ?? ''), ENT_QUOTES, 'UTF-8');
+};
+$trMg = static function (string $k) use ($trans_mg): string {
+    return htmlspecialchars((string)($trans_mg[$k] ?? ''), ENT_QUOTES, 'UTF-8');
+};
 
 $capLabels = [
     'services.view' => 'Voir les services',
@@ -103,6 +114,55 @@ $themeCatalog = \App\Core\SiteTheme::catalog();
         Afficher le bloc “Slides” sur l’accueil
       </label>
     </div>
+
+    <hr class="sep">
+
+    <div class="admin-form-section">
+      <div class="fw-semibold mb-1"><?= htmlspecialchars(t('admin.home.trans_site'), ENT_QUOTES, 'UTF-8') ?></div>
+      <p class="small text-secondary mb-3"><?= htmlspecialchars(t('admin.home.trans_hint'), ENT_QUOTES, 'UTF-8') ?></p>
+      <div class="grid2">
+        <div style="grid-column:1/-1" class="d-flex gap-2 flex-wrap mb-2">
+          <button class="btn btn-sm btn-light border" type="button" data-tr-toggle="en">Content In English</button>
+          <button class="btn btn-sm btn-light border" type="button" data-tr-toggle="mg">Ampiditra Malagasy</button>
+        </div>
+
+        <div class="d-none" data-tr-panel="en">
+          <div class="fw-semibold mb-2"><?= htmlspecialchars(t('admin.services.trans_en'), ENT_QUOTES, 'UTF-8') ?></div>
+          <label>Badge <input type="text" name="en_home_badge_text" value="<?= $trEn('home_badge_text') ?>"></label>
+          <label>Titre hero <input type="text" name="en_home_hero_title" value="<?= $trEn('home_hero_title') ?>"></label>
+          <label style="grid-column:1/-1">Sous-titre <textarea name="en_home_hero_subtitle" rows="3"><?= $trEn('home_hero_subtitle') ?></textarea></label>
+          <label>CTA principal <input type="text" name="en_home_primary_cta_label" value="<?= $trEn('home_primary_cta_label') ?>"></label>
+          <label>CTA secondaire <input type="text" name="en_home_secondary_cta_label" value="<?= $trEn('home_secondary_cta_label') ?>"></label>
+        </div>
+        <div class="d-none" data-tr-panel="mg">
+          <div class="fw-semibold mb-2"><?= htmlspecialchars(t('admin.services.trans_mg'), ENT_QUOTES, 'UTF-8') ?></div>
+          <label>Badge <input type="text" name="mg_home_badge_text" value="<?= $trMg('home_badge_text') ?>"></label>
+          <label>Titre hero <input type="text" name="mg_home_hero_title" value="<?= $trMg('home_hero_title') ?>"></label>
+          <label style="grid-column:1/-1">Sous-titre <textarea name="mg_home_hero_subtitle" rows="3"><?= $trMg('home_hero_subtitle') ?></textarea></label>
+          <label>CTA principal <input type="text" name="mg_home_primary_cta_label" value="<?= $trMg('home_primary_cta_label') ?>"></label>
+          <label>CTA secondaire <input type="text" name="mg_home_secondary_cta_label" value="<?= $trMg('home_secondary_cta_label') ?>"></label>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const root = document.currentScript?.closest('form');
+        if (!root) return;
+        const panels = {
+          en: root.querySelector('[data-tr-panel="en"]'),
+          mg: root.querySelector('[data-tr-panel="mg"]'),
+        };
+        root.querySelectorAll('[data-tr-toggle]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const k = btn.getAttribute('data-tr-toggle');
+            const p = panels[k];
+            if (!p) return;
+            p.classList.toggle('d-none');
+          });
+        });
+      })();
+    </script>
 
     <hr class="sep">
 

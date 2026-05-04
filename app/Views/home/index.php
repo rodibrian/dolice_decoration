@@ -37,16 +37,16 @@ $heroCoverUrl = $isAbsoluteCover
     <div class="row align-items-center g-4">
       <div class="col-lg-7" data-aos="fade-up">
         <div class="badge text-bg-light text-dark rounded-pill mb-3">
-          <i class="bi bi-award me-2 text-brand"></i><?= htmlspecialchars($homeBadge !== '' ? $homeBadge : 'Finitions premium • Délais maîtrisés • Suivi pro', ENT_QUOTES, 'UTF-8') ?>
+          <i class="bi bi-award me-2 text-brand"></i><?= htmlspecialchars($homeBadge !== '' ? $homeBadge : t('home.badge_fallback'), ENT_QUOTES, 'UTF-8') ?>
         </div>
         <h1 class="display-5 fw-bold section-title mb-3"><?= htmlspecialchars($homeTitle !== '' ? $homeTitle : $title, ENT_QUOTES, 'UTF-8') ?></h1>
-        <p class="lead text-white-50 mb-4"><?= htmlspecialchars($homeSubtitle !== '' ? $homeSubtitle : "Entreprise de finition & décoration bâtiment. Des prestations nettes, des matériaux adaptés, et une exécution rigoureuse.", ENT_QUOTES, 'UTF-8') ?></p>
+        <p class="lead text-white-50 mb-4"><?= htmlspecialchars($homeSubtitle !== '' ? $homeSubtitle : t('home.subtitle_fallback'), ENT_QUOTES, 'UTF-8') ?></p>
         <div class="d-flex flex-wrap gap-2">
           <a class="btn btn-brand btn-lg" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . ($primaryUrl !== '' ? $primaryUrl : '/devis'), ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars($primaryLabel !== '' ? $primaryLabel : 'Demander un devis', ENT_QUOTES, 'UTF-8') ?>
+            <i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars($primaryLabel !== '' ? $primaryLabel : t('home.cta_quote'), ENT_QUOTES, 'UTF-8') ?>
           </a>
           <a class="btn btn-outline-light btn-lg" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . ($secondaryUrl !== '' ? $secondaryUrl : '/realisations'), ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-images me-2"></i><?= htmlspecialchars($secondaryLabel !== '' ? $secondaryLabel : 'Voir nos réalisations', ENT_QUOTES, 'UTF-8') ?>
+            <i class="bi bi-images me-2"></i><?= htmlspecialchars($secondaryLabel !== '' ? $secondaryLabel : t('home.cta_projects'), ENT_QUOTES, 'UTF-8') ?>
           </a>
           <!--button class="btn btn-light btn-lg" data-bs-toggle="modal" data-bs-target="#quickQuoteModal">
             <i class="bi bi-lightning-charge me-2 text-brand"></i>Devis express
@@ -57,8 +57,8 @@ $heroCoverUrl = $isAbsoluteCover
             <div class="d-flex align-items-center gap-2">
               <div class="icon-badge"><i class="bi bi-shield-check"></i></div>
               <div>
-                <div class="fw-semibold">Qualité</div>
-                <div class="text-white-50 small">Finitions propres</div>
+                <div class="fw-semibold"><?= htmlspecialchars(t('home.pill_quality'), ENT_QUOTES, 'UTF-8') ?></div>
+                <div class="text-white-50 small"><?= htmlspecialchars(t('home.pill_quality_sub'), ENT_QUOTES, 'UTF-8') ?></div>
               </div>
             </div>
           </div>
@@ -66,8 +66,8 @@ $heroCoverUrl = $isAbsoluteCover
             <div class="d-flex align-items-center gap-2">
               <div class="icon-badge"><i class="bi bi-clock-history"></i></div>
               <div>
-                <div class="fw-semibold">Délais</div>
-                <div class="text-white-50 small">Planning suivi</div>
+                <div class="fw-semibold"><?= htmlspecialchars(t('home.pill_delay'), ENT_QUOTES, 'UTF-8') ?></div>
+                <div class="text-white-50 small"><?= htmlspecialchars(t('home.pill_delay_sub'), ENT_QUOTES, 'UTF-8') ?></div>
               </div>
             </div>
           </div>
@@ -75,8 +75,8 @@ $heroCoverUrl = $isAbsoluteCover
             <div class="d-flex align-items-center gap-2">
               <div class="icon-badge"><i class="bi bi-chat-square-dots"></i></div>
               <div>
-                <div class="fw-semibold">Conseil</div>
-                <div class="text-white-50 small">Accompagnement</div>
+                <div class="fw-semibold"><?= htmlspecialchars(t('home.pill_advice'), ENT_QUOTES, 'UTF-8') ?></div>
+                <div class="text-white-50 small"><?= htmlspecialchars(t('home.pill_advice_sub'), ENT_QUOTES, 'UTF-8') ?></div>
               </div>
             </div>
           </div>
@@ -88,7 +88,7 @@ $heroCoverUrl = $isAbsoluteCover
             <?php if (count($heroSlides) > 1): ?>
               <div class="carousel-indicators">
                 <?php foreach ($heroSlides as $i => $_s): ?>
-                  <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="<?= (int)$i ?>" class="<?= $i === 0 ? 'active' : '' ?>" <?= $i === 0 ? 'aria-current="true"' : '' ?> aria-label="Slide <?= (int)($i + 1) ?>"></button>
+                  <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="<?= (int)$i ?>" class="<?= $i === 0 ? 'active' : '' ?>" <?= $i === 0 ? 'aria-current="true"' : '' ?> aria-label="<?= htmlspecialchars(t('public.common.slide_aria', ['n' => (string)($i + 1)]), ENT_QUOTES, 'UTF-8') ?>"></button>
                 <?php endforeach; ?>
               </div>
             <?php endif; ?>
@@ -110,7 +110,7 @@ $heroCoverUrl = $isAbsoluteCover
                   <div class="hero-slide-frame">
                     <?php if ($type === 'video'): ?>
                       <video class="hero-slide-media" src="<?= htmlspecialchars($mediaUrl, ENT_QUOTES, 'UTF-8') ?>" muted playsinline autoplay loop preload="metadata"></video>
-                      <div class="hero-slide-badge"><i class="bi bi-play-circle-fill me-1"></i>Vidéo</div>
+                      <div class="hero-slide-badge"><i class="bi bi-play-circle-fill me-1"></i><?= htmlspecialchars(t('home.sections.hero_video_badge'), ENT_QUOTES, 'UTF-8') ?></div>
                     <?php else: ?>
                       <img class="hero-slide-media" src="<?= htmlspecialchars($mediaUrl, ENT_QUOTES, 'UTF-8') ?>" alt="">
                     <?php endif; ?>
@@ -138,11 +138,11 @@ $heroCoverUrl = $isAbsoluteCover
             <?php if (count($heroSlides) > 1): ?>
               <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Précédent</span>
+                <span class="visually-hidden"><?= htmlspecialchars(t('public.common.carousel_prev'), ENT_QUOTES, 'UTF-8') ?></span>
               </button>
               <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Suivant</span>
+                <span class="visually-hidden"><?= htmlspecialchars(t('public.common.carousel_next'), ENT_QUOTES, 'UTF-8') ?></span>
               </button>
             <?php endif; ?>
           <?php else: ?>
@@ -166,11 +166,11 @@ $heroCoverUrl = $isAbsoluteCover
   <div class="container">
     <div class="d-flex justify-content-between align-items-end gap-3 mb-4">
       <div>
-        <h2 class="h1 section-title mb-1" data-aos="fade-up">Services</h2>
-        <div class="text-secondary" data-aos="fade-up" data-aos-delay="50">Des solutions claires, des finitions nettes.</div>
+        <h2 class="h1 section-title mb-1" data-aos="fade-up"><?= htmlspecialchars(t('home.sections.services_title'), ENT_QUOTES, 'UTF-8') ?></h2>
+        <div class="text-secondary" data-aos="fade-up" data-aos-delay="50"><?= htmlspecialchars(t('home.sections.services_sub'), ENT_QUOTES, 'UTF-8') ?></div>
       </div>
       <a class="btn btn-outline-primary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/services', ENT_QUOTES, 'UTF-8') ?>">
-        Tout voir <i class="bi bi-arrow-right ms-1"></i>
+        <?= htmlspecialchars(t('home.sections.services_see_all'), ENT_QUOTES, 'UTF-8') ?> <i class="bi bi-arrow-right ms-1"></i>
       </a>
     </div>
 
@@ -196,7 +196,7 @@ $heroCoverUrl = $isAbsoluteCover
               <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between mb-2">
                   <div class="icon-badge"><i class="bi bi-tools"></i></div>
-                  <span class="badge text-bg-light border"><?= htmlspecialchars((string)($s['category'] ?? 'Service'), ENT_QUOTES, 'UTF-8') ?></span>
+                  <span class="badge text-bg-light border"><?= htmlspecialchars((string)($s['category'] ?? t('nav.services')), ENT_QUOTES, 'UTF-8') ?></span>
                 </div>
                 <h3 class="h5 mb-2 line-clamp-2"><?= htmlspecialchars((string)$s['title'], ENT_QUOTES, 'UTF-8') ?></h3>
                 <?php
@@ -205,15 +205,15 @@ $heroCoverUrl = $isAbsoluteCover
                 ?>
                 <?php if ($show && $bp !== null && $bp !== ''): ?>
                   <?php
-                    $label = trim((string)($s['price_label'] ?? '')) ?: 'À partir de';
+                    $label = trim((string)($s['price_label'] ?? '')) ?: t('public.quote.price_from');
                     $unit = trim((string)($s['price_unit'] ?? ''));
-                    $txt = $label . ' ' . number_format((float)$bp, 0, ',', ' ') . ' Ar' . ($unit !== '' ? (' ' . $unit) : '');
+                    $txt = $label . ' ' . number_format((float)$bp, 0, ',', ' ') . t('public.common.price_suffix') . ($unit !== '' ? (' ' . $unit) : '');
                   ?>
                   <div class="mt-2">
                     <span class="badge text-bg-light border"><i class="bi bi-cash-coin me-1"></i><?= htmlspecialchars($txt, ENT_QUOTES, 'UTF-8') ?></span>
                   </div>
                 <?php endif; ?>
-                <div class="text-secondary small">Clique pour voir le détail + demander un devis.</div>
+                <div class="text-secondary small"><?= htmlspecialchars(t('home.sections.service_card_hint'), ENT_QUOTES, 'UTF-8') ?></div>
               </div>
             </div>
           </a>
@@ -228,32 +228,32 @@ $heroCoverUrl = $isAbsoluteCover
     <div class="row g-4 align-items-center">
       <div class="col-lg-5" data-aos="fade-up">
         <div class="badge text-bg-light border rounded-pill px-3 py-2">
-          <i class="bi bi-check2-circle me-2 text-brand"></i>Méthode simple & efficace
+          <i class="bi bi-check2-circle me-2 text-brand"></i><?= htmlspecialchars(t('home.sections.process_badge'), ENT_QUOTES, 'UTF-8') ?>
         </div>
-        <h2 class="h1 section-title mt-3 mb-2">Un process clair, du premier contact à la livraison</h2>
-        <p class="text-secondary mb-0">Nous cadrons le besoin, proposons une solution adaptée, puis exécutons proprement avec un suivi régulier.</p>
+        <h2 class="h1 section-title mt-3 mb-2"><?= htmlspecialchars(t('home.sections.process_title'), ENT_QUOTES, 'UTF-8') ?></h2>
+        <p class="text-secondary mb-0"><?= htmlspecialchars(t('home.sections.process_text'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
       <div class="col-lg-7" data-aos="fade-up" data-aos-delay="80">
         <div class="row g-3">
           <div class="col-md-4">
             <div class="p-4 bg-white rounded-4 border h-100">
               <div class="icon-badge mb-3"><i class="bi bi-chat-square-dots"></i></div>
-              <div class="fw-semibold mb-1">1) Brief</div>
-              <div class="text-secondary small">Besoin, contraintes, style, budget indicatif.</div>
+              <div class="fw-semibold mb-1"><?= htmlspecialchars(t('home.sections.process_s1_title'), ENT_QUOTES, 'UTF-8') ?></div>
+              <div class="text-secondary small"><?= htmlspecialchars(t('home.sections.process_s1_text'), ENT_QUOTES, 'UTF-8') ?></div>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-4 bg-white rounded-4 border h-100">
               <div class="icon-badge mb-3"><i class="bi bi-clipboard-check"></i></div>
-              <div class="fw-semibold mb-1">2) Devis</div>
-              <div class="text-secondary small">Proposition claire + délais + options.</div>
+              <div class="fw-semibold mb-1"><?= htmlspecialchars(t('home.sections.process_s2_title'), ENT_QUOTES, 'UTF-8') ?></div>
+              <div class="text-secondary small"><?= htmlspecialchars(t('home.sections.process_s2_text'), ENT_QUOTES, 'UTF-8') ?></div>
             </div>
           </div>
           <div class="col-md-4">
             <div class="p-4 bg-white rounded-4 border h-100">
               <div class="icon-badge mb-3"><i class="bi bi-hammer"></i></div>
-              <div class="fw-semibold mb-1">3) Exécution</div>
-              <div class="text-secondary small">Finitions propres + contrôle qualité.</div>
+              <div class="fw-semibold mb-1"><?= htmlspecialchars(t('home.sections.process_s3_title'), ENT_QUOTES, 'UTF-8') ?></div>
+              <div class="text-secondary small"><?= htmlspecialchars(t('home.sections.process_s3_text'), ENT_QUOTES, 'UTF-8') ?></div>
             </div>
           </div>
         </div>
@@ -266,12 +266,12 @@ $heroCoverUrl = $isAbsoluteCover
   <div class="container">
     <div class="row g-4 align-items-end mb-4">
       <div class="col-lg-7">
-        <h2 class="h1 section-title mb-1" data-aos="fade-up">Réalisations</h2>
-        <div class="text-secondary" data-aos="fade-up" data-aos-delay="50">Un aperçu de nos chantiers récents.</div>
+        <h2 class="h1 section-title mb-1" data-aos="fade-up"><?= htmlspecialchars(t('home.sections.projects_title'), ENT_QUOTES, 'UTF-8') ?></h2>
+        <div class="text-secondary" data-aos="fade-up" data-aos-delay="50"><?= htmlspecialchars(t('home.sections.projects_sub'), ENT_QUOTES, 'UTF-8') ?></div>
       </div>
       <div class="col-lg-5 text-lg-end">
         <a class="btn btn-brand" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/realisations', ENT_QUOTES, 'UTF-8') ?>">
-          Explorer le portfolio <i class="bi bi-images ms-1"></i>
+          <?= htmlspecialchars(t('home.sections.projects_cta'), ENT_QUOTES, 'UTF-8') ?> <i class="bi bi-images ms-1"></i>
         </a>
       </div>
     </div>
@@ -290,7 +290,7 @@ $heroCoverUrl = $isAbsoluteCover
                         <h3 class="h5 mb-0"><?= htmlspecialchars((string)$p['title'], ENT_QUOTES, 'UTF-8') ?></h3>
                       </div>
                       <?php if ((int)($p['is_featured'] ?? 0) === 1): ?>
-                        <span class="badge text-bg-warning"><i class="bi bi-star-fill me-1"></i>Vedette</span>
+                        <span class="badge text-bg-warning"><i class="bi bi-star-fill me-1"></i><?= htmlspecialchars(t('home.sections.project_featured'), ENT_QUOTES, 'UTF-8') ?></span>
                       <?php endif; ?>
                     </div>
                     <div class="ratio ratio-4x3 card-media-4x3 mt-3">
@@ -320,33 +320,33 @@ $heroCoverUrl = $isAbsoluteCover
     <div class="container">
       <div class="row g-4 align-items-center mb-4">
         <div class="col-lg-6">
-          <h2 class="h1 section-title mb-1" data-aos="fade-up">Témoignages</h2>
-          <div class="text-secondary" data-aos="fade-up" data-aos-delay="50">La preuve sociale qui rassure.</div>
+          <h2 class="h1 section-title mb-1" data-aos="fade-up"><?= htmlspecialchars(t('home.sections.testimonials_title'), ENT_QUOTES, 'UTF-8') ?></h2>
+          <div class="text-secondary" data-aos="fade-up" data-aos-delay="50"><?= htmlspecialchars(t('home.sections.testimonials_sub'), ENT_QUOTES, 'UTF-8') ?></div>
         </div>
         <div class="col-lg-6">
           <div class="row g-3" data-aos="fade-up" data-aos-delay="100">
             <div class="col-6 col-md-3">
               <div class="p-3 bg-white rounded-4 border">
                 <div class="h3 fw-bold mb-0"><span class="purecounter" data-purecounter-start="0" data-purecounter-end="120" data-purecounter-duration="1">0</span>+</div>
-                <div class="text-secondary small">Projets</div>
+                <div class="text-secondary small"><?= htmlspecialchars(t('home.sections.stat_projects'), ENT_QUOTES, 'UTF-8') ?></div>
               </div>
             </div>
             <div class="col-6 col-md-3">
               <div class="p-3 bg-white rounded-4 border">
                 <div class="h3 fw-bold mb-0"><span class="purecounter" data-purecounter-start="0" data-purecounter-end="8" data-purecounter-duration="1">0</span>+</div>
-                <div class="text-secondary small">Années</div>
+                <div class="text-secondary small"><?= htmlspecialchars(t('home.sections.stat_years'), ENT_QUOTES, 'UTF-8') ?></div>
               </div>
             </div>
             <div class="col-6 col-md-3">
               <div class="p-3 bg-white rounded-4 border">
                 <div class="h3 fw-bold mb-0"><span class="purecounter" data-purecounter-start="0" data-purecounter-end="35" data-purecounter-duration="1">0</span>+</div>
-                <div class="text-secondary small">Clients</div>
+                <div class="text-secondary small"><?= htmlspecialchars(t('home.sections.stat_clients'), ENT_QUOTES, 'UTF-8') ?></div>
               </div>
             </div>
             <div class="col-6 col-md-3">
               <div class="p-3 bg-white rounded-4 border">
                 <div class="h3 fw-bold mb-0"><span class="purecounter" data-purecounter-start="0" data-purecounter-end="98" data-purecounter-duration="1">0</span>%</div>
-                <div class="text-secondary small">Satisf.</div>
+                <div class="text-secondary small"><?= htmlspecialchars(t('home.sections.stat_satisfaction'), ENT_QUOTES, 'UTF-8') ?></div>
               </div>
             </div>
           </div>
@@ -356,17 +356,17 @@ $heroCoverUrl = $isAbsoluteCover
       <div class="glide" id="glideTestimonials" data-aos="fade-up">
         <div class="glide__track" data-glide-el="track">
           <ul class="glide__slides">
-            <?php foreach ($testimonials as $t): ?>
+            <?php foreach ($testimonials as $testimonial): ?>
               <?php
-                $logoPathRaw = trim((string)($t['logo_path'] ?? ''));
+                $logoPathRaw = trim((string)($testimonial['logo_path'] ?? ''));
                 $logoFileExists = false;
                 if ($logoPathRaw !== '') {
                     $logoDiskPath = rtrim((string)PUBLIC_PATH, '/\\') . '/' . ltrim($logoPathRaw, '/\\');
                     $logoFileExists = is_file($logoDiskPath);
                 }
                 $logoUrl = $logoFileExists ? (env('APP_URL', '') ?: '') . $logoPathRaw : '';
-                $company = trim((string)($t['client_company'] ?? ''));
-                $rating = (int)($t['rating'] ?? 0);
+                $company = trim((string)($testimonial['client_company'] ?? ''));
+                $rating = (int)($testimonial['rating'] ?? 0);
                 if ($rating < 0) $rating = 0;
                 if ($rating > 5) $rating = 5;
               ?>
@@ -382,7 +382,7 @@ $heroCoverUrl = $isAbsoluteCover
                         <?php endif; ?>
                       </div>
                       <div class="min-w-0">
-                        <div class="fw-semibold text-truncate"><?= htmlspecialchars((string)$t['client_name'], ENT_QUOTES, 'UTF-8') ?></div>
+                        <div class="fw-semibold text-truncate"><?= htmlspecialchars((string)$testimonial['client_name'], ENT_QUOTES, 'UTF-8') ?></div>
                         <?php if ($company !== ''): ?>
                           <div class="text-secondary small text-truncate"><?= htmlspecialchars($company, ENT_QUOTES, 'UTF-8') ?></div>
                         <?php endif; ?>
@@ -390,13 +390,13 @@ $heroCoverUrl = $isAbsoluteCover
                     </div>
 
                     <?php if ($rating > 0): ?>
-                      <div class="testimonial-stars text-warning flex-shrink-0" aria-label="<?= htmlspecialchars((string)$rating, ENT_QUOTES, 'UTF-8') ?> sur 5">
+                      <div class="testimonial-stars text-warning flex-shrink-0" aria-label="<?= htmlspecialchars(t('public.common.rating_aria', ['n' => (string)$rating]), ENT_QUOTES, 'UTF-8') ?>">
                         <?php for ($i=0; $i < $rating; $i++): ?><i class="bi bi-star-fill"></i><?php endfor; ?>
                       </div>
                     <?php endif; ?>
                   </div>
 
-                  <div class="testimonial-quote text-secondary" style="white-space:pre-wrap"><?= htmlspecialchars((string)$t['content'], ENT_QUOTES, 'UTF-8') ?></div>
+                  <div class="testimonial-quote text-secondary" style="white-space:pre-wrap"><?= htmlspecialchars((string)$testimonial['content'], ENT_QUOTES, 'UTF-8') ?></div>
                 </article>
               </li>
             <?php endforeach; ?>
@@ -416,11 +416,11 @@ $heroCoverUrl = $isAbsoluteCover
     <div class="container">
       <div class="d-flex justify-content-between align-items-end gap-3 mb-4">
         <div>
-          <h2 class="h1 section-title mb-1" data-aos="fade-up">Blog</h2>
-          <div class="text-secondary" data-aos="fade-up" data-aos-delay="50">Conseils, tendances et retours chantier.</div>
+          <h2 class="h1 section-title mb-1" data-aos="fade-up"><?= htmlspecialchars(t('home.sections.blog_title'), ENT_QUOTES, 'UTF-8') ?></h2>
+          <div class="text-secondary" data-aos="fade-up" data-aos-delay="50"><?= htmlspecialchars(t('home.sections.blog_sub'), ENT_QUOTES, 'UTF-8') ?></div>
         </div>
         <a class="btn btn-outline-primary" href="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/blog', ENT_QUOTES, 'UTF-8') ?>">
-          Lire tout <i class="bi bi-arrow-right ms-1"></i>
+          <?= htmlspecialchars(t('home.sections.blog_see_all'), ENT_QUOTES, 'UTF-8') ?> <i class="bi bi-arrow-right ms-1"></i>
         </a>
       </div>
 
@@ -462,38 +462,38 @@ $heroCoverUrl = $isAbsoluteCover
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="quickQuoteModalLabel">Devis express</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        <h5 class="modal-title" id="quickQuoteModalLabel"><?= htmlspecialchars(t('home.sections.quick_quote_title'), ENT_QUOTES, 'UTF-8') ?></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= htmlspecialchars(t('modal.close'), ENT_QUOTES, 'UTF-8') ?>"></button>
       </div>
       <form method="post" action="<?= htmlspecialchars((env('APP_URL', '') ?: '') . '/devis', ENT_QUOTES, 'UTF-8') ?>">
         <div class="modal-body">
           <input type="text" name="company" value="" style="display:none">
           <div class="mb-3">
-            <label class="form-label">Nom</label>
+            <label class="form-label"><?= htmlspecialchars(t('home.sections.quick_quote_name'), ENT_QUOTES, 'UTF-8') ?></label>
             <input class="form-control" type="text" name="name" required>
           </div>
           <div class="row g-3">
             <div class="col-sm-6">
-              <label class="form-label">Téléphone</label>
+              <label class="form-label"><?= htmlspecialchars(t('public.forms.phone'), ENT_QUOTES, 'UTF-8') ?></label>
               <input class="form-control" type="text" name="phone">
             </div>
             <div class="col-sm-6">
-              <label class="form-label">Email</label>
+              <label class="form-label"><?= htmlspecialchars(t('public.forms.email'), ENT_QUOTES, 'UTF-8') ?></label>
               <input class="form-control" type="email" name="email">
             </div>
           </div>
           <div class="mt-3">
-            <label class="form-label">Type de projet</label>
+            <label class="form-label"><?= htmlspecialchars(t('home.sections.quick_quote_project_type'), ENT_QUOTES, 'UTF-8') ?></label>
             <input class="form-control" type="text" name="project_type">
           </div>
           <div class="mt-3">
-            <label class="form-label">Message</label>
+            <label class="form-label"><?= htmlspecialchars(t('home.sections.quick_quote_message'), ENT_QUOTES, 'UTF-8') ?></label>
             <textarea class="form-control" name="message" rows="4"></textarea>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
-          <button class="btn btn-brand" type="submit"><i class="bi bi-send me-2"></i>Envoyer</button>
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><?= htmlspecialchars(t('home.sections.quick_quote_cancel'), ENT_QUOTES, 'UTF-8') ?></button>
+          <button class="btn btn-brand" type="submit"><i class="bi bi-send me-2"></i><?= htmlspecialchars(t('home.sections.quick_quote_send'), ENT_QUOTES, 'UTF-8') ?></button>
         </div>
       </form>
     </div>

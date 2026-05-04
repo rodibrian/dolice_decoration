@@ -89,12 +89,12 @@ if (empty($phones) && !empty($settings['phone'])) $phones = [(string)$settings['
 if (empty($emails) && !empty($settings['email'])) $emails = [(string)$settings['email']];
 
 $socials = [
-  ['k' => 'facebook', 'label' => 'Facebook', 'icon' => 'bi-facebook'],
-  ['k' => 'instagram', 'label' => 'Instagram', 'icon' => 'bi-instagram'],
-  ['k' => 'linkedin', 'label' => 'LinkedIn', 'icon' => 'bi-linkedin'],
-  ['k' => 'twitter', 'label' => 'X', 'icon' => 'bi-twitter-x'],
-  ['k' => 'youtube', 'label' => 'YouTube', 'icon' => 'bi-youtube'],
-  ['k' => 'tiktok', 'label' => 'TikTok', 'icon' => 'bi-tiktok'],
+  ['k' => 'facebook', 'label' => t('public.social.facebook'), 'icon' => 'bi-facebook'],
+  ['k' => 'instagram', 'label' => t('public.social.instagram'), 'icon' => 'bi-instagram'],
+  ['k' => 'linkedin', 'label' => t('public.social.linkedin'), 'icon' => 'bi-linkedin'],
+  ['k' => 'twitter', 'label' => t('public.social.twitter'), 'icon' => 'bi-twitter-x'],
+  ['k' => 'youtube', 'label' => t('public.social.youtube'), 'icon' => 'bi-youtube'],
+  ['k' => 'tiktok', 'label' => t('public.social.tiktok'), 'icon' => 'bi-tiktok'],
 ];
 
 $mapEmbed = trim((string)($settings['company_map_embed_url'] ?? ''));
@@ -113,8 +113,8 @@ if ($lat !== '' && $lng !== '') {
     <div class="container">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-3">
-          <li class="breadcrumb-item"><a href="<?= htmlspecialchars($base . '/', ENT_QUOTES, 'UTF-8') ?>">Accueil</a></li>
-          <li class="breadcrumb-item active" aria-current="page">FAQ</li>
+          <li class="breadcrumb-item"><a href="<?= htmlspecialchars($base . '/', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('public.common.breadcrumb_home'), ENT_QUOTES, 'UTF-8') ?></a></li>
+          <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars(t('nav.faq'), ENT_QUOTES, 'UTF-8') ?></li>
         </ol>
       </nav>
 
@@ -122,26 +122,26 @@ if ($lat !== '' && $lng !== '') {
         <div class="col-lg-7">
           <div class="d-inline-flex align-items-center gap-2 badge text-bg-light border rounded-pill px-3 py-2">
             <i class="bi bi-patch-question-fill text-brand"></i>
-            <span>Réponses rapides • Infos pratiques • Devis & délais</span>
+            <span><?= htmlspecialchars(t('public.faq_page.hero_badge'), ENT_QUOTES, 'UTF-8') ?></span>
           </div>
-          <h1 class="display-6 fw-bold mt-3 mb-2 section-title">FAQ</h1>
-          <p class="lead text-secondary mb-0">Retrouve ici les questions les plus fréquentes. Si tu ne trouves pas, contacte-nous ou demande un devis.</p>
+          <h1 class="display-6 fw-bold mt-3 mb-2 section-title"><?= htmlspecialchars(t('public.faq_page.hero_title'), ENT_QUOTES, 'UTF-8') ?></h1>
+          <p class="lead text-secondary mb-0"><?= htmlspecialchars(t('public.faq_page.hero_lead'), ENT_QUOTES, 'UTF-8') ?></p>
         </div>
         <div class="col-lg-5">
           <div class="card border-0 shadow-sm">
             <div class="card-body p-4">
-              <div class="fw-semibold mb-2">Rechercher une réponse</div>
+              <div class="fw-semibold mb-2"><?= htmlspecialchars(t('public.faq_page.search_title'), ENT_QUOTES, 'UTF-8') ?></div>
               <div class="input-group">
                 <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                <input class="form-control" type="search" placeholder="Ex: délais, prix, zone..." data-faq-search>
+                <input class="form-control" type="search" placeholder="<?= htmlspecialchars(t('public.faq_page.search_ph'), ENT_QUOTES, 'UTF-8') ?>" data-faq-search>
                 <button class="btn btn-light border" type="button" data-faq-reset><i class="bi bi-x-lg"></i></button>
               </div>
-              <div class="text-secondary small mt-2">Filtre instantané dans les questions.</div>
+              <div class="text-secondary small mt-2"><?= htmlspecialchars(t('public.faq_page.search_hint'), ENT_QUOTES, 'UTF-8') ?></div>
               <div class="d-grid gap-2 mt-3">
-                <a class="btn btn-brand" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i>Demander un devis</a>
-                <a class="btn btn-light border" href="<?= htmlspecialchars($base . '/contact', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope me-2"></i>Nous écrire</a>
+                <a class="btn btn-brand" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars(t('nav.quote'), ENT_QUOTES, 'UTF-8') ?></a>
+                <a class="btn btn-light border" href="<?= htmlspecialchars($base . '/contact', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope me-2"></i><?= htmlspecialchars(t('public.faq_page.cta_write'), ENT_QUOTES, 'UTF-8') ?></a>
               </div>
-              <div class="text-secondary small mt-3">Par <span class="fw-semibold"><?= htmlspecialchars($companyName, ENT_QUOTES, 'UTF-8') ?></span></div>
+              <div class="text-secondary small mt-3"><?= htmlspecialchars(t('public.common.by_company', ['company' => $companyName]), ENT_QUOTES, 'UTF-8') ?></div>
             </div>
           </div>
         </div>
@@ -154,8 +154,8 @@ if ($lat !== '' && $lng !== '') {
       <div class="container">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb mb-3">
-            <li class="breadcrumb-item"><a href="<?= htmlspecialchars($base . '/', ENT_QUOTES, 'UTF-8') ?>">Accueil</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Contact</li>
+            <li class="breadcrumb-item"><a href="<?= htmlspecialchars($base . '/', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('public.common.breadcrumb_home'), ENT_QUOTES, 'UTF-8') ?></a></li>
+            <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars(t('nav.contact'), ENT_QUOTES, 'UTF-8') ?></li>
           </ol>
         </nav>
 
@@ -163,29 +163,29 @@ if ($lat !== '' && $lng !== '') {
           <div class="col-lg-7">
             <div class="d-inline-flex align-items-center gap-2 badge text-bg-light border rounded-pill px-3 py-2">
               <i class="bi bi-envelope-paper-fill text-brand"></i>
-              <span>Réponse rapide • Devis • Rendez-vous</span>
+              <span><?= htmlspecialchars(t('public.contact_page.hero_badge'), ENT_QUOTES, 'UTF-8') ?></span>
             </div>
-            <h1 class="display-6 fw-bold mt-3 mb-2 section-title">Contact</h1>
-            <p class="lead text-secondary mb-0">Une question, un besoin, un projet ? Écris-nous. On te répond rapidement avec une solution claire.</p>
+            <h1 class="display-6 fw-bold mt-3 mb-2 section-title"><?= htmlspecialchars(t('public.contact_page.hero_title'), ENT_QUOTES, 'UTF-8') ?></h1>
+            <p class="lead text-secondary mb-0"><?= htmlspecialchars(t('public.contact_page.hero_lead'), ENT_QUOTES, 'UTF-8') ?></p>
           </div>
           <div class="col-lg-5">
             <div class="card border-0 shadow-sm">
               <div class="card-body p-4">
-                <div class="fw-semibold mb-2">Contact direct</div>
-                <div class="text-secondary small mb-3">Choisis le canal le plus simple pour toi.</div>
+                <div class="fw-semibold mb-2"><?= htmlspecialchars(t('public.contact_page.direct_title'), ENT_QUOTES, 'UTF-8') ?></div>
+                <div class="text-secondary small mb-3"><?= htmlspecialchars(t('public.contact_page.direct_hint'), ENT_QUOTES, 'UTF-8') ?></div>
                 <div class="d-flex flex-column gap-2">
                   <?php foreach (array_slice($phones, 0, 2) as $ph): ?>
                     <a class="btn btn-sm btn-light border text-start" href="tel:<?= htmlspecialchars($ph, ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-telephone me-2 text-brand"></i><?= htmlspecialchars($ph, ENT_QUOTES, 'UTF-8') ?></a>
                   <?php endforeach; ?>
                   <?php if (!empty($settings['whatsapp'])): ?>
-                    <a class="btn btn-sm btn-light border text-start" target="_blank" rel="noopener" href="<?= htmlspecialchars('https://wa.me/' . preg_replace('/\D+/', '', (string)$settings['whatsapp']), ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-whatsapp me-2 text-brand"></i>WhatsApp</a>
+                    <a class="btn btn-sm btn-light border text-start" target="_blank" rel="noopener" href="<?= htmlspecialchars('https://wa.me/' . preg_replace('/\D+/', '', (string)$settings['whatsapp']), ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-whatsapp me-2 text-brand"></i><?= htmlspecialchars(t('public.social.whatsapp'), ENT_QUOTES, 'UTF-8') ?></a>
                   <?php endif; ?>
                   <?php foreach (array_slice($emails, 0, 2) as $em): ?>
                     <a class="btn btn-sm btn-light border text-start" href="mailto:<?= htmlspecialchars($em, ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope me-2 text-brand"></i><?= htmlspecialchars($em, ENT_QUOTES, 'UTF-8') ?></a>
                   <?php endforeach; ?>
                 </div>
                 <div class="d-grid gap-2 mt-3">
-                  <a class="btn btn-brand" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i>Demander un devis</a>
+                  <a class="btn btn-brand" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars(t('nav.quote'), ENT_QUOTES, 'UTF-8') ?></a>
                 </div>
               </div>
             </div>
@@ -198,17 +198,17 @@ if ($lat !== '' && $lng !== '') {
       <div class="container">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb mb-2">
-            <li class="breadcrumb-item"><a href="<?= htmlspecialchars($base . '/', ENT_QUOTES, 'UTF-8') ?>">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="<?= htmlspecialchars($base . '/', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('public.common.breadcrumb_home'), ENT_QUOTES, 'UTF-8') ?></a></li>
             <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars((string)$page['title'], ENT_QUOTES, 'UTF-8') ?></li>
           </ol>
         </nav>
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-end gap-3">
           <div>
             <h1 class="display-6 fw-bold mb-1 section-title"><?= htmlspecialchars((string)$page['title'], ENT_QUOTES, 'UTF-8') ?></h1>
-            <div class="text-secondary">Informations utiles et contact.</div>
+            <div class="text-secondary"><?= htmlspecialchars(t('public.generic_page.subtitle'), ENT_QUOTES, 'UTF-8') ?></div>
           </div>
           <a class="btn btn-brand" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>">
-            <i class="bi bi-clipboard-check me-2"></i>Demander un devis
+            <i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars(t('public.generic_page.cta_quote'), ENT_QUOTES, 'UTF-8') ?>
           </a>
         </div>
       </div>
@@ -248,7 +248,7 @@ if ($lat !== '' && $lng !== '') {
                           <?php if (trim($a) !== ''): ?>
                             <?= htmlspecialchars($a, ENT_QUOTES, 'UTF-8') ?>
                           <?php else: ?>
-                            Pour une réponse précise à ton projet, envoie une demande de devis ou un message.
+                            <?= htmlspecialchars(t('public.faq.empty_answer'), ENT_QUOTES, 'UTF-8') ?>
                           <?php endif; ?>
                         </div>
                       </div>
@@ -256,7 +256,7 @@ if ($lat !== '' && $lng !== '') {
                   <?php endforeach; ?>
                 </div>
                 <div class="text-secondary small mt-3" data-faq-empty style="display:none">
-                  Aucun résultat. Essaie un autre mot-clé ou contacte-nous.
+                  <?= htmlspecialchars(t('public.faq.no_results'), ENT_QUOTES, 'UTF-8') ?>
                 </div>
               <?php else: ?>
                 <div class="text-secondary" style="white-space:pre-wrap"><?= htmlspecialchars((string)($page['content'] ?? ''), ENT_QUOTES, 'UTF-8') ?></div>
@@ -265,39 +265,39 @@ if ($lat !== '' && $lng !== '') {
               <?php if ($key === 'contact'): ?>
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                   <div>
-                    <div class="fw-semibold">Envoyer un message</div>
-                    <div class="text-secondary small">Nous répondons rapidement (devis, infos, rendez-vous).</div>
+                    <div class="fw-semibold"><?= htmlspecialchars(t('public.contact.send_title'), ENT_QUOTES, 'UTF-8') ?></div>
+                    <div class="text-secondary small"><?= htmlspecialchars(t('public.contact.send_sub'), ENT_QUOTES, 'UTF-8') ?></div>
                   </div>
-                  <span class="badge text-bg-light border"><i class="bi bi-shield-lock me-1"></i>Données protégées</span>
+                  <span class="badge text-bg-light border"><i class="bi bi-shield-lock me-1"></i><?= htmlspecialchars(t('public.quote.protected'), ENT_QUOTES, 'UTF-8') ?></span>
                 </div>
 
                 <form method="post" action="<?= htmlspecialchars($base . '/contact', ENT_QUOTES, 'UTF-8') ?>">
                   <input type="text" name="company" value="" style="display:none">
                   <div class="row g-3">
                     <div class="col-md-6">
-                      <label class="form-label">Nom <span class="text-danger">*</span></label>
-                      <input class="form-control" type="text" name="name" required placeholder="Ex: Jean Rakoto">
+                      <label class="form-label"><?= htmlspecialchars(t('public.forms.name'), ENT_QUOTES, 'UTF-8') ?> <span class="text-danger">*</span></label>
+                      <input class="form-control" type="text" name="name" required placeholder="<?= htmlspecialchars(t('public.forms.full_name_ph'), ENT_QUOTES, 'UTF-8') ?>">
                     </div>
                     <div class="col-md-6">
-                      <label class="form-label">Sujet</label>
-                      <input class="form-control" type="text" name="subject" placeholder="Ex: Demande de devis / infos">
+                      <label class="form-label"><?= htmlspecialchars(t('public.forms.subject'), ENT_QUOTES, 'UTF-8') ?></label>
+                      <input class="form-control" type="text" name="subject" placeholder="<?= htmlspecialchars(t('public.forms.subject_ph'), ENT_QUOTES, 'UTF-8') ?>">
                     </div>
                     <div class="col-md-6">
-                      <label class="form-label">Email</label>
-                      <input class="form-control" type="email" name="email" placeholder="vous@email.com">
+                      <label class="form-label"><?= htmlspecialchars(t('public.forms.email'), ENT_QUOTES, 'UTF-8') ?></label>
+                      <input class="form-control" type="email" name="email" placeholder="<?= htmlspecialchars(t('public.forms.email_ph'), ENT_QUOTES, 'UTF-8') ?>">
                     </div>
                     <div class="col-md-6">
-                      <label class="form-label">Téléphone</label>
-                      <input class="form-control" type="text" name="phone" placeholder="034 00 000 00">
+                      <label class="form-label"><?= htmlspecialchars(t('public.forms.phone'), ENT_QUOTES, 'UTF-8') ?></label>
+                      <input class="form-control" type="text" name="phone" placeholder="<?= htmlspecialchars(t('public.forms.phone_ph'), ENT_QUOTES, 'UTF-8') ?>">
                     </div>
                     <div class="col-12">
-                      <label class="form-label">Message <span class="text-danger">*</span></label>
-                      <textarea class="form-control" name="message" rows="7" required placeholder="Décris ta demande: surface, localisation, délai, style..."></textarea>
+                      <label class="form-label"><?= htmlspecialchars(t('public.forms.message'), ENT_QUOTES, 'UTF-8') ?> <span class="text-danger">*</span></label>
+                      <textarea class="form-control" name="message" rows="7" required placeholder="<?= htmlspecialchars(t('public.forms.message_ph'), ENT_QUOTES, 'UTF-8') ?>"></textarea>
                     </div>
                   </div>
                   <div class="d-flex gap-2 flex-wrap mt-4">
-                    <button class="btn btn-brand" type="submit"><i class="bi bi-send me-2"></i>Envoyer</button>
-                    <a class="btn btn-light border" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i>Plutôt un devis</a>
+                    <button class="btn btn-brand" type="submit"><i class="bi bi-send me-2"></i><?= htmlspecialchars(t('public.forms.send'), ENT_QUOTES, 'UTF-8') ?></button>
+                    <a class="btn btn-light border" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars(t('public.contact.quote_cta'), ENT_QUOTES, 'UTF-8') ?></a>
                   </div>
                 </form>
               <?php else: ?>
@@ -311,15 +311,15 @@ if ($lat !== '' && $lng !== '') {
         <div class="sticky-lg-top" style="top:92px">
           <div class="card border-0 shadow-sm">
             <div class="card-body p-4">
-              <div class="fw-semibold mb-2"><i class="bi bi-headset me-2 text-brand"></i>Besoin d’aide ?</div>
-              <div class="text-secondary small mb-3">Contacte-nous ou demande un devis, on répond rapidement.</div>
+              <div class="fw-semibold mb-2"><i class="bi bi-headset me-2 text-brand"></i><?= htmlspecialchars(t('public.contact.help_title'), ENT_QUOTES, 'UTF-8') ?></div>
+              <div class="text-secondary small mb-3"><?= htmlspecialchars(t('public.contact.help_sub'), ENT_QUOTES, 'UTF-8') ?></div>
 
               <div class="d-flex flex-column gap-2">
                 <?php foreach (array_slice($phones, 0, 3) as $ph): ?>
                   <a class="btn btn-sm btn-light border text-start" href="tel:<?= htmlspecialchars($ph, ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-telephone me-2 text-brand"></i><?= htmlspecialchars($ph, ENT_QUOTES, 'UTF-8') ?></a>
                 <?php endforeach; ?>
                 <?php if (!empty($settings['whatsapp'])): ?>
-                  <a class="btn btn-sm btn-light border text-start" target="_blank" rel="noopener" href="<?= htmlspecialchars('https://wa.me/' . preg_replace('/\D+/', '', (string)$settings['whatsapp']), ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-whatsapp me-2 text-brand"></i>WhatsApp: <?= htmlspecialchars((string)$settings['whatsapp'], ENT_QUOTES, 'UTF-8') ?></a>
+                  <a class="btn btn-sm btn-light border text-start" target="_blank" rel="noopener" href="<?= htmlspecialchars('https://wa.me/' . preg_replace('/\D+/', '', (string)$settings['whatsapp']), ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-whatsapp me-2 text-brand"></i><?= htmlspecialchars(t('public.common.whatsapp_with', ['value' => (string)$settings['whatsapp']]), ENT_QUOTES, 'UTF-8') ?></a>
                 <?php endif; ?>
                 <?php foreach (array_slice($emails, 0, 3) as $em): ?>
                   <a class="btn btn-sm btn-light border text-start" href="mailto:<?= htmlspecialchars($em, ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-envelope me-2 text-brand"></i><?= htmlspecialchars($em, ENT_QUOTES, 'UTF-8') ?></a>
@@ -328,8 +328,8 @@ if ($lat !== '' && $lng !== '') {
 
               <hr class="my-3">
               <div class="d-grid gap-2">
-                <a class="btn btn-brand" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i>Demander un devis</a>
-                <a class="btn btn-light border" href="<?= htmlspecialchars($base . '/services', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-tools me-2"></i>Voir les services</a>
+                <a class="btn btn-brand" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars(t('nav.quote'), ENT_QUOTES, 'UTF-8') ?></a>
+                <a class="btn btn-light border" href="<?= htmlspecialchars($base . '/services', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-tools me-2"></i><?= htmlspecialchars(t('public.contact.see_services'), ENT_QUOTES, 'UTF-8') ?></a>
               </div>
               <?php if (!empty($settings['service_area'])): ?>
                 <div class="text-secondary small mt-3"><i class="bi bi-map me-2"></i><?= htmlspecialchars((string)$settings['service_area'], ENT_QUOTES, 'UTF-8') ?></div>
@@ -344,7 +344,7 @@ if ($lat !== '' && $lng !== '') {
                 ?>
                 <?php if ($hasSocial): ?>
                   <hr class="my-3">
-                  <div class="fw-semibold mb-2">Réseaux sociaux</div>
+                  <div class="fw-semibold mb-2"><?= htmlspecialchars(t('public.contact.socials'), ENT_QUOTES, 'UTF-8') ?></div>
                   <div class="d-flex flex-wrap gap-2">
                     <?php foreach ($socials as $s): ?>
                       <?php $url = trim((string)($settings[$s['k']] ?? '')); ?>
@@ -372,12 +372,12 @@ if ($lat !== '' && $lng !== '') {
         <div class="card-body p-4 p-lg-5">
           <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
             <div>
-              <div class="fw-semibold"><i class="bi bi-geo-alt-fill me-2 text-brand"></i>Nous trouver</div>
+              <div class="fw-semibold"><i class="bi bi-geo-alt-fill me-2 text-brand"></i><?= htmlspecialchars(t('public.contact.map_title'), ENT_QUOTES, 'UTF-8') ?></div>
               <?php if ($mapAddress !== ''): ?>
                 <div class="text-secondary small"><?= htmlspecialchars($mapAddress, ENT_QUOTES, 'UTF-8') ?></div>
               <?php endif; ?>
             </div>
-            <a class="btn btn-sm btn-light border" target="_blank" rel="noopener" href="<?= htmlspecialchars(($lat !== '' && $lng !== '') ? ('https://www.google.com/maps?q=' . rawurlencode($lat . ',' . $lng)) : ('https://www.google.com/maps?q=' . rawurlencode($mapAddress)), ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-box-arrow-up-right me-1"></i>Ouvrir dans Maps</a>
+            <a class="btn btn-sm btn-light border" target="_blank" rel="noopener" href="<?= htmlspecialchars(($lat !== '' && $lng !== '') ? ('https://www.google.com/maps?q=' . rawurlencode($lat . ',' . $lng)) : ('https://www.google.com/maps?q=' . rawurlencode($mapAddress)), ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-box-arrow-up-right me-1"></i><?= htmlspecialchars(t('public.contact.map_open'), ENT_QUOTES, 'UTF-8') ?></a>
           </div>
 
           <div class="ratio ratio-16x9 rounded-4 overflow-hidden border">

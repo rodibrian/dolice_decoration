@@ -4,6 +4,23 @@
    - Glide: sliders for testimonials/portfolio when present */
 
 (function () {
+  var SITE_I18N = {};
+  try {
+    var ij = document.getElementById('site-i18n');
+    if (ij && ij.textContent) SITE_I18N = JSON.parse(ij.textContent);
+  } catch (e) {
+    SITE_I18N = {};
+  }
+
+  function i18nFill(template, params) {
+    var s = String(template || '');
+    if (!params) return s;
+    Object.keys(params).forEach(function (k) {
+      s = s.split(':' + k).join(params[k] != null ? String(params[k]) : '');
+    });
+    return s;
+  }
+
   function getAppBase() {
     var meta = document.querySelector('meta[name="app-base"]');
     var base = (meta && meta.getAttribute('content')) || '';
@@ -103,13 +120,12 @@
       }
       var snippet = (text || '').trim().slice(0, 220);
       throw new Error(
-        'Réponse non-JSON (' +
-          (res.status || 0) +
-          ') ct=' +
-          (ct || 'n/a') +
-          ' url=' +
-          String(urlForDebug || '') +
-          (snippet ? ' body=' + snippet : '')
+        i18nFill(SITE_I18N.non_json || 'Non-JSON (:status) ct=:ct url=:url:snippet', {
+          status: String(res.status || 0),
+          ct: ct || 'n/a',
+          url: String(urlForDebug || ''),
+          snippet: snippet ? (SITE_I18N.snippet_prefix || '') + snippet : '',
+        })
       );
     }
     return await res.json();
@@ -252,8 +268,8 @@
           i +
           '" ' +
           (i === 0 ? 'class="active" aria-current="true"' : '') +
-          ' aria-label="Slide ' +
-          (i + 1) +
+          ' aria-label="' +
+          escapeHtmlAttr((SITE_I18N.slide_aria || 'Slide :n').replace(':n', String(i + 1))) +
           '"></button>'
         );
       })
@@ -286,13 +302,17 @@
           id +
           '" data-bs-slide="prev">' +
           '<span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
-          '<span class="visually-hidden">Précédent</span>' +
+          '<span class="visually-hidden">' +
+          escapeHtmlAttr(SITE_I18N.carousel_prev || 'Previous') +
+          '</span>' +
           '</button>' +
           '<button class="carousel-control-next" type="button" data-bs-target="#' +
           id +
           '" data-bs-slide="next">' +
           '<span class="carousel-control-next-icon" aria-hidden="true"></span>' +
-          '<span class="visually-hidden">Suivant</span>' +
+          '<span class="visually-hidden">' +
+          escapeHtmlAttr(SITE_I18N.carousel_next || 'Next') +
+          '</span>' +
           '</button>'
         : '') +
         '</div>'
@@ -369,7 +389,7 @@
         var project = data && data.project ? data.project : {};
         var images = (data && data.images) || [];
 
-        if (titleEl) titleEl.textContent = project.title || 'Réalisation';
+        if (titleEl) titleEl.textContent = project.title || SITE_I18N.modal_project || 'Project';
         if (metaEl) {
           var parts = [];
           if (project.location) parts.push(project.location);
@@ -400,12 +420,11 @@
         } catch (e) {
           // ignore
         }
-        if (titleEl) titleEl.textContent = 'Erreur de chargement';
+        if (titleEl) titleEl.textContent = SITE_I18N.load_error_title || 'Error';
         if (descEl) {
-          descEl.textContent =
-            "Impossible de charger les détails. Réessaye ou ouvre la page.\n" +
-            "Debug: " +
-            String((err && err.message) || err || '');
+          descEl.textContent = i18nFill(SITE_I18N.project_load_error || 'Load failed.\nDebug: :debug', {
+            debug: String((err && err.message) || err || ''),
+          });
         }
       }
     }
@@ -461,8 +480,8 @@
         var data = await readJsonOrThrow(res, url.toString());
         var service = (data && data.service) || {};
 
-        safeText(titleEl, service.title || 'Service');
-        safeText(metaEl, 'Détails du service');
+        safeText(titleEl, service.title || SITE_I18N.modal_service || 'Service');
+        safeText(metaEl, SITE_I18N.service_meta || '');
         setBadge(badgeCategoryEl, service.category || '');
         safeText(descEl, service.description || '');
 
@@ -470,10 +489,11 @@
         var showPrice = Number(service.show_price || 0) === 1;
         var basePrice = service.base_price;
         var unit = (service.price_unit || '').trim();
-        var label = (service.price_label || '').trim() || 'À partir de';
+        var label = (service.price_label || '').trim() || SITE_I18N.price_from || '';
         if (showPrice && basePrice !== null && basePrice !== '' && isFinite(Number(basePrice))) {
           var formatted = Math.round(Number(basePrice)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-          setBadge(badgePriceEl, label + ' ' + formatted + ' Ar' + (unit ? ' ' + unit : ''));
+          var sfx = SITE_I18N.price_suffix || '';
+          setBadge(badgePriceEl, label + ' ' + formatted + sfx + (unit ? ' ' + unit : ''));
         } else {
           setBadge(badgePriceEl, '');
         }
@@ -495,12 +515,12 @@
         } catch (e) {
           // ignore
         }
-        safeText(titleEl, 'Erreur de chargement');
+        safeText(titleEl, SITE_I18N.load_error_title || 'Error');
         safeText(
           descEl,
-          "Impossible de charger les détails. Vérifie que le service existe.\n" +
-            "Debug: " +
-            String((err && err.message) || err || '')
+          i18nFill(SITE_I18N.service_load_error || 'Load failed.\nDebug: :debug', {
+            debug: String((err && err.message) || err || ''),
+          })
         );
       }
     }
@@ -556,7 +576,7 @@
         var data = await readJsonOrThrow(res, url.toString());
         var post = (data && data.post) || {};
 
-        safeText(titleEl, post.title || 'Article');
+        safeText(titleEl, post.title || SITE_I18N.modal_post || 'Post');
         var metaParts = [];
         if (post.published_at) metaParts.push(post.published_at);
         if (post.author) metaParts.push(post.author);
@@ -605,12 +625,12 @@
         } catch (e) {
           // ignore
         }
-        safeText(titleEl, 'Erreur de chargement');
+        safeText(titleEl, SITE_I18N.load_error_title || 'Error');
         safeText(
           contentEl,
-          "Impossible de charger les détails. Vérifie que l'article existe.\n" +
-            "Debug: " +
-            String((err && err.message) || err || '')
+          i18nFill(SITE_I18N.post_load_error || 'Load failed.\nDebug: :debug', {
+            debug: String((err && err.message) || err || ''),
+          })
         );
         if (wrap) disposeBootstrapCarouselIn(wrap);
         if (carouselWrap) carouselWrap.classList.add('d-none');

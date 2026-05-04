@@ -33,8 +33,8 @@ $splitKeywords = static function ($kw): array {
 
 $tagSet = [];
 foreach ($posts as $p) {
-    foreach ($splitKeywords($p['keywords'] ?? '') as $t) {
-        $tagSet[strtolower($t)] = $t;
+    foreach ($splitKeywords($p['keywords'] ?? '') as $kwTag) {
+        $tagSet[strtolower($kwTag)] = $kwTag;
     }
 }
 ksort($tagSet);
@@ -45,8 +45,8 @@ $tags = array_values($tagSet);
   <div class="container">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb mb-3">
-        <li class="breadcrumb-item"><a href="<?= htmlspecialchars($base . '/', ENT_QUOTES, 'UTF-8') ?>">Accueil</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Blog</li>
+        <li class="breadcrumb-item"><a href="<?= htmlspecialchars($base . '/', ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars(t('public.common.breadcrumb_home'), ENT_QUOTES, 'UTF-8') ?></a></li>
+        <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars(t('nav.blog'), ENT_QUOTES, 'UTF-8') ?></li>
       </ol>
     </nav>
 
@@ -54,21 +54,21 @@ $tags = array_values($tagSet);
       <div class="col-lg-7">
         <div class="d-inline-flex align-items-center gap-2 badge text-bg-light border rounded-pill px-3 py-2">
           <i class="bi bi-journal-text text-brand"></i>
-          <span>Conseils • Tendances • Retours chantier</span>
+          <span><?= htmlspecialchars(t('public.blog_list.hero_badge'), ENT_QUOTES, 'UTF-8') ?></span>
         </div>
-        <h1 class="display-6 fw-bold mt-3 mb-2 section-title">Blog</h1>
-        <p class="lead text-secondary mb-0">Des contenus utiles et concrets pour t’aider à préparer tes travaux, choisir les bonnes finitions et éviter les erreurs.</p>
+        <h1 class="display-6 fw-bold mt-3 mb-2 section-title"><?= htmlspecialchars(t('public.blog_list.hero_title'), ENT_QUOTES, 'UTF-8') ?></h1>
+        <p class="lead text-secondary mb-0"><?= htmlspecialchars(t('public.blog_list.hero_lead'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
       <div class="col-lg-5">
         <div class="card border-0 shadow-sm blog-hero-card">
           <div class="card-body p-4">
-            <div class="fw-semibold mb-2">Besoin d’un devis ?</div>
-            <div class="text-secondary mb-3">Explique ton projet et on te répond rapidement.</div>
+            <div class="fw-semibold mb-2"><?= htmlspecialchars(t('public.blog_list.aside_title'), ENT_QUOTES, 'UTF-8') ?></div>
+            <div class="text-secondary mb-3"><?= htmlspecialchars(t('public.blog_list.aside_text'), ENT_QUOTES, 'UTF-8') ?></div>
             <div class="d-grid gap-2">
-              <a class="btn btn-brand" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i>Demander un devis</a>
-              <a class="btn btn-light border" href="<?= htmlspecialchars($base . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-2"></i>Voir nos réalisations</a>
+              <a class="btn btn-brand" href="<?= htmlspecialchars($base . '/devis', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-clipboard-check me-2"></i><?= htmlspecialchars(t('public.blog_list.cta_quote'), ENT_QUOTES, 'UTF-8') ?></a>
+              <a class="btn btn-light border" href="<?= htmlspecialchars($base . '/realisations', ENT_QUOTES, 'UTF-8') ?>"><i class="bi bi-images me-2"></i><?= htmlspecialchars(t('public.blog_list.cta_projects'), ENT_QUOTES, 'UTF-8') ?></a>
             </div>
-            <div class="text-secondary small mt-3">Par <span class="fw-semibold"><?= htmlspecialchars($companyName, ENT_QUOTES, 'UTF-8') ?></span></div>
+            <div class="text-secondary small mt-3"><?= htmlspecialchars(t('public.common.by_company', ['company' => $companyName]), ENT_QUOTES, 'UTF-8') ?></div>
           </div>
         </div>
       </div>
@@ -86,17 +86,17 @@ $tags = array_values($tagSet);
               <div class="col-lg-6">
                 <div class="input-group">
                   <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                  <input class="form-control" type="search" placeholder="Rechercher un article..." data-blog-search>
+                  <input class="form-control" type="search" placeholder="<?= htmlspecialchars(t('public.blog_list.search_ph'), ENT_QUOTES, 'UTF-8') ?>" data-blog-search>
                   <button class="btn btn-light border" type="button" data-blog-reset><i class="bi bi-x-lg"></i></button>
                 </div>
-                <div class="text-secondary small mt-2">Recherche: titre, extrait, auteur, mots-clés.</div>
+                <div class="text-secondary small mt-2"><?= htmlspecialchars(t('public.blog_list.search_hint'), ENT_QUOTES, 'UTF-8') ?></div>
               </div>
               <div class="col-lg-6">
                 <?php if (!empty($tags)): ?>
                   <div class="d-flex flex-wrap gap-2 justify-content-lg-end" data-blog-tags>
-                    <button class="btn btn-sm btn-brand" type="button" data-tag="__all">Tous</button>
-                    <?php foreach (array_slice($tags, 0, 12) as $t): ?>
-                      <button class="btn btn-sm btn-light border" type="button" data-tag="<?= htmlspecialchars(strtolower($t), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($t, ENT_QUOTES, 'UTF-8') ?></button>
+                    <button class="btn btn-sm btn-brand" type="button" data-tag="__all"><?= htmlspecialchars(t('public.common.tag_all'), ENT_QUOTES, 'UTF-8') ?></button>
+                    <?php foreach (array_slice($tags, 0, 12) as $tag): ?>
+                      <button class="btn btn-sm btn-light border" type="button" data-tag="<?= htmlspecialchars(strtolower($tag), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($tag, ENT_QUOTES, 'UTF-8') ?></button>
                     <?php endforeach; ?>
                   </div>
                 <?php endif; ?>
@@ -108,7 +108,7 @@ $tags = array_values($tagSet);
 
       <?php if (empty($posts)): ?>
         <div class="col-12">
-          <div class="alert alert-light border">Aucun article pour le moment.</div>
+          <div class="alert alert-light border"><?= htmlspecialchars(t('public.blog_list.empty_posts'), ENT_QUOTES, 'UTF-8') ?></div>
         </div>
       <?php else: ?>
         <?php if (is_array($featured)): ?>
@@ -142,23 +142,23 @@ $tags = array_values($tagSet);
                   <div class="col-lg-6">
                     <div class="card-body p-4 p-lg-5">
                       <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-                        <span class="badge text-bg-light border"><i class="bi bi-star-fill text-brand me-1"></i>À la une</span>
+                        <span class="badge text-bg-light border"><i class="bi bi-star-fill text-brand me-1"></i><?= htmlspecialchars(t('public.blog_list.featured_badge'), ENT_QUOTES, 'UTF-8') ?></span>
                         <?php if ($date !== ''): ?><span class="text-secondary small"><i class="bi bi-calendar3 me-1"></i><?= htmlspecialchars($date, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
-                        <?php if ($rt > 0): ?><span class="text-secondary small"><i class="bi bi-clock me-1"></i><?= (int)$rt ?> min</span><?php endif; ?>
+                        <?php if ($rt > 0): ?><span class="text-secondary small"><i class="bi bi-clock me-1"></i><?= htmlspecialchars(t('public.blog_list.read_min', ['min' => (string)(int)$rt]), ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
                         <?php if ($author !== ''): ?><span class="text-secondary small"><i class="bi bi-person me-1"></i><?= htmlspecialchars($author, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
                       </div>
                       <h2 class="h3 mb-3"><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h2>
                       <p class="text-secondary mb-3"><?= htmlspecialchars($excerpt, ENT_QUOTES, 'UTF-8') ?></p>
                       <?php if (!empty($kw)): ?>
                         <div class="d-flex flex-wrap gap-2">
-                          <?php foreach (array_slice($kw, 0, 6) as $t): ?>
-                            <span class="badge text-bg-light border">#<?= htmlspecialchars($t, ENT_QUOTES, 'UTF-8') ?></span>
+                          <?php foreach (array_slice($kw, 0, 6) as $kwTag): ?>
+                            <span class="badge text-bg-light border">#<?= htmlspecialchars($kwTag, ENT_QUOTES, 'UTF-8') ?></span>
                           <?php endforeach; ?>
                         </div>
                       <?php endif; ?>
                       <div class="mt-4">
-                        <span class="btn btn-brand btn-sm"><i class="bi bi-eye me-1"></i>Lire</span>
-                        <span class="btn btn-light border btn-sm ms-2"><i class="bi bi-box-arrow-up-right me-1"></i>Ouvrir</span>
+                        <span class="btn btn-brand btn-sm"><i class="bi bi-eye me-1"></i><?= htmlspecialchars(t('public.blog_list.read_btn'), ENT_QUOTES, 'UTF-8') ?></span>
+                        <span class="btn btn-light border btn-sm ms-2"><i class="bi bi-box-arrow-up-right me-1"></i><?= htmlspecialchars(t('public.blog_list.open_btn'), ENT_QUOTES, 'UTF-8') ?></span>
                       </div>
                     </div>
                   </div>
@@ -194,15 +194,15 @@ $tags = array_values($tagSet);
                 <div class="card-body">
                   <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                     <?php if ($date !== ''): ?><span class="text-secondary small"><i class="bi bi-calendar3 me-1"></i><?= htmlspecialchars($date, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
-                    <?php if ($rt > 0): ?><span class="text-secondary small"><i class="bi bi-clock me-1"></i><?= (int)$rt ?> min</span><?php endif; ?>
+                    <?php if ($rt > 0): ?><span class="text-secondary small"><i class="bi bi-clock me-1"></i><?= htmlspecialchars(t('public.blog_list.read_min', ['min' => (string)(int)$rt]), ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
                     <?php if ($author !== ''): ?><span class="text-secondary small"><i class="bi bi-person me-1"></i><?= htmlspecialchars($author, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
                   </div>
                   <h2 class="h5 mb-2"><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h2>
                   <div class="text-secondary mb-3"><?= htmlspecialchars($excerpt, ENT_QUOTES, 'UTF-8') ?></div>
                   <?php if (!empty($kw)): ?>
                     <div class="d-flex flex-wrap gap-2">
-                      <?php foreach (array_slice($kw, 0, 3) as $t): ?>
-                        <span class="badge text-bg-light border">#<?= htmlspecialchars($t, ENT_QUOTES, 'UTF-8') ?></span>
+                      <?php foreach (array_slice($kw, 0, 3) as $kwTag): ?>
+                        <span class="badge text-bg-light border">#<?= htmlspecialchars($kwTag, ENT_QUOTES, 'UTF-8') ?></span>
                       <?php endforeach; ?>
                     </div>
                   <?php endif; ?>
