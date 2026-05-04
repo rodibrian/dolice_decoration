@@ -48,3 +48,36 @@ Base MVC simple et propre pour XAMPP (local) + déploiement facile plus tard.
 - Importer `database/schema.sql` (ou migrer la base)
 - Mettre un vrai `DB_HOST/DB_USER/DB_PASS` dans `.env`
 
+### InfinityFree
+
+1. **Fichiers**  
+   Uploader tout le dépôt (dossiers `app/`, `config/`, `public/`, `database/`, `storage/`, etc.). Le **document root** du domaine doit pointer vers `public/` (recommandé). Dans ce cas, `APP_URL` = `https://votre-sous-domaine.infinityfreeapp.com` **sans** `/public` à la fin.
+
+2. **`.env` à la racine du projet** (même niveau que le dossier `public/`, pas dans `public/`) avec par exemple :
+
+   ```
+   APP_ENV=production
+   APP_DEBUG=0
+   APP_URL=https://votre-site.infinityfreeapp.com
+
+   DB_HOST=sql208.infinityfree.com
+   DB_PORT=3306
+   DB_NAME=if0_XXXXX_votre_base
+   DB_USER=if0_XXXXX
+   DB_PASS=votre_mot_de_passe_mysql
+   DB_CHARSET=utf8mb4
+   ```
+
+   Remplace les valeurs par celles du panneau **MySQL Databases** (hôte, nom de base, utilisateur, mot de passe). Ne commite jamais ce fichier (il est dans `.gitignore`).
+
+3. **Base de données**  
+   Dans phpMyAdmin (InfinityFree), sélectionner la base créée puis importer `database/schema.sql`. Si tu utilises les traductions, importer aussi `database/schema-translations.sql` après coup si besoin.
+
+4. **Droits d’écriture**  
+   Le dossier `public/uploads/` doit être accessible en écriture par PHP (images, logos, etc.).
+
+5. **HTTPS**  
+   Utiliser `https://` dans `APP_URL` si le site est servi en HTTPS.
+
+> **Sécurité :** si un mot de passe MySQL a été partagé en clair (chat, ticket, capture), régénère-le dans le panneau InfinityFree après déploiement.
+

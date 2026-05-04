@@ -20,8 +20,13 @@ final class DB
         $user = env('DB_USER', 'root');
         $pass = env('DB_PASS', '');
         $charset = env('DB_CHARSET', 'utf8mb4');
+        $port = env('DB_PORT', '');
+        $portSuffix = '';
+        if ($port !== null && $port !== '' && ctype_digit((string)$port)) {
+            $portSuffix = ';port=' . (int)$port;
+        }
 
-        $dsn = "mysql:host={$host};dbname={$name};charset={$charset}";
+        $dsn = "mysql:host={$host};dbname={$name};charset={$charset}{$portSuffix}";
         $pdo = new PDO($dsn, $user, $pass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
